@@ -10,7 +10,6 @@ package lte.simulations.LTE_SDN;
 
 import inet.networklayer.autorouting.ipv4.IPv4NetworkConfigurator;
 import inet.networklayer.ipv4.RoutingTableRecorder;
-import inet.nodes.ethernet.Eth100G;
 import inet.nodes.ethernet.Eth10G;
 import inet.nodes.ethernet.Eth10M;
 import inet.nodes.inet.Router;
@@ -26,8 +25,8 @@ import lte.epc.PgwStandardSimplified;
 network SDN
 {
     parameters:
-        int numUe = default(1);
-        @display("i=block/network2;bgb=991,558;bgi=background/budapest");
+        int numUe = default(3);
+        @display("i=block/network2;bgb=991,558;bgi=background/streetmap");
     submodules:
         channelControl: LteChannelControl {
             @display("p=50,25;is=s");
@@ -43,14 +42,14 @@ network SDN
             @display("p=50,175;is=s");
         }
         server: StandardHost {
-            @display("p=549,25;is=n;i=device/server");
+            @display("p=250,34;is=n;i=device/server");
         }
         router: Router {
-            @display("p=381,28;i=device/smallrouter");
+            @display("p=366,33;i=device/smallrouter");
         }
         pgw: PgwStandardSimplified {
             nodeType = "PGW";
-            @display("p=380,117;is=l");
+            @display("p=486,116;is=l");
         }
         eNodeB: eNodeB {
             @display("p=487,454;is=vl");
@@ -68,22 +67,18 @@ network SDN
             @display("p=715,247;is=vl");
         }
         eNodeB2: eNodeB {
-            @display("p=259,260;is=vl");
+            @display("p=259,247;is=vl");
         }
-        sgwStandard: SgwStandard {
-            @display("p=506,117");
-        }
+
     connections:
         server.pppg++ <--> Eth10G <--> router.pppg++;
         router.pppg++ <--> Eth10G <--> pgw.filterGate;
-		sgwStandard.pppg++ <--> Eth10G <--> pgw.pppg++;
-        sgwStandard.pppg++ <--> Eth10G <--> eNodeB.ppp;
-        sgwStandard.pppg++ <--> Eth10G <--> eNodeB1.ppp;
-        sgwStandard.pppg++ <--> Eth10G <--> eNodeB2.ppp;
+        pgw.pppg++ <--> Eth10G <--> eNodeB.ppp;
+        pgw.pppg++ <--> Eth10G <--> eNodeB1.ppp;
+        pgw.pppg++ <--> Eth10G <--> eNodeB2.ppp;
 
         //# X2 connections
         eNodeB.ppp <--> Eth10G <--> eNodeB1.ppp;
         eNodeB.ppp <--> Eth10G <--> eNodeB2.ppp;
         eNodeB2.ppp <--> Eth10G <--> eNodeB1.ppp;
-        
 }
