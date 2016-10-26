@@ -17,7 +17,6 @@ import lte.stack.phy.ChannelControl.LteChannelControl;
 import lte.corenetwork.binder.LteBinder;
 import lte.corenetwork.nodes.Ue;
 import lte.corenetwork.nodes.eNodeB;
-import lte.corenetwork.nodes.ExtCell;
 import lte.epc.PgwStandardSimplified;
 
 
@@ -87,4 +86,5 @@ network SDN
         eNodeB3.x2++ <--> Eth1G <--> eNodeB4.x2++;
         eNodeB4.x2++ <--> Eth1G <--> eNodeB5.x2++;
         eNodeB1.x2++ <--> Eth1G <--> eNodeB5.x2++;
+
 }
