@@ -1,14 +1,14 @@
 version 2
-run sdnTest-0-20161025-19:31:00-19684
+run sdnTest-0-20161025-21:19:33-21718
 attr configname sdnTest
-attr datetime 20161025-19:31:00
+attr datetime 20161025-21:19:33
 attr experiment sdnTest
 attr inifile omnetpp.ini
 attr iterationvars ""
 attr iterationvars2 $repetition=0
 attr measurement ""
 attr network lte.simulations.sdn.SDN
-attr processid 19684
+attr processid 21718
 attr repetition 0
 attr replication #0
 attr resultdir results

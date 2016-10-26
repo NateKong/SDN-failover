@@ -65,7 +65,7 @@ network SDN
             @display("p=1099,590;is=vl");
         }
         ue1: Ue {
-            @display("p=211,670");
+            @display("p=124,571");
         }
         ue2: Ue {
             @display("p=1275,459");
