@@ -1,0 +1,18 @@
+version 2
+run VoIP-0-20161025-11:54:11-15986
+attr configname VoIP
+attr datetime 20161025-11:54:11
+attr experiment VoIP
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvars2 $repetition=0
+attr measurement ""
+attr network lte.simulations.sdn.SDN
+attr processid 15986
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+
+scalar SDN 	hackForCreateResultsFolder 	0
