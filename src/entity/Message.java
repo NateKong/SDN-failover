@@ -9,6 +9,17 @@ package entity;
  *
  */
 
+//****************************************************
+// This will need to be renamed we will need to figure
+// out how we want to write the OSI layers
+// QoS happens on layer 3
+//****************************************************
+/*
+ * NOTES
+ * LAYER 2: Datagram -> contains message(required), destination mac address (not required), and return mac address (required)
+ * LAYER 3: Packet -> contains Datagram(required), destination ip addresss (required), and return ip address (required)
+ */
+
 public class Message {
 	private QoS qos;
 	private String message;
