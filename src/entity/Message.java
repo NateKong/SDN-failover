@@ -9,11 +9,11 @@ package entity;
  *
  */
 
-public class packet {
+public class Message {
 	private QoS qos;
 	private String message;
 
-	packet(QoS qos, String message) {
+	Message(QoS qos, String message) {
 		this.qos = qos;
 		this.message = message;
 	}
