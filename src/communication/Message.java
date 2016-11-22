@@ -1,4 +1,6 @@
-package entity;
+package communication;
+
+import entity.QoS;
 
 /**
  * A packet sent by between entities and the network
