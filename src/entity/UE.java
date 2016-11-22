@@ -1,26 +1,22 @@
 package entity;
 
+import sdn.OvEnodeB;
+
 import java.awt.Point;
 
 public class UE {
-	private int mac;
-	private int ip;
-	private Point point;
+	private OvEnodeB parent;
 	
-	public UE(int mac, Point point){
-		this.mac = mac;
-		this.point = point;
+	public UE(OvEnodeB tower){
+		this.parent = tower;
+		tower.addUE(this);
 	}
-	
-	public int getMac(){
-		return mac;
-	}
-	
-	public int getIp(){
-		return ip;
-	}
-	
-	public void setIp(int ip){
-		this.ip = ip;
+
+	//Sends request to its parent
+	public String sendRequest(QoS type, int bandWeight) {
+		//parent.notify
+		//Above method will notify controller the type of request that is sent out
+		//Then controller will handle accordingly
+		return "";
 	}
 }
