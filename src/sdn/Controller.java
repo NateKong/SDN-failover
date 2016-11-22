@@ -46,12 +46,17 @@ public class Controller {
         else {
             epc.addService(serviceType, bandwidth);
         }
-
     }
 
     public int getBandwidthFree()
     {
         return epc.RemainingBandwidth;
+    }
+
+    public void adjustService(QoS serviceType, int bandwidth)
+    {
+        //This is where a lot of logic with bandwidth control happens since a decision about where to take bandwidth from
+        //must be made. This is why need service priority levels defined -- Basic, Premium, Superstar
     }
 
 
