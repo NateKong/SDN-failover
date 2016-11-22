@@ -22,23 +22,53 @@ public class SimplifiedEPC {
 
     //private Map<String, String> UEList;
     //private ArrayList<OvEnodeB> eNodeBList;
-    private static final int MAX_BANDWIDTH = 300; //Has a maximum bandwidth
+    public static final int MAX_BANDWIDTH = 300; //Has a maximum bandwidth
+    public int RemainingBandwidth;
     private Map<String, OvEnodeB> eNodeBMap;
     private Queue<QoS> requestQueue;
 
     //Has a set bandwidth for different types of QoS traffic
     //Should have a bandwidth for each QoS
-    private ArrayList<Map<String, Integer>> bandwidths; // Will need to create a Bandwidth class with name and value
+    private ArrayList<Map<QoS, Integer>> services; // Will need to create a Bandwidth class with name and value
 
-    //Assume that initialization of simplified EPC is zero
+    //Assume that initialization of simplified EPC is empty and information is added through controller
     public SimplifiedEPC()
     {
         eNodeBMap = new HashMap<>();
         // implementation of priorities can be done later. For now assume order of request is priority.
         requestQueue = new PriorityQueue<>();
-        bandwidths = new ArrayList<>();
-
+        services = new ArrayList<>();
+        RemainingBandwidth = MAX_BANDWIDTH;
     }
+
+    //Assumes unique string name
+    public void addNodeB(String name, OvEnodeB n)
+    {
+        eNodeBMap.put(name, n);
+    }
+
+    public void addToQueue(QoS type)
+    {
+        requestQueue.add(type);
+    }
+
+    public void addService(QoS serviceType, int bandwidth)
+    {
+        Map<QoS, Integer> service = new HashMap<>();
+        service.put(serviceType, bandwidth);
+        services.add(service);
+    }
+
+    public ArrayList getServices() {
+        return services;
+    }
+
+    public void allocateBandwidth(int i)
+    {
+        RemainingBandwidth = RemainingBandwidth - i;
+    }
+
+
 
 
 

@@ -18,14 +18,19 @@ public class OvEnodeB {
     //This should have a list of UEs that is maintains in its domain
 
     private ArrayList<UE> UEList;
-    private ArrayList<OvEnodeB> neighbors;
+    //private ArrayList<OvEnodeB> neighbors; Can implement this later if needed
 
     //Each of these objects should know the neighbors that it is connected to
 
     public OvEnodeB()
     {
         UEList = new ArrayList<>();
-        neighbors = new ArrayList<>();
+        //neighbors = new ArrayList<>();
+    }
+
+    public void addUE(UE e)
+    {
+        UEList.add(e);
     }
 
 
