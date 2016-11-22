@@ -1,6 +1,6 @@
 package sdn;
 
-import entity.QoS;
+import communication.QoS;
 import lte.SimplifiedEPC;
 
 /**

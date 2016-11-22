@@ -1,6 +1,6 @@
 package simulations;
 
-import entity.QoS;
+import communication.QoS;
 import entity.UE;
 import lte.SimplifiedEPC;
 import sdn.Controller;
