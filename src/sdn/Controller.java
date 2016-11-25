@@ -42,6 +42,7 @@ public class Controller {
     {
         if(bandwidth > epc.RemainingBandwidth) {
             //throw an error
+            System.out.print("Error adding service! Not enough bandwidth");
         }
         else {
             epc.addService(serviceType, bandwidth);

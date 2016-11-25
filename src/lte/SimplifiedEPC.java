@@ -62,6 +62,7 @@ public class SimplifiedEPC {
 	public void addService(QoS serviceType, int bandwidth) {
 		Map<QoS, Integer> service = new HashMap<>();
 		service.put(serviceType, bandwidth);
+		allocateBandwidth(bandwidth);
 		services.add(service);
 	}
 
