@@ -30,11 +30,11 @@ public class SimplifiedEPC {
 	public static final int MAX_BANDWIDTH = 300; // Has a maximum bandwidth
 	public int RemainingBandwidth;
 	private Map<String, OvEnodeB> eNodeBMap; // This is only for faster access. name should come from node
-	private Queue<QoS> requestQueue;
+	private Queue<QoS> requestQueue; // May adjust this to ArrayList for flexibility with future experiments
 
 	// Has a set bandwidth for different types of QoS traffic
 	// Should have a bandwidth for each QoS
-	private ArrayList<Map<QoS, Integer>> services; // Will need to create a
+	private Map<QoS, Integer> services; // Will need to create a
 													// Bandwidth class with name
 													// and value
 
@@ -45,7 +45,7 @@ public class SimplifiedEPC {
 		// implementation of priorities can be done later. For now assume order
 		// of request is priority.
 		requestQueue = new PriorityQueue<>();
-		services = new ArrayList<>();
+		services = new HashMap<>();
 		RemainingBandwidth = MAX_BANDWIDTH;
 	}
 
@@ -60,17 +60,33 @@ public class SimplifiedEPC {
 
 	public void addService(QoS serviceType, int bandwidth) {
 		Map<QoS, Integer> service = new HashMap<>();
-		service.put(serviceType, bandwidth);
-		allocateBandwidth(bandwidth);
-		services.add(service);
+		if (!service.containsKey(serviceType)) {
+			service.put(serviceType, bandwidth);
+			allocateBandwidth(bandwidth);
+		}
+		else {
+			System.out.print("Error adding Service. Service already exists");
+		}
+
 	}
 
-	public ArrayList getServices() {
+	public Map getServices() {
 		return services;
 	}
 
 	public void allocateBandwidth(int i) {
 		RemainingBandwidth = RemainingBandwidth - i;
+	}
+
+	/**
+	 * Gets the Map of OvEnodeB
+	 */
+	public Map getNodes() {
+		return eNodeBMap;
+	}
+
+	public OvEnodeB getNodeBandwidth(String name) {
+		return eNodeBMap.get(name);
 	}
 
 }

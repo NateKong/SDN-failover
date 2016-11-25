@@ -73,9 +73,11 @@ public class OvEnodeB {
     }
 
     //Behavior should mimick closer to that of a switch
-    public void relayMessage()
+    public void relayMessage(String message)
     {
-        //relays to neighbors if paths are given and if not, to controller for path computation
+        //relays to neighbors if paths are given and if not, to controller for path computation and then
+        //relays to another EnodeB defined by the controller
+        controller.processMessagePath(this, message);
     }
 
     //Probably should have a return after controller computes

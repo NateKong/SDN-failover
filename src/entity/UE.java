@@ -99,11 +99,12 @@ public class UE {
 	}
 
 	//Should automatically send to tower
-	public void sendMessage(String nameToContact, String message)
+	public void sendMessage(String message)
 	{
 		if (tower != null)
 		{
-			
+			//Get tower name and pass that on to controller
+			tower.relayMessage(message);
 		}
 
 	}

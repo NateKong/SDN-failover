@@ -3,6 +3,9 @@ package sdn;
 import communication.QoS;
 import lte.SimplifiedEPC;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 /**
  * Software Defined Network Controller
  * Management of packets and QoS
@@ -49,16 +52,31 @@ public class Controller {
         }
     }
 
-    public int getBandwidthFree()
-    {
-        return epc.RemainingBandwidth;
-    }
-
     public void adjustService(QoS serviceType, int bandwidth)
     {
-        //This is where a lot of logic with bandwidth control happens since a decision about where to take bandwidth from
-        //must be made. This is why need service priority levels defined -- Basic, Premium, Superstar
+        Map<QoS, Integer> services = epc.getServices();
+        if (services.containsKey(serviceType)) {
+            int currentBW = services.get(serviceType);
+            int diff = currentBW - bandwidth;
+            if (epc.RemainingBandwidth > diff) {
+                epc.allocateBandwidth(diff);
+                services.put(serviceType, bandwidth);
+            }
+            else {
+                System.out.print("Error adjusting service. Not enough bandwidth");
+            }
+        }
     }
+
+    public void processMessagePath (OvEnodeB towerOrigin, String message) {
+        Map<String, OvEnodeB> nodes = epc.getNodes();
+        OvEnodeB origTower = nodes.get(towerOrigin.getName());
+        
+    }
+
+    //Service priority levels defined -- Basic, Premium, Superstar
+    //Service priority will be utilized in message processing method
+
 
 
 
