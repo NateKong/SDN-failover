@@ -22,6 +22,7 @@ public class OvEnodeB {
     private ArrayList<UE> UEList;
     private int bandwidthGiven;
     private static final int MAX_BANDWIDTH = 100;
+    private Controller controller; // Assumes that each OvEnodeB directly knows of its controller
     //private ArrayList<OvEnodeB> neighbors; Can implement this later if needed
 
     //Each of these objects should know the neighbors that it is connected to
@@ -31,7 +32,7 @@ public class OvEnodeB {
     {
         this.name = name;
         this.point = point;
-        UEList = new ArrayList<UE>();
+        UEList = new ArrayList<>();
         bandwidthGiven = 0;
         //neighbors = new ArrayList<>();
     }
@@ -69,6 +70,18 @@ public class OvEnodeB {
     public void turnOff()
     {
         bandwidthGiven = 0;
+    }
+
+    //Behavior should mimick closer to that of a switch
+    public void relayMessage()
+    {
+        //relays to neighbors if paths are given and if not, to controller for path computation
+    }
+
+    //Probably should have a return after controller computes
+    public void delegateLogic()
+    {
+        //controller.process()
     }
 
 

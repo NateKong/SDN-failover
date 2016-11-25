@@ -19,8 +19,7 @@ import communication.QoS;
 public class SimplifiedEPC {
 
 	// Assume that knowledge/data of UEs are mapped here and controller must
-	// send information
-	// to which UE is to be contacted
+	// send information to which UE is to be contacted
 	// Assuming that there are only two entities, each request involves two UEs
 	// This means that each request involves two UEs
 
@@ -30,7 +29,7 @@ public class SimplifiedEPC {
 	// private ArrayList<OvEnodeB> eNodeBList;
 	public static final int MAX_BANDWIDTH = 300; // Has a maximum bandwidth
 	public int RemainingBandwidth;
-	private Map<String, OvEnodeB> eNodeBMap;
+	private Map<String, OvEnodeB> eNodeBMap; // This is only for faster access. name should come from node
 	private Queue<QoS> requestQueue;
 
 	// Has a set bandwidth for different types of QoS traffic

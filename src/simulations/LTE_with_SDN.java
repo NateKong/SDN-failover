@@ -51,20 +51,21 @@ public class LTE_with_SDN {
         //run simulation
         //This involves timing mechanisms that would need to be implemented for a certain time
 
-
         //UE sends connect signal to OvEnodeB
         //Connection is successful
 
         //UE wants to communicate with another UE
         //UE sends request to OvEnodeB
         //OvEnodeB forwards the message to SDN controller
-        //Controller parses message and then logically determines path
-        //Controller sends back the routing information to OvEnodeB
+        //Controller parses message and then logically determines path //simplify
+        //Controller sends back the routing information to OvEnodeB //simplify
         //OvEnodeB simply follows the path it is given so it needs a simple forwarding method
-        //OvEnodeB may need a history of its path as it travels to establish the
-        // connection but it can be assumed controller already calculated path
+        //Can be assumed controller already calculated path
         //UE established connection needs to be a class that shows this
-        //Do established connections have an effect on the OvEnodeB?
+        //Do established connections have an effect on the OvEnodeB to keep a communication line open?
+        //Or does the established connection (IP-based) just rely purely on internet resource?
+        //Focus should be on bandwidth adjustment due to traffic volume
+        //Focus on mechanisms for resource/bandwidth allocation
 
 
     }
