@@ -4,6 +4,7 @@ import simulations.Message;
 import entity.UE;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -88,14 +89,13 @@ public class OvEnodeB {
     {
         //relays to neighbors if paths are given and if not, to controller for path computation and then
         //relays to another EnodeB defined by the controller
-        Map<String, UE> result = controller.processMessagePath(this, message);
+
+        ArrayList<String> result = controller.processMessagePath(this, message);
         if (result == null) {
             System.out.println("Error processing message from UE " + name);
             System.out.println("No target UE found");
         }
-        else {
-            //forwarding to next node will be generalized at this point since mechanism is not focus of interest
-        }
+        //For now does not need to do much switching
     }
 
     public void relayMessageDown(String ueName, Message message) {

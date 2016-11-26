@@ -76,22 +76,28 @@ public class Controller {
         }
     }
 
-    public Map<String, UE> processMessagePath (OvEnodeB towerOrigin, Message message) {
+    public ArrayList<String> processMessagePath (OvEnodeB towerOrigin, Message message) {
         Map<String, OvEnodeB> nodes = epc.getNodes();
         OvEnodeB origTower = nodes.get(towerOrigin.getName());
         String dest = message.getDest();
-        Map<String, UE> targetUE = findEnodeBWithUEName(dest);
-        if (targetUE == null) {
+//        Map<String, UE> targetUE = findEnodeBWithUEName(dest);
+        ArrayList<String> targetUEInfo = findEnodeBWithUEName(dest);
+        if (targetUEInfo == null) {
             return null;
         }
         else {
-            return targetUE;
+            return targetUEInfo;
         }
-
     }
 
-    //returns tuple if result exists
-    public Map<String, UE> findEnodeBWithUEName(String dest) {
+    public void relayMessageDown(String ueName, Message message) {
+        epc.getUEs().get(ueName).receiveMessage(message);
+    }
+
+
+    //returns tuple if result exists. Changed to ArrayList because of access
+    //Results <OvEnodeb name, UE name>
+    public ArrayList<String> findEnodeBWithUEName(String dest) {
         Map<String, OvEnodeB> nodes = epc.getNodes();
         for (Map.Entry<String, OvEnodeB> entry: nodes.entrySet()) {
             Map<String, UE> UeMap = entry.getValue().getUeMap();
@@ -99,8 +105,11 @@ public class Controller {
                 UeMap.get(dest);
                 entry.getValue();
                 Map<String, UE> result = new HashMap<>();
-                result.put(entry.getValue().getName(), UeMap.get(dest));
-                return result;
+                ArrayList<String> results = new ArrayList<>();
+//                result.put(entry.getValue().getName(), UeMap.get(dest));
+                results.add(entry.getValue().getName());
+                results.add(UeMap.get(dest).getName());
+                return results;
             }
             //Convert this to map for much better efficiency
         }
