@@ -1,4 +1,6 @@
-package communication;
+package simulations;
+
+import communication.QoS;
 
 /**
  * A generic message sent by between entities and the network.
@@ -11,14 +13,12 @@ package communication;
  *
  */
 
-
 public class Message {
 	private QoS qos;
 	private String message;
 	private String dest; // Found through UE name string
 
-	Message(QoS qos, String message, String dest) {
-		this.qos = qos;
+	Message(String message, String dest) {
 		this.message = message;
 		this.dest = dest;
 	}

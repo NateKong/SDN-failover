@@ -32,10 +32,13 @@ public class LTE_with_SDN {
         OvEnodeB node3 = new OvEnodeB("SJ", new Point(3,3));
         nodes.add(node3);
 
+        //Initialize simplified EPC (which is aggregate of SGW, PGW, and MME) anonymously only when controller exists
+        //Initialize SDN on top of simplified EPC
         Controller control = new Controller(new SimplifiedEPC());
         for (OvEnodeB node: nodes) {
             control.addNodeB(node.getName(), node);
         }
+//        System.out.print();
 
         //        * M denotes this is a mobile device
 //        * I denotes this is an IoT device
@@ -45,7 +48,7 @@ public class LTE_with_SDN {
         control.addService(QoS.MInteractive, 50);
         control.addService(QoS.IStreaming, 100);
         control.addService(QoS.IInteractive, 100);
-        control.addService(QoS.transmission, 50);
+//        control.addService(QoS.transmission, 50);
 
         //Initialize UEs
         ArrayList<UE> UEs = new ArrayList<>();
@@ -54,20 +57,22 @@ public class LTE_with_SDN {
         UEs.add(new UE("Howie", 3, new Point(6,9)));
         UEs.add(new UE("Johnny", 4, new Point(7, 3)));
 
+        //UE sends connect signal to OvEnodeB
+        //Connection is successful
         for (UE u: UEs) {
-            OvEnodeB closestNode = u.findclosestEB(nodes);
+            OvEnodeB closestNode = u.findclosestNode(control.getNodes());
             u.requestAccess(closestNode);
         }
 
-        //Initialize simplified EPC (which is aggregate of SGW, PGW, and MME) anonymously only when controller exists
-        //Initialize SDN on top of simplified EPC
-
         //run simulation
         //This involves timing mechanisms that would need to be implemented for a certain time
-        
+        QoS conversation = QoS.MConversational;
+        Message m = new Message("Phone Call", "Howie");
+//        System.out.println(UEs.get(0).getTower());
+        UEs.get(0).sendMessage(m); // No printing results means all successful
 
-        //UE sends connect signal to OvEnodeB
-        //Connection is successful
+        //Need to confirm that message is now in the other UE
+
 
         //UE wants to communicate with another UE
         //UE sends request to OvEnodeB

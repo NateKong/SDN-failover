@@ -1,10 +1,9 @@
 package sdn;
 
-import communication.Message;
+import simulations.Message;
 import entity.UE;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +37,10 @@ public class OvEnodeB {
         UeMap = new HashMap<>();
         bandwidthGiven = 0;
         //neighbors = new ArrayList<>();
+    }
+
+    public void setController(Controller control) {
+        controller = control;
     }
 
     public void setBandwidth(int bw) {

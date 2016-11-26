@@ -1,11 +1,10 @@
 package sdn;
 
-import communication.Message;
+import simulations.Message;
 import communication.QoS;
 import entity.UE;
 import lte.SimplifiedEPC;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,9 +34,14 @@ public class Controller {
         this.epc = epc;
     }
 
+    public Map<String, OvEnodeB> getNodes() {
+        return epc.getNodes();
+    }
+
     public void addNodeB(String name, OvEnodeB node)
     {
         epc.addNodeB(name, node);
+        node.setController(this);
     }
 
     public void addToQueue(QoS type)
@@ -90,7 +94,6 @@ public class Controller {
     public Map<String, UE> findEnodeBWithUEName(String dest) {
         Map<String, OvEnodeB> nodes = epc.getNodes();
         for (Map.Entry<String, OvEnodeB> entry: nodes.entrySet()) {
-            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
             Map<String, UE> UeMap = entry.getValue().getUeMap();
             if (UeMap.containsKey(dest)) {
                 UeMap.get(dest);

@@ -28,7 +28,7 @@ public class SimplifiedEPC {
 
 	// private Map<String, String> UEList;
 	// private ArrayList<OvEnodeB> eNodeBList;
-	public static final int MAX_BANDWIDTH = 300; // Has a maximum bandwidth
+	public static final int MAX_BANDWIDTH = 400; // Has a maximum bandwidth
 	public int RemainingBandwidth;
 	private Map<String, OvEnodeB> eNodeBMap; // This is only for faster access. name should come from node
 	private Queue<QoS> requestQueue; // May adjust this to ArrayList for flexibility with future experiments

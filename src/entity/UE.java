@@ -1,12 +1,11 @@
 package entity;
 
-import communication.Message;
+import simulations.Message;
 import sdn.OvEnodeB;
 
 import java.awt.Point;
 import java.util.ArrayList;
-
-import communication.QoS;
+import java.util.Map;
 
 /**
  * A User Equipment
@@ -78,6 +77,18 @@ public class UE {
 		return ip;
 	}
 
+//	for (Map.Entry<String, OvEnodeB> entry: nodes.entrySet()) {
+//		System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+//		Map<String, UE> UeMap = entry.getValue().getUeMap();
+//		if (UeMap.containsKey(dest)) {
+//			UeMap.get(dest);
+//			entry.getValue();
+//			Map<String, UE> result = new HashMap<>();
+//			result.put(entry.getValue().getName(), UeMap.get(dest));
+//			return result;
+//		}
+//		//Convert this to map for much better efficiency
+//	}
 	public OvEnodeB findclosestEB(ArrayList<OvEnodeB> enbs) {
 		ArrayList<Double> distances = new ArrayList<Double>();
 		int size = enbs.size();
@@ -96,6 +107,28 @@ public class UE {
 			}
 		}
 		return enbs.get(loc);
+	}
+
+	public OvEnodeB findclosestNode(Map<String, OvEnodeB> enbs) {
+		ArrayList<Double> distances = new ArrayList<Double>();
+		int size = enbs.size();
+		String loc = "";
+		double smallest = 100000;
+		for (Map.Entry<String, OvEnodeB> enb: enbs.entrySet()){
+			double x = (double) enb.getValue().getLocation().getX();
+			double y = (double) enb.getValue().getLocation().getY();
+			double distance = Math.pow((Math.pow(location.getX()-x, 2) + Math.pow(location.getY()-y, 2)), 0.5);
+			if (distance < smallest) {
+				smallest = distance;
+				loc = enb.getValue().getName();
+			}
+		}
+
+		return enbs.get(loc);
+	}
+
+	public String getTower() {
+		return tower.getName();
 	}
 
 	//Should automatically send to tower
