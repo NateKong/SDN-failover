@@ -99,12 +99,15 @@ public class UE {
 	}
 
 	//Should automatically send to tower
-	public void sendMessage(String message)
+	public void sendMessage(Message message)
 	{
 		if (tower != null)
 		{
 			//Get tower name and pass that on to controller
-			tower.relayMessage(message);
+			tower.relayMessageUp(message);
+		}
+		else {
+			System.out.println("Error relaying message. UE is not connected to Tower");
 		}
 
 	}

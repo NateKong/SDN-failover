@@ -6,8 +6,8 @@ package communication;
  * other UEs.
  * e.g. IoT device send to enodeB, enodeb sends to controller
  * 
- * @author Nathan Kong
- * @since Nov 2017
+ * @author Nathan Kong; Gary Su
+ * @since Nov 2016
  *
  */
 
@@ -15,10 +15,12 @@ package communication;
 public class Message {
 	private QoS qos;
 	private String message;
+	private String dest; // Found through UE name string
 
-	Message(QoS qos, String message) {
+	Message(QoS qos, String message, String dest) {
 		this.qos = qos;
 		this.message = message;
+		this.dest = dest;
 	}
 
 	public QoS getQoS() {
@@ -32,4 +34,15 @@ public class Message {
 	public void setMessage(String message){
 		this.message = message;
 	}
+
+	public String getDest() {
+		return dest;
+	}
+
+	//Destination must be set in order to be able to send a message
+	public void setDest(String name) {
+		dest = name;
+	}
+
+
 }

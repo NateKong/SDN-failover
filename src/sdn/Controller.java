@@ -1,9 +1,13 @@
 package sdn;
 
+import communication.Message;
 import communication.QoS;
+import entity.UE;
 import lte.SimplifiedEPC;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -68,10 +72,36 @@ public class Controller {
         }
     }
 
-    public void processMessagePath (OvEnodeB towerOrigin, String message) {
+    public Map<String, UE> processMessagePath (OvEnodeB towerOrigin, Message message) {
         Map<String, OvEnodeB> nodes = epc.getNodes();
         OvEnodeB origTower = nodes.get(towerOrigin.getName());
-        
+        String dest = message.getDest();
+        Map<String, UE> targetUE = findEnodeBWithUEName(dest);
+        if (targetUE == null) {
+            return null;
+        }
+        else {
+            return targetUE;
+        }
+
+    }
+
+    //returns tuple if result exists
+    public Map<String, UE> findEnodeBWithUEName(String dest) {
+        Map<String, OvEnodeB> nodes = epc.getNodes();
+        for (Map.Entry<String, OvEnodeB> entry: nodes.entrySet()) {
+            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+            Map<String, UE> UeMap = entry.getValue().getUeMap();
+            if (UeMap.containsKey(dest)) {
+                UeMap.get(dest);
+                entry.getValue();
+                Map<String, UE> result = new HashMap<>();
+                result.put(entry.getValue().getName(), UeMap.get(dest));
+                return result;
+            }
+            //Convert this to map for much better efficiency
+        }
+        return null;
     }
 
     //Service priority levels defined -- Basic, Premium, Superstar

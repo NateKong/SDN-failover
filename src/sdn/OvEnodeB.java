@@ -1,9 +1,12 @@
 package sdn;
 
+import communication.Message;
 import entity.UE;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -19,7 +22,7 @@ public class OvEnodeB {
     //This should have a list of UEs that is maintains in its domain
     private Point point;
     private String name;
-    private ArrayList<UE> UEList;
+    private Map<String, UE> UeMap;
     private int bandwidthGiven;
     private static final int MAX_BANDWIDTH = 100;
     private Controller controller; // Assumes that each OvEnodeB directly knows of its controller
@@ -32,18 +35,23 @@ public class OvEnodeB {
     {
         this.name = name;
         this.point = point;
-        UEList = new ArrayList<>();
+        UeMap = new HashMap<>();
         bandwidthGiven = 0;
         //neighbors = new ArrayList<>();
     }
 
-    public void addUE(UE e)
-    {
-        UEList.add(e);
-    }
-
     public void setBandwidth(int bw) {
         bandwidthGiven = bw;
+    }
+
+    public Map<String, UE> getUeMap() {
+        return UeMap;
+    }
+
+    public void addUE(UE ue) {
+        if (!UeMap.containsKey(ue.getName())) {
+            UeMap.put(ue.getName(), ue);
+        }
     }
 
     public int getBandwidth()
@@ -72,19 +80,23 @@ public class OvEnodeB {
         bandwidthGiven = 0;
     }
 
-    //Behavior should mimick closer to that of a switch
-    public void relayMessage(String message)
+    //Behavior should mimick closer to that of a switch. Controller handles the next route
+    public void relayMessageUp(Message message)
     {
         //relays to neighbors if paths are given and if not, to controller for path computation and then
         //relays to another EnodeB defined by the controller
-        controller.processMessagePath(this, message);
+        Map<String, UE> result = controller.processMessagePath(this, message);
+        if (result == null) {
+            System.out.println("Error processing message from UE " + name);
+            System.out.println("No target UE found");
+        }
+        else {
+            //forwarding to next node will be generalized at this point since mechanism is not focus of interest
+        }
     }
 
-    //Probably should have a return after controller computes
-    public void delegateLogic()
-    {
-        //controller.process()
+    public void relayMessageDown(String ueName, Message message) {
+        UeMap.get(ueName).receiveMessage(message);
     }
-
 
 }

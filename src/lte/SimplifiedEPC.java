@@ -1,5 +1,6 @@
 package lte;
 
+import entity.UE;
 import sdn.OvEnodeB;
 
 import java.util.*;
@@ -31,6 +32,9 @@ public class SimplifiedEPC {
 	public int RemainingBandwidth;
 	private Map<String, OvEnodeB> eNodeBMap; // This is only for faster access. name should come from node
 	private Queue<QoS> requestQueue; // May adjust this to ArrayList for flexibility with future experiments
+
+	//SHOULD THIS ALSO HAVE LIST OF UEs?
+	private Map<String, UE> UeMap;
 
 	// Has a set bandwidth for different types of QoS traffic
 	// Should have a bandwidth for each QoS
@@ -81,8 +85,12 @@ public class SimplifiedEPC {
 	/**
 	 * Gets the Map of OvEnodeB
 	 */
-	public Map getNodes() {
+	public Map<String, OvEnodeB> getNodes() {
 		return eNodeBMap;
+	}
+
+	public Map<String, UE> getUEs() {
+		return UeMap;
 	}
 
 	public OvEnodeB getNodeBandwidth(String name) {

@@ -7,6 +7,7 @@ import sdn.Controller;
 import sdn.OvEnodeB;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  *  @author Gary Su
@@ -23,33 +24,47 @@ public class LTE_with_SDN {
     {
 
         //Initialize eNodeBs or OvEnodeB
+        ArrayList<OvEnodeB> nodes = new ArrayList<>();
+        OvEnodeB node1 = new OvEnodeB("LA", new Point(1, 1));
+        nodes.add(node1);
+        OvEnodeB node2 = new OvEnodeB("SD", new Point(2,2));
+        nodes.add(node2);
+        OvEnodeB node3 = new OvEnodeB("SJ", new Point(3,3));
+        nodes.add(node3);
 
-        OvEnodeB node1 = new OvEnodeB("hi", new Point(1, 1));
-        OvEnodeB node2 = new OvEnodeB("hey", new Point(2,2));
-        OvEnodeB node3 = new OvEnodeB("ho", new Point(3,3));
+        Controller control = new Controller(new SimplifiedEPC());
+        for (OvEnodeB node: nodes) {
+            control.addNodeB(node.getName(), node);
+        }
+
+        //        * M denotes this is a mobile device
+//        * I denotes this is an IoT device
+        //MConversational, MStreaming, MInteractive, MBackground, transmission, IStreaming, IInteractive, IBackground, Itransmission
+        control.addService(QoS.MConversational, 50);
+        control.addService(QoS.MStreaming, 50);
+        control.addService(QoS.MInteractive, 50);
+        control.addService(QoS.IStreaming, 100);
+        control.addService(QoS.IInteractive, 100);
+        control.addService(QoS.transmission, 50);
 
         //Initialize UEs
-        UE ue1 = new UE("Hey", 1, new Point(3, 5));
-        UE ue2 = new UE("Nana", 2, new Point(4,5));
-        UE ue3 = new UE("Howie", 3, new Point(6,9));
-        UE ue4 = new UE("Johnny", 4, new Point(7, 3));
+        ArrayList<UE> UEs = new ArrayList<>();
+        UEs.add(new UE("Hey", 1, new Point(3, 5)));
+        UEs.add(new UE("Nana", 2, new Point(4,5)));
+        UEs.add(new UE("Howie", 3, new Point(6,9)));
+        UEs.add(new UE("Johnny", 4, new Point(7, 3)));
+
+        for (UE u: UEs) {
+            OvEnodeB closestNode = u.findclosestEB(nodes);
+            u.requestAccess(closestNode);
+        }
 
         //Initialize simplified EPC (which is aggregate of SGW, PGW, and MME) anonymously only when controller exists
         //Initialize SDN on top of simplified EPC
-        Controller control = new Controller(new SimplifiedEPC());
-
-        control.addNodeB("LA", node1);
-        control.addNodeB("SD", node2);
-        control.addNodeB("SJ", node3);
-
-//        control.addService(QoS.Background, 50);
-//        control.addService(QoS.Conversational, 50);
-//        control.addService(QoS.Interactive, 50);
-//        control.addService(QoS.Streaming, 100);
-        control.addService(QoS.transmission, 50);
 
         //run simulation
         //This involves timing mechanisms that would need to be implemented for a certain time
+        
 
         //UE sends connect signal to OvEnodeB
         //Connection is successful
