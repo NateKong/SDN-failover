@@ -12,7 +12,11 @@ Architecture:
 Simulation:
 
 1) Each controller connects to 3 eNodeBs.
+
 2) One controller fails.
+
 3) Orphan eNodeBs from failed controller send a signal to neighbor eNodeBs.
+
 4) neighbor eNodeBs tell their controller.
+
 5) Controllers use weighted greedy mechanism to adopt Orphan eNodeBs.
