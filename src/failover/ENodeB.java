@@ -19,6 +19,10 @@ public class ENodeB implements Runnable{
 		this.name = name;
 	}
 	
+	public int getName() {
+		return name;
+	}
+	
 	@Override
 	public void run() {
 		

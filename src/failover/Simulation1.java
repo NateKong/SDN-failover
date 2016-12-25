@@ -8,9 +8,9 @@ package failover;
  * Architecture:
  *   C1       C2       C3
  *   
- *   E2       E4       E7
+ *   E1       E4       E7
  * 	/  \     /  \     /  \
- * E1---E3--E5---E6--E8---E9
+ * E0---E2--E3---E5--E6---E8
  * 
  * C = controller
  * E = eNodeB
@@ -70,10 +70,23 @@ public class Simulation1 {
 		for (int i = 0; i < numOfeNodeBs; i++) {
 			ENodeB B = new ENodeB(i);
 			eNodeBs.add(B);
+			System.out.println("eNodeB " + B.getName() + " created");
 		}
 				
 		System.out.println("Create connections");
 		/* Creates connections between ENodeBs */
+		
+		for (int i = 0; i < numOfeNodeBs; i++) {
+			
+			//if this is the first eNodeB in the set
+			//e.g.
+			if (i%3 == 0){
+				
+			}
+			
+			//creates a connection between the eNodeB and the previously created one
+			Xtwo x2 = new Xtwo(eNodeBs.get(i-1), eNodeBs.get(i), 20);
+		}
 		
 		
 	 	System.out.println("Create controllers");

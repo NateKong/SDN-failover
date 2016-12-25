@@ -14,10 +14,15 @@ import java.util.ArrayList;
 public class Controller implements Runnable{
 	private int name;
 	private ArrayList<ENodeB> eNodeBs;
+	private int load;
 
 	public Controller(int name) {
 		this.name = name;
 		eNodeBs = new ArrayList<ENodeB>();
+	}
+	
+	public int getName() {
+		return name;
 	}
 
 	public void addENodeB(ENodeB e) {
