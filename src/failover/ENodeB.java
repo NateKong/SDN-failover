@@ -3,7 +3,7 @@ package failover;
 /**
  * An eNodeB in a LTE
  * architecture. The eNodeB
- * is controller using SDN.
+ * is controlled using SDN.
  * 
  * @author Nathan Kong
  * @since Jan 2017
@@ -12,10 +12,11 @@ package failover;
 import java.util.ArrayList;
 
 public class ENodeB implements Runnable{
+	private int name;
 	private ArrayList<Xtwo> connections;
 
-	public ENodeB() {
-
+	public ENodeB(int name) {
+		this.name = name;
 	}
 	
 	@Override

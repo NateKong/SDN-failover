@@ -1,9 +1,9 @@
 package failover;
 
 /**
- * A Software Defined Network
- * Controller.
+ * A Software Defined Network controller.
  * A controller for a LTE network
+ * over eNodeBs.
  * 
  * @author Nathan Kong
  * @since Jan 2017
@@ -12,9 +12,11 @@ package failover;
 import java.util.ArrayList;
 
 public class Controller implements Runnable{
+	private int name;
 	private ArrayList<ENodeB> eNodeBs;
 
-	public Controller() {
+	public Controller(int name) {
+		this.name = name;
 		eNodeBs = new ArrayList<ENodeB>();
 	}
 
