@@ -16,6 +16,8 @@ public class Xtwo {
 		endpoints[0] = endpt0;
 		endpoints[1] = endpt1;
 		this.bw = bw;
+		endpt0.addConnection(this);
+		endpt1.addConnection(this);
 	}
 	
 	/**

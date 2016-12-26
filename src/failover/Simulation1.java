@@ -28,27 +28,30 @@ package failover;
  */
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 
 public class Simulation1 {
 	private static ArrayList<String> stats;
 	private static ArrayList<Controller> controllers;
 	private static ArrayList<ENodeB> eNodeBs;
-	
+	public static long startTime;
+	public static final long maxTime = 60;
+
 	public static void main(String[] args) {
 		System.out.println("Simulation of failover for Distributed SDN Controllers");
-		
+
 		// setup
 		setup();
 
-		//system architecture
+		// system architecture
 		system();
-		
+
 		// run simulation
 		run();
 
 		// print statistics
 		printStats();
-		
+
 		System.out.println("\nSIMULATION COMPLETE");
 	}
 
@@ -61,53 +64,88 @@ public class Simulation1 {
 	}
 
 	private static void system() {
+		int numOfeNodeBs = 9;
+		int numOfControllers = 3;
+
 		printNewSection();
 		System.out.println("INITIALIZE SYSTEM\n");
-		
-		System.out.println("Create eNodeBs");
-		
-		int numOfeNodeBs = 9;
-		for (int i = 0; i < numOfeNodeBs; i++) {
+
+		/* Create Controllers */
+		System.out.println("Create controllers");
+		for (int i = 0; i < numOfControllers; i++) {
+			Controller c = new Controller(i);
+			controllers.add(c);
+			System.out.println("Controller " + c.getName() + " is created");
+		}
+
+		/* Create eNodeBs */
+		System.out.println("\nCreate eNodeBs");
+		for (int i = 0, j=0; i < numOfeNodeBs; i++) {
 			ENodeB B = new ENodeB(i);
 			eNodeBs.add(B);
-			System.out.println("eNodeB " + B.getName() + " created");
-		}
-				
-		System.out.println("Create connections");
-		/* Creates connections between ENodeBs */
-		
-		for (int i = 0; i < numOfeNodeBs; i++) {
+			System.out.println("eNodeB " + B.getName() + " is created");
 			
-			//if this is the first eNodeB in the set
-			//e.g.
-			if (i%3 == 0){
-				
+			Controller C = controllers.get(j);
+			C.addENodeB(B);
+			System.out.println("Controller" + C.getName() + " adopts eNodeB" + B.getName());
+			if(i%3 == 2) {
+				j++;
 			}
 			
-			//creates a connection between the eNodeB and the previously created one
-			Xtwo x2 = new Xtwo(eNodeBs.get(i-1), eNodeBs.get(i), 20);
 		}
-		
-		
-	 	System.out.println("Create controllers");
-	 	/* One of the Controllers will fail */
-	 	int numOfControllers = 3;
+
+		/* Creates connections between ENodeBs */
+		System.out.println("\nCreate connections");
+
+		for (int i = 1; i < numOfeNodeBs; i++) {
+			int bw = 20;
+
+			// creates a connection between the eNodeB and the previously
+			// created one
+			new Xtwo(eNodeBs.get(i - 1), eNodeBs.get(i), bw);
+			System.out.println(
+					"eNodeB" + eNodeBs.get(i - 1).getName() + " is connected to eNodeB" + eNodeBs.get(i).getName());
+
+			// if this is the third eNodeB in the set
+			// e.g. eNodeB 2, 5, and 8
+			if (i % 3 == 2) {
+				new Xtwo(eNodeBs.get(i - 2), eNodeBs.get(i), bw);
+				System.out.println(
+						"eNodeB" + eNodeBs.get(i - 2).getName() + " is connected to eNodeB" + eNodeBs.get(i).getName());
+			}
+		}
+
 	}
-	
+
 	private static void run() {
+		GregorianCalendar time = new GregorianCalendar();
+		startTime = time.getTimeInMillis();
+
 		printNewSection();
 		System.out.println("RUN SIMULATION\n");
+
+		// start components
+
+		//
+
 	}
 
 	private static void printStats() {
 		printNewSection();
 		System.out.println("STATISTICS\n");
-		for (String s: stats){
+		for (String s : stats) {
 			System.out.println(s);
 		}
 	}
 
 	private static void printNewSection() {
-		System.out.println("**************************************************");
+		System.out.println("\n**************************************************");
+	}
+
+	private static boolean checkTime(long currentTime) {
+		if (currentTime - startTime > maxTime) {
+			return false;
+		}
+		return true;
 	}
 }

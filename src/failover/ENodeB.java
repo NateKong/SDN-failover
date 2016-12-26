@@ -17,10 +17,15 @@ public class ENodeB implements Runnable{
 
 	public ENodeB(int name) {
 		this.name = name;
+		connections = new ArrayList<Xtwo>();
 	}
 	
 	public int getName() {
 		return name;
+	}
+	
+	public void addConnection(Xtwo x2){
+		connections.add(x2);
 	}
 	
 	@Override
