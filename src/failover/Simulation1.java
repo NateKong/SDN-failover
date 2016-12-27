@@ -33,7 +33,7 @@ public class Simulation1 {
 	private static ArrayList<String> stats;
 	private static ArrayList<Controller> controllers;
 	private static ArrayList<ENodeB> eNodeBs;
-	public static final long maxTime = 60000;
+	public static final long maxTime = 30; //this is in seconds
 
 	public static void main(String[] args) {
 		System.out.println("Simulation of failover for Distributed SDN Controllers");
@@ -55,8 +55,8 @@ public class Simulation1 {
 	}
 
 	private static void setup() {
-		//printNewSection();
-		//System.out.println("SETUP\n");
+		// printNewSection();
+		// System.out.println("SETUP\n");
 		stats = new ArrayList<String>();
 		controllers = new ArrayList<Controller>();
 		eNodeBs = new ArrayList<ENodeB>();
@@ -127,7 +127,12 @@ public class Simulation1 {
 			Thread t = new Thread(c);
 			threads.add(t);
 			t.start();
-
+		}
+		
+		for (ENodeB b : eNodeBs) {
+			Thread t = new Thread(b);
+			threads.add(t);
+			t.start();
 		}
 
 		// joins all the threads and ensures the Main program doesn't continue
