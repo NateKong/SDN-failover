@@ -4,10 +4,12 @@
 
 https://natekong.github.io/
 
+___
 Description:
 
 This simulation shows a greedy mechanism for controller failover in a LTE network.
 
+___
 Architecture:
 - 3 controllers (distributed)
 - 9 eNodeBs
@@ -24,6 +26,7 @@ Architecture:
   
   C3 controls E7,E8,E9
 
+___
 Simulation:
 
 1) Each controller connects to 3 eNodeBs.
