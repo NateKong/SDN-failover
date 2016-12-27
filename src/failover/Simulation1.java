@@ -54,6 +54,9 @@ public class Simulation1 {
 		System.out.println("SIMULATION COMPLETE");
 	}
 
+	/**
+	 * Initialization of the program.
+	 */
 	private static void setup() {
 		// printNewSection();
 		// System.out.println("SETUP\n");
@@ -62,6 +65,13 @@ public class Simulation1 {
 		eNodeBs = new ArrayList<ENodeB>();
 	}
 
+	/**
+	 *  Initialization of the system architecture.
+	 *  Creates system components:
+	 *  Controllers
+	 *  eNodeBs
+	 *  X2 connections
+	 */
 	private static void system() {
 		int numOfeNodeBs = 9;
 		int numOfControllers = 3;
@@ -116,6 +126,9 @@ public class Simulation1 {
 
 	}
 
+	/**
+	 * Runs the simulation
+	 */
 	private static void run() {
 		ArrayList<Thread> threads = new ArrayList<Thread>();
 
@@ -149,6 +162,9 @@ public class Simulation1 {
 		System.out.println("finished main");
 	}
 
+	/**
+	 * Prints the time logs to console
+	 */
 	private static void printStats() {
 		printNewSection();
 		System.out.println("STATISTICS\n");
@@ -157,6 +173,9 @@ public class Simulation1 {
 		}
 	}
 
+	/**
+	 * Creates a new section in the console
+	 */
 	private static void printNewSection() {
 		System.out.println("\n**************************************************");
 	}

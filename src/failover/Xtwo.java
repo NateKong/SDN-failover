@@ -8,7 +8,7 @@ package failover;
  */
 
 public class Xtwo {
-	private int bw;
+	private int bw; // the maximum bandwidth of the connection
 	private ENodeB[] endpoints;
 
 	public Xtwo(ENodeB endpt0, ENodeB endpt1, int bw) {
@@ -21,7 +21,7 @@ public class Xtwo {
 	}
 
 	/**
-	 * Gets the maximum available bandwidth between eNodeBs (X2 connection)
+	 * Gets the maximum potential bandwidth between eNodeBs (X2 connection)
 	 * 
 	 * @return maximum bandwidth
 	 */
@@ -33,21 +33,16 @@ public class Xtwo {
 	 * Used to for an eNodeB to figure out the other eNodeB thats attached to
 	 * it.
 	 * 
-	 * @param me
-	 *            the endpoint that is asking
+	 * @param me the endpoint that is asking
 	 * @return the endpoint of the other eNodeB
 	 */
 	public ENodeB getEndpoint(ENodeB me) {
 		if (endpoints[0].equals(me)) {
-			return otherEndpoint(1);
+			return endpoints[1];
 		} else if (endpoints[1].equals(me)) {
-			return otherEndpoint(0);
+			return endpoints[0];
 		}
 		return null;
-	}
-
-	private ENodeB otherEndpoint(int i) {
-		return endpoints[i];
 	}
 
 }
