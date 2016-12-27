@@ -25,10 +25,11 @@ Simulation:
 
 
  Architecture:
+ 
     C1       C2       C3
     
     E1       E4       E7
-  	/  \     /  \     /  \
+   /  \     /  \     /  \
   E0---E2--E3---E5--E6---E8
   
   C = controller
