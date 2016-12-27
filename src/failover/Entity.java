@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Entity {
 	protected String name;
-	private static long startTime;
+	protected static long startTime;
 	private static long maxTime;
 	protected static ArrayList<String> log;
 
@@ -22,11 +22,13 @@ public class Entity {
 	}
 
 	public boolean checkTime(long currentTime) {
-		if (currentTime - startTime > maxTime) {
-			log.add("Finished " + name + " " + (currentTime - startTime));
+		double t = time(currentTime);
+		
+		if (time(currentTime) > maxTime) {
+			log.add("Finished " + name + " " + t);
 			return false;
 		}
-		log.add("Continue " + name + " " + (currentTime - startTime));
+		log.add("Continue " + name + " " + t);
 
 		return true;
 	}
@@ -34,5 +36,9 @@ public class Entity {
 	public int random() {
 		Random r = new Random();
 		return r.nextInt(4000) + 1000;
+	}
+	
+	public double time(long currentTime){
+		return ((double) (currentTime - startTime)) / 1000;
 	}
 }

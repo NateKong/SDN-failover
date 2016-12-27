@@ -12,7 +12,6 @@ package failover;
 import java.util.ArrayList;
 
 public class ENodeB extends Entity implements Runnable {
-	private int name;
 	private long startTime;
 	private ArrayList<Xtwo> connections;
 
@@ -30,15 +29,15 @@ public class ENodeB extends Entity implements Runnable {
 		System.out.println("Running " + name);
 		try {
 			int i = 0;
-			while (super.checkTime(System.currentTimeMillis())) {
-				log.add("Thread: " + name + ", " + i);
+			while (checkTime(System.currentTimeMillis())) {
+				log.add(time(System.currentTimeMillis()) + ": " + name + ", " + i);
 				// Let the thread sleep for a while.
-				Thread.sleep(super.random());
+				Thread.sleep(random());
 				i++;
 			}
 		} catch (InterruptedException e) {
-			System.out.println("Thread " + name + " interrupted.");
+			System.out.println( name + " interrupted.");
 		}
-		System.out.println("Thread " + name + " exiting.");
+		System.out.println(time(System.currentTimeMillis()) + ": " + name + " stopped");
 	}
 }
