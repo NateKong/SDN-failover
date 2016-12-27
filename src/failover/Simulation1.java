@@ -28,14 +28,12 @@ package failover;
  */
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 
 public class Simulation1 {
 	private static ArrayList<String> stats;
 	private static ArrayList<Controller> controllers;
 	private static ArrayList<ENodeB> eNodeBs;
-	public static long startTime;
-	public static final long maxTime = 60;
+	public static final long maxTime = 60000;
 
 	public static void main(String[] args) {
 		System.out.println("Simulation of failover for Distributed SDN Controllers");
@@ -66,6 +64,7 @@ public class Simulation1 {
 	private static void system() {
 		int numOfeNodeBs = 9;
 		int numOfControllers = 3;
+		long startTime = System.currentTimeMillis();
 
 		printNewSection();
 		System.out.println("INITIALIZE SYSTEM\n");
@@ -73,7 +72,8 @@ public class Simulation1 {
 		/* Create Controllers */
 		System.out.println("Create controllers");
 		for (int i = 0; i < numOfControllers; i++) {
-			Controller c = new Controller(i);
+			int load = 20;
+			Controller c = new Controller(i, load, startTime, maxTime, stats);
 			controllers.add(c);
 			System.out.println("Controller " + c.getName() + " is created");
 		}
@@ -81,7 +81,7 @@ public class Simulation1 {
 		/* Create eNodeBs */
 		System.out.println("\nCreate eNodeBs");
 		for (int i = 0, j=0; i < numOfeNodeBs; i++) {
-			ENodeB B = new ENodeB(i);
+			ENodeB B = new ENodeB(i, startTime, maxTime, stats);
 			eNodeBs.add(B);
 			System.out.println("eNodeB " + B.getName() + " is created");
 			
@@ -118,16 +118,30 @@ public class Simulation1 {
 	}
 
 	private static void run() {
-		GregorianCalendar time = new GregorianCalendar();
-		startTime = time.getTimeInMillis();
+		ArrayList<Thread> threads = new ArrayList<Thread>();
 
 		printNewSection();
 		System.out.println("RUN SIMULATION\n");
 
 		// start components
+		for ( Controller c : controllers) {
+			Thread t = new Thread(c);
+			threads.add(t);
+			t.start();
 
+		}
+		
+		//  joins all the threads and ensures the Main program doesn't continue until the simulation is completed.
+		for (Thread t: threads) {
+			try {
+				t.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	
 		//
-
+		System.out.println("finished main");
 	}
 
 	private static void printStats() {
@@ -142,10 +156,4 @@ public class Simulation1 {
 		System.out.println("\n**************************************************");
 	}
 
-	private static boolean checkTime(long currentTime) {
-		if (currentTime - startTime > maxTime) {
-			return false;
-		}
-		return true;
-	}
 }

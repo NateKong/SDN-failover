@@ -11,18 +11,15 @@ package failover;
 
 import java.util.ArrayList;
 
-public class Controller implements Runnable{
-	private int name;
+public class Controller extends Entity implements Runnable {
 	private ArrayList<ENodeB> eNodeBs;
 	private int load;
 
-	public Controller(int name) {
-		this.name = name;
+
+	public Controller(int name, int load, long startTime, long maxTime, ArrayList<String> log) {
+		super(name, startTime, maxTime, log);
+		this.load = load;
 		eNodeBs = new ArrayList<ENodeB>();
-	}
-	
-	public int getName() {
-		return name;
 	}
 
 	public void addENodeB(ENodeB e) {
@@ -35,8 +32,20 @@ public class Controller implements Runnable{
 
 	@Override
 	public void run() {
+		System.out.println("Running " + super.getName());
+		try {
+			int i = 0;
+			while(super.checkTime(System.currentTimeMillis())) {
+				log.add("Thread: " + name + ", " + i);
+				// Let the thread sleep for a while.
+				Thread.sleep(super.random());
+				i++;
+			}
+		} catch (InterruptedException e) {
+			System.out.println("Thread " + name + " interrupted.");
+		}
+		System.out.println("Thread " + name + " exiting.");
 
-		
 	}
 
 }
