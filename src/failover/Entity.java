@@ -53,11 +53,10 @@ public class Entity {
 		double t = time(currentTime);
 
 		if (time(currentTime) > maxTime) {
-			log.add(decFor.format(t) + ": " + name + " Finished");
+			// log.add(decFor.format(t) + ": " + name + " stopped");
 			return false;
 		}
-		log.add(decFor.format(t) + ": " + name + " Continue");
-
+		// log.add(decFor.format(t) + ": " + name + " continues");
 		return true;
 	}
 

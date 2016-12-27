@@ -47,7 +47,7 @@ public class Controller extends Entity implements Runnable {
 		} catch (InterruptedException e) {
 			System.out.println( name + " interrupted.");
 		}
-		System.out.println( getTime(System.currentTimeMillis()) + ": " + name + " stopped");
+		System.out.println( getTime(System.currentTimeMillis()) + ": " + name + " finished");
 
 	}
 
