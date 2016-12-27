@@ -1,7 +1,7 @@
 # Design Concept for a Failover Mechanism in Distributed SDN Controllers
 
-### This work in progress will be for my Master's Project in Computer Science from San Jose State University.
-
+## (This is a work in progress)
+###  Master's Project for Master of Science in Computer Science from San Jose State University.
 https://natekong.github.io/
 
 ___
@@ -14,7 +14,7 @@ Architecture:
 - 3 controllers (distributed)
 - 9 eNodeBs
 
-![alt text](https://github.com/NateKong/NateKong.github.io/blob/master/images/nate.jpg "System Architecture")
+![alt text](https://github.com/NateKong/SDN-failover/blob/master/images/DN.png "System Architecture")
   
   C = controller
   
