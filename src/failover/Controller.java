@@ -17,7 +17,7 @@ public class Controller extends Entity implements Runnable {
 
 
 	public Controller(int name, int load, long startTime, long maxTime, ArrayList<String> log) {
-		super(name, startTime, maxTime, log);
+		super( ("Controller" + Integer.toString(name)), startTime, maxTime, log);
 		this.load = load;
 		eNodeBs = new ArrayList<ENodeB>();
 	}
@@ -32,10 +32,10 @@ public class Controller extends Entity implements Runnable {
 
 	@Override
 	public void run() {
-		System.out.println("Running " + super.getName());
+		System.out.println("Running " + name);
 		try {
 			int i = 0;
-			while(super.checkTime(System.currentTimeMillis())) {
+			while (super.checkTime(System.currentTimeMillis())) {
 				log.add("Thread: " + name + ", " + i);
 				// Let the thread sleep for a while.
 				Thread.sleep(super.random());
