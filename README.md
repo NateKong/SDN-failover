@@ -1,26 +1,27 @@
-# SDN_LTE
-This work in progress will be for my Master's Project in Computer Science from San Jose State University.
+# Design Concept for a Failover Mechanism in Distributed SDN Controllers
+
+### This work in progress will be for my Master's Project in Computer Science from San Jose State University.
 
 https://natekong.github.io/
 
-# Design Concept for a Failover Mechanism in Distributed SDN Controllers
+Description:
 
-This simulation will show a weighted greedy mechanism for controllers when a controller fails in a LTE network.
+This simulation shows a greedy mechanism for controller failover in a LTE network.
 
 Architecture:
 - 3 controllers (distributed)
 - 9 eNodeBs
- 
-    C1       C2       C3
-    E1       E4       E7
-   /  \     /  \     /  \
-  E0---E2--E3---E5--E6---E8
+
+![alt text](https://github.com/NateKong/NateKong.github.io/blob/master/images/nate.jpg "System Architecture")
   
   C = controller
+  
   E = eNodeB
   
   C1 controls E1,E2,E3
+  
   C2 controls E4,E5,E6
+  
   C3 controls E7,E8,E9
 
 Simulation:
