@@ -33,10 +33,22 @@ public class ENodeB extends Entity implements Runnable {
 		connections.add(x2);
 	}
 
+	/**
+	 * Sets the controller for the eNodeB
+	 * 
+	 * @param c is the new controller for the eNodeB
+	 */
 	public void setController(Controller c) {
 		controller = c;
 	}
-
+	
+	public boolean hasController() {
+		return !(controller == null);
+	}
+	
+	/**
+	 * Runs the thread ( thread.start() )
+	 */
 	@Override
 	public void run() {
 		System.out.println(getTime(System.currentTimeMillis()) + ": Running thread " + name);
@@ -46,7 +58,7 @@ public class ENodeB extends Entity implements Runnable {
 				// Let the thread sleep for between 1-5 seconds
 				Thread.sleep(random());
 
-				if (controller == (null)) {
+				if ( !hasController() ) {
 					// log.add( getTime(System.currentTimeMillis()) + ": " +
 					// name + " is an orphan");
 					System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " is an orphan");
@@ -78,7 +90,7 @@ public class ENodeB extends Entity implements Runnable {
 	 * @param eNodeB
 	 */
 	public void messageController(ENodeB eNodeB) {
-		if (!(controller == null)) {
+		if ( hasController() ) {
 			controller.addOrphan(eNodeB);
 		}
 	}
