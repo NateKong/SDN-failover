@@ -18,8 +18,8 @@ public class Controller extends Entity implements Runnable {
 								// capacity - load)
 	private HashMap<ENodeB, String> orphans; // orphan eNodeBs
 
-	public Controller(int name, int rCap, long maxTime, ArrayList<String> log) {
-		super(("Controller" + Integer.toString(name)), maxTime, log);
+	public Controller(int name, int rCap, long maxTime) {
+		super(("Controller" + Integer.toString(name)), maxTime);
 		this.remainingCap = rCap;
 		eNodeBs = new ArrayList<ENodeB>();
 		orphans = new HashMap<ENodeB, String>();

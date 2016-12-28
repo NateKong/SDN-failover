@@ -12,13 +12,11 @@ package failover;
 import java.util.ArrayList;
 
 public class ENodeB extends Entity implements Runnable {
-	private long startTime;
-	private ArrayList<Xtwo> connections; // a list of connections to other
-											// eNodeBs
+	private ArrayList<Xtwo> connections; // a list of connections to other eNodeBs
 	private Controller controller;
 
-	public ENodeB(int name, long maxTime, ArrayList<String> log) {
-		super(("eNodeB" + Integer.toString(name)), maxTime, log);
+	public ENodeB(int name, long maxTime) {
+		super(("eNodeB" + Integer.toString(name)), maxTime);
 		connections = new ArrayList<Xtwo>();
 		System.out.println(getName() + " is created");
 	}

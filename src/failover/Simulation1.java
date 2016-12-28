@@ -30,7 +30,6 @@ package failover;
 import java.util.ArrayList;
 
 public class Simulation1 {
-	private static ArrayList<String> stats;
 	private static ArrayList<Controller> controllers;
 	private static ArrayList<ENodeB> eNodeBs;
 	public static final long maxTime = 30; // this is in seconds
@@ -47,9 +46,6 @@ public class Simulation1 {
 		// run simulation
 		run();
 
-		// print statistics
-		// printStats();
-
 		printNewSection();
 		System.out.println("SIMULATION COMPLETE");
 	}
@@ -58,9 +54,6 @@ public class Simulation1 {
 	 * Initialization of the program.
 	 */
 	private static void setup() {
-		// printNewSection();
-		// System.out.println("SETUP\n");
-		stats = new ArrayList<String>();
 		controllers = new ArrayList<Controller>();
 		eNodeBs = new ArrayList<ENodeB>();
 	}
@@ -73,6 +66,7 @@ public class Simulation1 {
 		long failTime = 5; // this is the fail time for Controller1
 		int numOfeNodeBs = 9;
 		int numOfControllers = 3;
+		int remainingCap = 20;
 
 		printNewSection();
 		System.out.println("INITIALIZE SYSTEM\n");
@@ -80,12 +74,11 @@ public class Simulation1 {
 		/* Create Controllers */
 		System.out.println("Create Controllers");
 		for (int i = 0; i < numOfControllers; i++) {
-			int load = 20;
 			if (i == 1) {
-				Controller c = new Controller(i, load, failTime, stats);
+				Controller c = new Controller(i, remainingCap, failTime);
 				controllers.add(c);
 			} else {
-				Controller c = new Controller(i, load, maxTime, stats);
+				Controller c = new Controller(i, remainingCap, maxTime);
 				controllers.add(c);
 			}
 
@@ -94,7 +87,7 @@ public class Simulation1 {
 		/* Create eNodeBs */
 		System.out.println("\nCreate eNodeBs");
 		for (int i = 0, j = 0; i < numOfeNodeBs; i++) {
-			ENodeB B = new ENodeB(i, maxTime, stats);
+			ENodeB B = new ENodeB(i, maxTime);
 			eNodeBs.add(B);
 
 			Controller C = controllers.get(j);
@@ -161,17 +154,6 @@ public class Simulation1 {
 		}
 
 		// System.out.println("finished main");
-	}
-
-	/**
-	 * Prints the time logs to console
-	 */
-	private static void printStats() {
-		printNewSection();
-		System.out.println("STATISTICS\n");
-		for (String s : stats) {
-			System.out.println(s);
-		}
 	}
 
 	/**
