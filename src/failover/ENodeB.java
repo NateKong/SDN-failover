@@ -34,46 +34,48 @@ public class ENodeB extends Entity implements Runnable {
 	public void setController(Controller c) {
 		controller = c;
 	}
-	
-	public boolean hasController() {
-		return !controller.equals(null);
-	}
 
 	@Override
 	public void run() {
-		System.out.println("Running " + name);
+		System.out.println( getTime(System.currentTimeMillis()) + ": Running thread " + name);
 		
-		while (checkTime(System.currentTimeMillis())) {
-			
-			if( hasController() ) {
-				//log.add( getTime(System.currentTimeMillis()) + ": " + name + " is an orphan");
-				System.out.println( getTime(System.currentTimeMillis()) + ": " + name + " is an orphan");
-				//orphanNode();
-				
-			}
-			
-			// Let the thread sleep for between 1-5 seconds
-			try {
+		try {
+			while (checkTime(System.currentTimeMillis())) {
+				// Let the thread sleep for between 1-5 seconds		
 				Thread.sleep(random());
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				
+				if( controller == (null) ) {
+					//log.add( getTime(System.currentTimeMillis()) + ": " + name + " is an orphan");
+					System.out.println( getTime(System.currentTimeMillis()) + ": " + name + " is an orphan");
+					orphanNode();
+				}
 			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		System.out.println( getTime(System.currentTimeMillis()) + ": " + name + " finished");
 	}
 
 	/**
-	 * call out to other controllers through
-	 * connected eNodeBs
+	 * call out to other connected eNodeBs
+	 * and inform them this eNodeB is an orphan.
 	 */
 	private void orphanNode() {
 		for (Xtwo x2: connections) {
 			ENodeB b = x2.getEndpoint(this);
-			if (b.hasController()) {
-				
-			}
+			b.messageController(this);
+		}		
+	}
+
+	/**
+	 * Sends a message to the controller
+	 * @param eNodeB
+	 */
+	public void messageController(ENodeB eNodeB) {		
+		if ( !(controller == null) ) {
+			controller.addOrphan(eNodeB);
 		}		
 	}
 }
