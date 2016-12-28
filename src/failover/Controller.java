@@ -10,24 +10,28 @@ package failover;
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Controller extends Entity implements Runnable {
 	private ArrayList<ENodeB> eNodeBs;
-	private int load; // the current load of the system
+	private int remainingCap; // Remaining capacity of the system (system
+								// capacity - load)
+	private HashMap<ENodeB, String> orphans; // orphan eNodeBs
 
-
-	public Controller(int name, int load, long maxTime, ArrayList<String> log) {
-		super( ("Controller" + Integer.toString(name)), maxTime, log);
-		this.load = load;
+	public Controller(int name, int rCap, long maxTime, ArrayList<String> log) {
+		super(("Controller" + Integer.toString(name)), maxTime, log);
+		this.remainingCap = rCap;
 		eNodeBs = new ArrayList<ENodeB>();
+		orphans = new HashMap<ENodeB, String>();
 		System.out.println(getName() + " is created");
 	}
 
 	/**
-	 * Adds an eNodeB to the controllers database.
-	 * Sets the controller to the eNodeB
+	 * Adds an eNodeB to the controllers database. Sets the controller to the
+	 * eNodeB
 	 * 
-	 * @param e an eNodeB (LTE tower)
+	 * @param e
+	 *            an eNodeB (LTE tower)
 	 */
 	public void addENodeB(ENodeB e) {
 		e.setController(this);
@@ -35,21 +39,45 @@ public class Controller extends Entity implements Runnable {
 		System.out.println(name + " adopts " + e.getName());
 	}
 
+	/**
+	 * Adds to a list of orphan nodes
+	 */
+	public void addOrphan(ENodeB b) {
+		orphans.put(b, "");
+	}
+
 	@Override
 	public void run() {
-		System.out.println("Running " + name);
+		System.out.println(getTime(System.currentTimeMillis()) + ": Running thread " + name);
 		try {
-			int i = 0;
 			while (checkTime(System.currentTimeMillis())) {
-				//log.add( getTime(System.currentTimeMillis()) + ": " + name + " is alive");
-				// Let the thread sleep for a while.
-				Thread.sleep(random());  
-				i++;
+				Thread.sleep(random());
+
+				if (!orphans.isEmpty()) {
+					adoptOrphans();
+				}
 			}
 		} catch (InterruptedException e) {
-			System.out.println( name + " interrupted.");
+			System.out.println(name + " interrupted.");
 		}
-		System.out.println( getTime(System.currentTimeMillis()) + ": " + name + " finished");
+
+		removeController();
+		System.out.println(getTime(System.currentTimeMillis()) + ": Closing thread " + name);
+
+	}
+
+	private void adoptOrphans() {
+
+	}
+
+	/**
+	 * Removes the controller from the eNodeBs This acts as controller failure
+	 */
+	private void removeController() {
+		for (ENodeB b : eNodeBs) {
+			b.setController(null);
+		}
+		eNodeBs.clear();
 
 	}
 
