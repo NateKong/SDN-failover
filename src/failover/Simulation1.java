@@ -82,10 +82,10 @@ public class Simulation1 {
 		for (int i = 0; i < numOfControllers; i++) {
 			int load = 20;
 			if (i == 1) {
-				Controller c = new Controller(i, load, failTime, stats);
+				Controller c = new Controller(i, load, failTime);
 				controllers.add(c);
 			} else {
-				Controller c = new Controller(i, load, maxTime, stats);
+				Controller c = new Controller(i, load, maxTime);
 				controllers.add(c);
 			}
 
@@ -94,7 +94,7 @@ public class Simulation1 {
 		/* Create eNodeBs */
 		System.out.println("\nCreate eNodeBs");
 		for (int i = 0, j = 0; i < numOfeNodeBs; i++) {
-			ENodeB B = new ENodeB(i, maxTime, stats);
+			ENodeB B = new ENodeB(i, maxTime);
 			eNodeBs.add(B);
 
 			Controller C = controllers.get(j);
