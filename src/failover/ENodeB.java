@@ -16,9 +16,10 @@ public class ENodeB extends Entity implements Runnable {
 	private ArrayList<Xtwo> connections; // a list of connections to other eNodeBs
 	private Controller controller;
 
-	public ENodeB(int name, long startTime, long maxTime, ArrayList<String> log) {
-		super(("eNodeB" + Integer.toString(name)), startTime, maxTime, log);
+	public ENodeB(int name, long maxTime, ArrayList<String> log) {
+		super(("eNodeB" + Integer.toString(name)), maxTime, log);
 		connections = new ArrayList<Xtwo>();
+		System.out.println(getName() + " is created");
 	}
 
 	/**
@@ -33,21 +34,46 @@ public class ENodeB extends Entity implements Runnable {
 	public void setController(Controller c) {
 		controller = c;
 	}
+	
+	public boolean hasController() {
+		return !controller.equals(null);
+	}
 
 	@Override
 	public void run() {
 		System.out.println("Running " + name);
-		try {
-			int i = 0;
-			while (checkTime(System.currentTimeMillis())) {
-				log.add( getTime(System.currentTimeMillis()) + ": " + name + ", " + i);
-				// Let the thread sleep for a while.
-				Thread.sleep(random());
-				i++;
+		
+		while (checkTime(System.currentTimeMillis())) {
+			
+			if( hasController() ) {
+				//log.add( getTime(System.currentTimeMillis()) + ": " + name + " is an orphan");
+				System.out.println( getTime(System.currentTimeMillis()) + ": " + name + " is an orphan");
+				//orphanNode();
+				
 			}
-		} catch (InterruptedException e) {
-			System.out.println( name + " interrupted.");
+			
+			// Let the thread sleep for between 1-5 seconds
+			try {
+				Thread.sleep(random());
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+		
 		System.out.println( getTime(System.currentTimeMillis()) + ": " + name + " finished");
+	}
+
+	/**
+	 * call out to other controllers through
+	 * connected eNodeBs
+	 */
+	private void orphanNode() {
+		for (Xtwo x2: connections) {
+			ENodeB b = x2.getEndpoint(this);
+			if (b.hasController()) {
+				
+			}
+		}		
 	}
 }
