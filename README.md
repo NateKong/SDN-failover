@@ -1,4 +1,4 @@
-# Design Concept for a Failover Mechanism in Distributed SDN Controllers (in progress)
+# Design Concept for a Failover Mechanism in Distributed SDN Controllers
 
 ###  Master's Project for Master of Science in Computer Science from San Jose State University.
 https://natekong.github.io/
@@ -30,9 +30,9 @@ Simulation:
 
 1) Each controller connects to 3 eNodeBs.
 
-2) One controller fails.
+2) One controller fails. (Controller1)
 
-3) Orphan eNodeBs from failed controller send a signal to neighbor eNodeBs.
+3) Orphan eNodeBs from failed controller send a signal to neighboring eNodeBs.
 
 4) neighbor eNodeBs tell their controller.
 
