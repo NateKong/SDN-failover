@@ -18,13 +18,13 @@ import java.text.DecimalFormat;
 public class Entity {
 	protected String name;
 	protected static long startTime;
-	private static long maxTime;
+	private long maxTime;
 	protected static ArrayList<String> log;
 	protected static DecimalFormat decFor;
 
 	public Entity(String name, long maxTime, ArrayList<String> log) {
 		this.name = name;
-		Entity.maxTime = maxTime;
+		this.maxTime = maxTime;
 		Entity.log = new ArrayList<String>();
 		Entity.log = log;
 		Entity.decFor = new DecimalFormat("#0.00");
