@@ -18,7 +18,7 @@ public class Xtwo {
 		this.bw = bw;
 		endpt0.addConnection(this);
 		endpt1.addConnection(this);
-		System.out.println( endpt0.getName() + " has a X2 connected to " + endpt1.getName() );
+		System.out.println(endpt0.getName() + " has a X2 connected to " + endpt1.getName());
 	}
 
 	/**
@@ -34,7 +34,8 @@ public class Xtwo {
 	 * Used to for an eNodeB to figure out the other eNodeB thats attached to
 	 * it.
 	 * 
-	 * @param me the endpoint that is asking
+	 * @param me
+	 *            the endpoint that is asking
 	 * @return the endpoint of the other eNodeB
 	 */
 	public ENodeB getEndpoint(ENodeB me) {

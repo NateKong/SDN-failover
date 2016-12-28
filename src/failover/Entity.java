@@ -39,11 +39,12 @@ public class Entity {
 	public String getName() {
 		return name;
 	}
-	
+
 	/**
 	 * sets the start time of the simulation
 	 * 
-	 * @param startTime is in milliseconds
+	 * @param startTime
+	 *            is in milliseconds
 	 */
 	public void setStartTime(long startTime) {
 		Entity.startTime = startTime;

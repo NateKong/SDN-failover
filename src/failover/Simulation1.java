@@ -33,7 +33,7 @@ public class Simulation1 {
 	private static ArrayList<String> stats;
 	private static ArrayList<Controller> controllers;
 	private static ArrayList<ENodeB> eNodeBs;
-	public static final long maxTime = 30; //this is in seconds
+	public static final long maxTime = 30; // this is in seconds
 
 	public static void main(String[] args) {
 		System.out.println("Simulation of failover for Distributed SDN Controllers");
@@ -48,7 +48,7 @@ public class Simulation1 {
 		run();
 
 		// print statistics
-		//printStats();
+		// printStats();
 
 		printNewSection();
 		System.out.println("SIMULATION COMPLETE");
@@ -66,17 +66,13 @@ public class Simulation1 {
 	}
 
 	/**
-	 *  Initialization of the system architecture.
-	 *  Creates system components:
-	 *  Controllers
-	 *  eNodeBs
-	 *  X2 connections
+	 * Initialization of the system architecture. Creates system components:
+	 * Controllers eNodeBs X2 connections
 	 */
 	private static void system() {
 		long failTime = 10; // this is the fail time for Controller1
 		int numOfeNodeBs = 9;
 		int numOfControllers = 3;
-		long startTime = System.currentTimeMillis();
 
 		printNewSection();
 		System.out.println("INITIALIZE SYSTEM\n");
@@ -85,14 +81,14 @@ public class Simulation1 {
 		System.out.println("Create Controllers");
 		for (int i = 0; i < numOfControllers; i++) {
 			int load = 20;
-			if (i==1) {
+			if (i == 1) {
 				Controller c = new Controller(i, load, failTime, stats);
 				controllers.add(c);
 			} else {
 				Controller c = new Controller(i, load, maxTime, stats);
 				controllers.add(c);
 			}
-			
+
 		}
 
 		/* Create eNodeBs */
@@ -134,7 +130,7 @@ public class Simulation1 {
 	private static void run() {
 		ArrayList<Thread> threads = new ArrayList<Thread>();
 		long startTime = System.currentTimeMillis();
-		
+
 		printNewSection();
 		System.out.println("RUN SIMULATION\n");
 
@@ -145,14 +141,14 @@ public class Simulation1 {
 			threads.add(t);
 			t.start();
 		}
-		
-		for (ENodeB b: eNodeBs) {
+
+		for (ENodeB b : eNodeBs) {
 			b.setStartTime(startTime);
 			Thread t = new Thread(b);
 			threads.add(t);
 			t.start();
 		}
-		
+
 		// joins all the threads and ensures the Main program doesn't continue
 		// until the simulation is completed.
 		for (Thread t : threads) {
@@ -164,7 +160,7 @@ public class Simulation1 {
 			}
 		}
 
-		//System.out.println("finished main");
+		// System.out.println("finished main");
 	}
 
 	/**
