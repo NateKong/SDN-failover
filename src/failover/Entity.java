@@ -11,7 +11,6 @@ package failover;
  */
 
 import java.util.Random;
-import java.util.ArrayList;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
@@ -19,14 +18,11 @@ public class Entity {
 	protected String name;
 	protected static long startTime;
 	private long maxTime;
-	protected static ArrayList<String> log;
 	protected static DecimalFormat decFor;
 
-	public Entity(String name, long maxTime, ArrayList<String> log) {
+	public Entity(String name, long maxTime) {
 		this.name = name;
 		this.maxTime = maxTime;
-		Entity.log = new ArrayList<String>();
-		Entity.log = log;
 		Entity.decFor = new DecimalFormat("#0.00");
 		decFor.setRoundingMode(RoundingMode.CEILING);
 	}
@@ -59,13 +55,9 @@ public class Entity {
 	 * @return false if the simulation has reached its maximum time
 	 */
 	public boolean checkTime(long currentTime) {
-		double t = time(currentTime);
-
 		if (time(currentTime) > maxTime) {
-			// log.add(decFor.format(t) + ": " + name + " stopped");
 			return false;
 		}
-		// log.add(decFor.format(t) + ": " + name + " continues");
 		return true;
 	}
 
