@@ -15,9 +15,9 @@ package failover;
  * C = controller
  * E = eNodeB
  * 
- * C1 controls E1,E2,E3
- * C2 controls E4,E5,E6
- * C3 controls E7,E8,E9
+ * C1 controls E0,E1,E2
+ * C2 controls E3,E4,E5
+ * C3 controls E6,E7,E8
  * 
  * Simulation:
  * Using the above architecture, C2 fails
@@ -84,21 +84,18 @@ public class Simulation1 {
 		System.out.println("Create Controllers");
 		for (int i = 0; i < numOfControllers; i++) {
 			int load = 20;
-			Controller c = new Controller(i, load, startTime, maxTime, stats);
+			Controller c = new Controller(i, load, maxTime, stats);
 			controllers.add(c);
-			System.out.println(c.getName() + " is created");
 		}
 
 		/* Create eNodeBs */
 		System.out.println("\nCreate eNodeBs");
 		for (int i = 0, j = 0; i < numOfeNodeBs; i++) {
-			ENodeB B = new ENodeB(i, startTime, maxTime, stats);
+			ENodeB B = new ENodeB(i, maxTime, stats);
 			eNodeBs.add(B);
-			System.out.println(B.getName() + " is created");
 
 			Controller C = controllers.get(j);
 			C.addENodeB(B);
-			System.out.println(C.getName() + " adopts " + B.getName());
 			if (i % 3 == 2) {
 				j++;
 			}
@@ -114,13 +111,11 @@ public class Simulation1 {
 			// creates a connection between the eNodeB and the previously
 			// created one
 			new Xtwo(eNodeBs.get(i - 1), eNodeBs.get(i), bw);
-			System.out.println(eNodeBs.get(i - 1).getName() + " has a X2 connected to " + eNodeBs.get(i).getName());
 
 			// if this is the third eNodeB in the set
 			// e.g. eNodeB 2, 5, and 8
 			if (i % 3 == 2) {
 				new Xtwo(eNodeBs.get(i - 2), eNodeBs.get(i), bw);
-				System.out.println(eNodeBs.get(i - 2).getName() + " has a X2 connected to " + eNodeBs.get(i).getName());
 			}
 		}
 
@@ -131,35 +126,38 @@ public class Simulation1 {
 	 */
 	private static void run() {
 		ArrayList<Thread> threads = new ArrayList<Thread>();
-
+		long startTime = System.currentTimeMillis();
+		
 		printNewSection();
 		System.out.println("RUN SIMULATION\n");
 
-		// start components
+		// create threads components
 		for (Controller c : controllers) {
+			c.setStartTime(startTime);
 			Thread t = new Thread(c);
 			threads.add(t);
 			t.start();
 		}
 		
-		for (ENodeB b : eNodeBs) {
+		for (ENodeB b: eNodeBs) {
+			b.setStartTime(startTime);
 			Thread t = new Thread(b);
 			threads.add(t);
 			t.start();
 		}
-
+		
 		// joins all the threads and ensures the Main program doesn't continue
 		// until the simulation is completed.
 		for (Thread t : threads) {
 			try {
 				t.join();
 			} catch (InterruptedException e) {
+				System.out.println("Cannot join threads");
 				e.printStackTrace();
 			}
 		}
 
-		//
-		System.out.println("finished main");
+		//System.out.println("finished main");
 	}
 
 	/**
