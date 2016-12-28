@@ -1,6 +1,5 @@
-# Design Concept for a Failover Mechanism in Distributed SDN Controllers
+# Design Concept for a Failover Mechanism in Distributed SDN Controllers (in progress)
 
-## (This is a work in progress)
 ###  Master's Project for Master of Science in Computer Science from San Jose State University.
 https://natekong.github.io/
 
@@ -37,4 +36,4 @@ Simulation:
 
 4) neighbor eNodeBs tell their controller.
 
-5) Controllers use weighted greedy mechanism to adopt Orphan eNodeBs.
+5) Controllers use greedy mechanism to adopt Orphan eNodeBs.
