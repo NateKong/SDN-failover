@@ -18,6 +18,7 @@ public class Xtwo {
 		this.bw = bw;
 		endpt0.addConnection(this);
 		endpt1.addConnection(this);
+		System.out.println( endpt0.getName() + " has a X2 connected to " + endpt1.getName() );
 	}
 
 	/**
