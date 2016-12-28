@@ -34,8 +34,7 @@ public class Xtwo {
 	 * Used to for an eNodeB to figure out the other eNodeB thats attached to
 	 * it.
 	 * 
-	 * @param me
-	 *            the endpoint that is asking
+	 * @param me is the endpoint that is asking
 	 * @return the endpoint of the other eNodeB
 	 */
 	public ENodeB getEndpoint(ENodeB me) {
