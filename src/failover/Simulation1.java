@@ -48,7 +48,7 @@ public class Simulation1 {
 		run();
 
 		// print statistics
-		printStats();
+		//printStats();
 
 		printNewSection();
 		System.out.println("SIMULATION COMPLETE");
