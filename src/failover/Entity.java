@@ -22,9 +22,8 @@ public class Entity {
 	protected static ArrayList<String> log;
 	protected static DecimalFormat decFor;
 
-	public Entity(String name, long startTime, long maxTime, ArrayList<String> log) {
+	public Entity(String name, long maxTime, ArrayList<String> log) {
 		this.name = name;
-		Entity.startTime = startTime;
 		Entity.maxTime = maxTime;
 		Entity.log = new ArrayList<String>();
 		Entity.log = log;
@@ -39,6 +38,15 @@ public class Entity {
 	 */
 	public String getName() {
 		return name;
+	}
+	
+	/**
+	 * sets the start time of the simulation
+	 * 
+	 * @param startTime is in milliseconds
+	 */
+	public void setStartTime(long startTime) {
+		Entity.startTime = startTime;
 	}
 
 	/**
