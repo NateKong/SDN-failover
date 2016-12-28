@@ -73,6 +73,7 @@ public class Simulation1 {
 	 *  X2 connections
 	 */
 	private static void system() {
+		long failTime = 10; // this is the fail time for Controller1
 		int numOfeNodeBs = 9;
 		int numOfControllers = 3;
 		long startTime = System.currentTimeMillis();
@@ -84,8 +85,14 @@ public class Simulation1 {
 		System.out.println("Create Controllers");
 		for (int i = 0; i < numOfControllers; i++) {
 			int load = 20;
-			Controller c = new Controller(i, load, maxTime, stats);
-			controllers.add(c);
+			if (i==1) {
+				Controller c = new Controller(i, load, failTime, stats);
+				controllers.add(c);
+			} else {
+				Controller c = new Controller(i, load, maxTime, stats);
+				controllers.add(c);
+			}
+			
 		}
 
 		/* Create eNodeBs */
