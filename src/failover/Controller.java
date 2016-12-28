@@ -16,10 +16,11 @@ public class Controller extends Entity implements Runnable {
 	private int load; // the current load of the system
 
 
-	public Controller(int name, int load, long startTime, long maxTime, ArrayList<String> log) {
-		super( ("Controller" + Integer.toString(name)), startTime, maxTime, log);
+	public Controller(int name, int load, long maxTime, ArrayList<String> log) {
+		super( ("Controller" + Integer.toString(name)), maxTime, log);
 		this.load = load;
 		eNodeBs = new ArrayList<ENodeB>();
+		System.out.println(getName() + " is created");
 	}
 
 	/**
@@ -31,6 +32,7 @@ public class Controller extends Entity implements Runnable {
 	public void addENodeB(ENodeB e) {
 		e.setController(this);
 		eNodeBs.add(e);
+		System.out.println(name + " adopts " + e.getName());
 	}
 
 	@Override
@@ -39,7 +41,7 @@ public class Controller extends Entity implements Runnable {
 		try {
 			int i = 0;
 			while (checkTime(System.currentTimeMillis())) {
-				log.add( getTime(System.currentTimeMillis()) + ": " + name + ", " + i);
+				//log.add( getTime(System.currentTimeMillis()) + ": " + name + " is alive");
 				// Let the thread sleep for a while.
 				Thread.sleep(random());  
 				i++;
