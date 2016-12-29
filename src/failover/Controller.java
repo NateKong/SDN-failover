@@ -16,7 +16,6 @@ public class Controller extends Entity implements Runnable {
 	private ArrayList<ENodeB> eNodeBs;
 	private int remainingCap; // Remaining capacity of the system (system capacity - load)
 	private HashMap<ENodeB, String> orphans; // orphan eNodeBs
-	private HashMap<ENodeB, String> backup; // setup for backup eNodeBs
 
 	public Controller(int name, int rCap, long maxTime) {
 		super(("Controller" + Integer.toString(name)), maxTime);
@@ -49,7 +48,9 @@ public class Controller extends Entity implements Runnable {
 	 * Adds to a list of orphan nodes for backup
 	 */
 	public void addBackup(ENodeB b) {
-		backup.put(b, "");
+		if ( !b.hasBackupController() ) {
+			b.setBackupController(this);
+		}
 	}
 
 	/**
@@ -80,11 +81,8 @@ public class Controller extends Entity implements Runnable {
 
 	private void adoptOrphans() {
 		for (ENodeB b: orphans.keySet()) {
-			if ( !b.hasController() ) {
-				b.setController(this);
-				System.out.print( getTime(System.currentTimeMillis()) + ": ");
-				eNodeBs.add(b);
-			}
+			System.out.print( getTime(System.currentTimeMillis()) + ": ");
+			addENodeB(b);
 		}
 		orphans.clear();
 	}

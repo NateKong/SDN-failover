@@ -21,11 +21,10 @@ public class ENodeB extends Entity implements Runnable {
 		connections = new ArrayList<Xtwo>();
 		System.out.println(getName() + " is created");
 		backupController = null;
-		setupBackup();
 	}
 
 	/**
-	 * Adds a connection to other eNodeBsgit 
+	 * Adds a connection to other eNodeBs 
 	 * 
 	 * @param x2
 	 *            the connection between eNodeBs
@@ -69,12 +68,16 @@ public class ENodeB extends Entity implements Runnable {
 	 * Calls out to other connected eNodeBs and 
 	 * determine backup controller 
 	 */
-	private void setupBackup(){
-		while (backupController != null) {
+	public void setupBackup(){
+		while (backupController == null) {
 			for (Xtwo x2 : connections) {
 				ENodeB b = x2.getEndpoint(this);
 				if (!b.sameController(controller) ) {
 					b.messageController(this);					
+				} else {
+					ArrayList<ENodeB> list = new ArrayList<ENodeB>();
+					list.add(this);
+					b.passMessage(this, list);
 				}
 			}
 		}
@@ -100,9 +103,17 @@ public class ENodeB extends Entity implements Runnable {
 		}
 	}
 	
-	
-	/**************************************************************/	
-	
+	public void passMessage(ENodeB e, ArrayList<ENodeB> list) {
+		for (Xtwo x2 : connections) {
+			ENodeB b = x2.getEndpoint(this);
+			if (!b.sameController(controller) ) {
+				b.messageController(e);					
+			} else if (!list.contains(this)) {
+				list.add(this);
+				b.passMessage(e, list);
+			}
+		}
+	}
 	
 	/**
 	 * Determines is the eNodeB has a controller
@@ -112,6 +123,10 @@ public class ENodeB extends Entity implements Runnable {
 	public boolean hasBackupController() {
 		return backupController != null;
 	}
+	
+	
+	
+	/**************************************************************/	
 	
 	/**
 	 * Runs the thread ( thread.start() )
@@ -129,6 +144,10 @@ public class ENodeB extends Entity implements Runnable {
 					System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " is an orphan");
 					orphanNode();
 				}
+				
+				if (controller != null && controller.equals(backupController)) {
+					backupController = null;
+				}
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -137,10 +156,10 @@ public class ENodeB extends Entity implements Runnable {
 		System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " finished");
 	}
 
+	/**
+	 * Calls controller if eNodeB is a orphan
+	 */
 	private void orphanNode() {
-		//ask controller to adopt
-			//method will send this enodeb
-			//Controller will add enodeb to its list, make it the controller and null the backup controller  
 		if (backupController != null) {
 			backupController.addOrphan(this);
 		}
