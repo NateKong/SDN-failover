@@ -14,8 +14,7 @@ import java.util.HashMap;
 
 public class Controller extends Entity implements Runnable {
 	private ArrayList<ENodeB> eNodeBs;
-	private int remainingCap; // Remaining capacity of the system (system
-								// capacity - load)
+	private int remainingCap; // Remaining capacity of the system (system capacity minus load)
 	private HashMap<ENodeB, String> orphans; // orphan eNodeBs
 
 	public Controller(int name, int rCap, long maxTime) {
@@ -30,8 +29,7 @@ public class Controller extends Entity implements Runnable {
 	 * Adds an eNodeB to the controllers database. Sets the controller to the
 	 * eNodeB
 	 * 
-	 * @param e
-	 *            an eNodeB (LTE tower)
+	 * @param e an eNodeB (LTE tower)
 	 */
 	public void addENodeB(ENodeB e) {
 		e.setController(this);
@@ -65,7 +63,8 @@ public class Controller extends Entity implements Runnable {
 		}
 
 		if (name.equals("Controller1")){
-			removeController();	
+			removeController();
+			System.out.println();
 		}
 		
 		System.out.println(getTime(System.currentTimeMillis()) + ": Closing thread " + name);
@@ -92,5 +91,4 @@ public class Controller extends Entity implements Runnable {
 		eNodeBs.clear();
 
 	}
-
 }
