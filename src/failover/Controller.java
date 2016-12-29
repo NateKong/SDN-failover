@@ -14,9 +14,9 @@ import java.util.HashMap;
 
 public class Controller extends Entity implements Runnable {
 	private ArrayList<ENodeB> eNodeBs;
-	private int remainingCap; // Remaining capacity of the system (system
-								// capacity - load)
+	private int remainingCap; // Remaining capacity of the system (system capacity - load)
 	private HashMap<ENodeB, String> orphans; // orphan eNodeBs
+	private HashMap<ENodeB, String> backup; // setup for backup eNodeBs
 
 	public Controller(int name, int rCap, long maxTime) {
 		super(("Controller" + Integer.toString(name)), maxTime);
@@ -30,8 +30,7 @@ public class Controller extends Entity implements Runnable {
 	 * Adds an eNodeB to the controllers database. Sets the controller to the
 	 * eNodeB
 	 * 
-	 * @param e
-	 *            an eNodeB (LTE tower)
+	 * @param e an eNodeB (LTE tower)
 	 */
 	public void addENodeB(ENodeB e) {
 		e.setController(this);
@@ -44,6 +43,13 @@ public class Controller extends Entity implements Runnable {
 	 */
 	public void addOrphan(ENodeB b) {
 		orphans.put(b, "");
+	}
+	
+	/**
+	 * Adds to a list of orphan nodes for backup
+	 */
+	public void addBackup(ENodeB b) {
+		backup.put(b, "");
 	}
 
 	/**
@@ -76,7 +82,8 @@ public class Controller extends Entity implements Runnable {
 		for (ENodeB b: orphans.keySet()) {
 			if ( !b.hasController() ) {
 				b.setController(this);
-				System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " adopts " + b.getName());
+				System.out.print( getTime(System.currentTimeMillis()) + ": ");
+				eNodeBs.add(b);
 			}
 		}
 		orphans.clear();
