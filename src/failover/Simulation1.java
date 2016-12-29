@@ -66,7 +66,6 @@ public class Simulation1 {
 		long failTime = 10; // this is the fail time for Controller1
 		int numOfeNodeBs = 9;
 		int numOfControllers = 3;
-		int remainingCap = 20;
 
 		printNewSection();
 		System.out.println("INITIALIZE SYSTEM\n");
@@ -75,10 +74,10 @@ public class Simulation1 {
 		System.out.println("Create Controllers");
 		for (int i = 0; i < numOfControllers; i++) {
 			if (i == 1) {
-				Controller c = new Controller(i, remainingCap, failTime);
+				Controller c = new Controller(i, failTime);
 				controllers.add(c);
 			} else {
-				Controller c = new Controller(i, remainingCap, maxTime);
+				Controller c = new Controller(i, maxTime);
 				controllers.add(c);
 			}
 
