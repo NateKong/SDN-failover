@@ -142,7 +142,6 @@ public class Simulation1 {
 		}
 		
 		for (ENodeB b : eNodeBs) {
-			//b.setupBackup();
 			b.setStartTime(startTime);
 			Thread t = new Thread(b);
 			threads.add(t);
@@ -159,8 +158,6 @@ public class Simulation1 {
 				e.printStackTrace();
 			}
 		}
-
-		// System.out.println("finished main");
 	}
 
 	/**

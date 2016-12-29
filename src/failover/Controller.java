@@ -82,7 +82,6 @@ public class Controller extends Entity implements Runnable {
 		
 		isAlive = false;
 		System.out.println(getTime(System.currentTimeMillis()) + ": Closing thread " + name);
-
 	}
 
 	/**
@@ -104,7 +103,6 @@ public class Controller extends Entity implements Runnable {
 			b.setController(null);
 		}
 		eNodeBs.clear();
-
 	}
 
 	public boolean isAlive() {

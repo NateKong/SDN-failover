@@ -134,7 +134,6 @@ public class ENodeB extends Entity implements Runnable {
 	@Override
 	public void run() {
 		System.out.println(getTime(System.currentTimeMillis()) + ": Running thread " + name);
-		//setupBackup();
 		
 		while ( time(System.currentTimeMillis() ) < 1.0 ) {
 			
