@@ -24,8 +24,7 @@ public class ENodeB extends Entity implements Runnable {
 	/**
 	 * Adds a connection to other eNodeBs
 	 * 
-	 * @param x2
-	 *            the connection between eNodeBs
+	 * @param x2 the connection between eNodeBs
 	 */
 	public void addConnection(Xtwo x2) {
 		connections.add(x2);
@@ -40,6 +39,11 @@ public class ENodeB extends Entity implements Runnable {
 		controller = c;
 	}
 	
+	/**
+	 * determines if the eNodeB has a controller
+	 * 
+	 * @return true if there is a controller
+	 */
 	public boolean hasController() {
 		return !(controller == null);
 	}
@@ -50,6 +54,9 @@ public class ENodeB extends Entity implements Runnable {
 	@Override
 	public void run() {
 		System.out.println(getTime(System.currentTimeMillis()) + ": Running thread " + name);
+		
+		//pauses the system to start at the same time
+		while ( time(System.currentTimeMillis() ) < 1.0 ) {	}
 
 		try {
 			while (checkTime(System.currentTimeMillis())) {
@@ -57,18 +64,15 @@ public class ENodeB extends Entity implements Runnable {
 				Thread.sleep(random());
 
 				if ( !hasController() ) {
-					// log.add( getTime(System.currentTimeMillis()) + ": " +
-					// name + " is an orphan");
 					System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " is an orphan");
 					orphanNode();
 				}
 			}
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " finished");
+		System.out.println(getTime(System.currentTimeMillis()) + ": " + "Closing thread " + name);
 	}
 
 	/**
