@@ -63,7 +63,7 @@ public class Simulation1 {
 	 * Controllers eNodeBs X2 connections
 	 */
 	private static void system() {
-		long failTime = 5; // this is the fail time for Controller1
+		long failTime = 10; // this is the fail time for Controller1
 		int numOfeNodeBs = 9;
 		int numOfControllers = 3;
 		int remainingCap = 20;
@@ -135,6 +135,12 @@ public class Simulation1 {
 			t.start();
 		}
 
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+		
 		for (ENodeB b : eNodeBs) {
 			b.setStartTime(startTime);
 			Thread t = new Thread(b);
@@ -152,8 +158,6 @@ public class Simulation1 {
 				e.printStackTrace();
 			}
 		}
-
-		// System.out.println("finished main");
 	}
 
 	/**
