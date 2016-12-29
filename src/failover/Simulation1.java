@@ -32,7 +32,7 @@ import java.util.ArrayList;
 public class Simulation1 {
 	private static ArrayList<Controller> controllers;
 	private static ArrayList<ENodeB> eNodeBs;
-	public static final long maxTime = 20; // this is in seconds
+	public static final long maxTime = 30; // this is in seconds
 
 	public static void main(String[] args) {
 		System.out.println("Simulation of failover for Distributed SDN Controllers");
@@ -63,7 +63,7 @@ public class Simulation1 {
 	 * Controllers eNodeBs X2 connections
 	 */
 	private static void system() {
-		long failTime = 5; // this is the fail time for Controller1
+		long failTime = 10; // this is the fail time for Controller1
 		int numOfeNodeBs = 9;
 		int numOfControllers = 3;
 		int remainingCap = 20;
@@ -135,8 +135,14 @@ public class Simulation1 {
 			t.start();
 		}
 
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+		
 		for (ENodeB b : eNodeBs) {
-			b.setupBackup();
+			//b.setupBackup();
 			b.setStartTime(startTime);
 			Thread t = new Thread(b);
 			threads.add(t);

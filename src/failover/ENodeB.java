@@ -48,7 +48,7 @@ public class ENodeB extends Entity implements Runnable {
 	 * @param c is the new controller for the eNodeB
 	 */
 	public void setBackupController(Controller c) {
-		System.out.println(c.getName() + " is the backup controller for " + name);
+		System.out.println(getTime(System.currentTimeMillis()) + ": " + c.getName() + " is the backup controller for " + name);
 		backupController = c;
 	}
 
@@ -61,9 +61,6 @@ public class ENodeB extends Entity implements Runnable {
 		return controller != null;
 	}
 	
-	
-	/**************************************************************/
-	
 	/**
 	 * Calls out to other connected eNodeBs and 
 	 * determine backup controller 
@@ -74,22 +71,20 @@ public class ENodeB extends Entity implements Runnable {
 				ENodeB b = x2.getEndpoint(this);
 				if (!b.sameController(controller) ) {
 					b.messageController(this);					
-				} else {
-					ArrayList<ENodeB> list = new ArrayList<ENodeB>();
-					list.add(this);
-					b.passMessage(this, list);
+				} else if (b.hasBackupController() && !b.sameAsBackupController(controller)) {
+					b.messageBackupController(this);
 				}
 			}
 		}
 	}
 
 	/**
-	 * Determines if the eNodeB has a controller
+	 * Determines if the eNodeB controllers are the same
 	 * 
-	 * @return true is the eNodeB has a controller
+	 * @return true if the eNodeB has a controller
 	 */
 	public boolean sameController(Controller c) {
-		return controller == c;
+		return controller == c;		
 	}
 	
 	/**
@@ -98,35 +93,40 @@ public class ENodeB extends Entity implements Runnable {
 	 * @param eNodeB
 	 */
 	public void messageController(ENodeB eNodeB) {
-		if ( hasController() ) {
+		if ( hasController() && controller.isAlive() == true ) {
 			controller.addBackup(eNodeB);
 		}
 	}
 	
-	public void passMessage(ENodeB e, ArrayList<ENodeB> list) {
-		for (Xtwo x2 : connections) {
-			ENodeB b = x2.getEndpoint(this);
-			if (!b.sameController(controller) ) {
-				b.messageController(e);					
-			} else if (!list.contains(this)) {
-				list.add(this);
-				b.passMessage(e, list);
-			}
+	/**
+	 * Sends a message to the back up controller
+	 * 
+	 * @param eNodeB
+	 */
+	public void messageBackupController(ENodeB eNodeB) {
+		if ( hasController() && backupController.isAlive() == true ) {
+			backupController.addBackup(eNodeB);
 		}
 	}
 	
 	/**
-	 * Determines is the eNodeB has a controller
+	 * Determines is the eNodeB has a back up controller
 	 * 
-	 * @return true is the eNodeB has a controller
+	 * @return true is the eNodeB has a back up controller
 	 */
 	public boolean hasBackupController() {
 		return backupController != null;
+	}	
+	
+	/**
+	 * Determines if the eNodeB Controller c 
+	 * is the same as the back up controller
+	 * 
+	 * @return true if they are
+	 */
+	public boolean sameAsBackupController(Controller c) {
+		return backupController == c;		
 	}
-	
-	
-	
-	/**************************************************************/	
 	
 	/**
 	 * Runs the thread ( thread.start() )
@@ -134,12 +134,23 @@ public class ENodeB extends Entity implements Runnable {
 	@Override
 	public void run() {
 		System.out.println(getTime(System.currentTimeMillis()) + ": Running thread " + name);
-
+		//setupBackup();
+		
+		while ( time(System.currentTimeMillis() ) < 1.0 ) {
+			
+		}
+		
 		try {
-			while (checkTime(System.currentTimeMillis())) {
+			while (checkTime(System.currentTimeMillis())) {				
+				// check for backup controller
+				if (backupController == null) {
+					setupBackup();	
+				}
+				
 				// Let the thread sleep for between 1-5 seconds
 				Thread.sleep(random());
-
+				
+				// check if has controller
 				if ( !hasController() ) {
 					System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " is an orphan");
 					orphanNode();
@@ -153,7 +164,7 @@ public class ENodeB extends Entity implements Runnable {
 			e.printStackTrace();
 		}
 
-		System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " finished");
+		System.out.println(getTime(System.currentTimeMillis()) + ": " + "Closing thread " + name);
 	}
 
 	/**

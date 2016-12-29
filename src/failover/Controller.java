@@ -16,12 +16,14 @@ public class Controller extends Entity implements Runnable {
 	private ArrayList<ENodeB> eNodeBs;
 	private int remainingCap; // Remaining capacity of the system (system capacity - load)
 	private HashMap<ENodeB, String> orphans; // orphan eNodeBs
+	private boolean isAlive;
 
 	public Controller(int name, int rCap, long maxTime) {
 		super(("Controller" + Integer.toString(name)), maxTime);
 		this.remainingCap = rCap;
 		eNodeBs = new ArrayList<ENodeB>();
 		orphans = new HashMap<ENodeB, String>();
+		isAlive = false;
 		System.out.println(getName() + " is created");
 	}
 
@@ -59,6 +61,8 @@ public class Controller extends Entity implements Runnable {
 	@Override
 	public void run() {
 		System.out.println(getTime(System.currentTimeMillis()) + ": Running thread " + name);
+		isAlive = true;
+		
 		try {
 			while (checkTime(System.currentTimeMillis())) {
 				Thread.sleep(random());
@@ -72,13 +76,18 @@ public class Controller extends Entity implements Runnable {
 		}
 
 		if (name.equals("Controller1")){
-			removeController();	
+			removeController();
+			System.out.println();
 		}
 		
+		isAlive = false;
 		System.out.println(getTime(System.currentTimeMillis()) + ": Closing thread " + name);
 
 	}
 
+	/**
+	 * Adopts orphan eNodeBs when controller fails
+	 */
 	private void adoptOrphans() {
 		for (ENodeB b: orphans.keySet()) {
 			System.out.print( getTime(System.currentTimeMillis()) + ": ");
@@ -98,4 +107,7 @@ public class Controller extends Entity implements Runnable {
 
 	}
 
+	public boolean isAlive() {
+		return isAlive;
+	}
 }
