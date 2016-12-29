@@ -55,10 +55,7 @@ public class Entity {
 	 * @return false if the simulation has reached its maximum time
 	 */
 	public boolean checkTime(long currentTime) {
-		if (time(currentTime) > maxTime) {
-			return false;
-		}
-		return true;
+		return (time(currentTime) >= maxTime);
 	}
 
 	/**
