@@ -99,20 +99,18 @@ public class Simulation1 {
 
 		/* Creates connections between ENodeBs */
 		System.out.println("\nCreate Connections");
-
-		for (int i = 1; i < numOfeNodeBs; i++) {
-			int bw = 20;
-
-			// creates a connection between the eNodeB and the previously
-			// created one
-			new Xtwo(eNodeBs.get(i - 1), eNodeBs.get(i), bw);
-
-			// if this is the third eNodeB in the set
-			// e.g. eNodeB 2, 5, and 8
-			if (i % 3 == 2) {
-				new Xtwo(eNodeBs.get(i - 2), eNodeBs.get(i), bw);
-			}
-		}
+		
+		Xtwo c0 = new Xtwo("connection0", eNodeBs.get(0), eNodeBs.get(1), 100);
+		Xtwo c1 = new Xtwo("connection1", eNodeBs.get(1), eNodeBs.get(2), 100);
+		Xtwo c2 = new Xtwo("connection2", eNodeBs.get(0), eNodeBs.get(3), 100);
+		Xtwo c3 = new Xtwo("connection3", eNodeBs.get(3), eNodeBs.get(4), 100);
+		Xtwo c4 = new Xtwo("connection4", eNodeBs.get(4), eNodeBs.get(5), 100);
+		Xtwo c5 = new Xtwo("connection5", eNodeBs.get(3), eNodeBs.get(5), 100);
+		Xtwo c6 = new Xtwo("connection6", eNodeBs.get(6), eNodeBs.get(7), 100);
+		Xtwo c7 = new Xtwo("connection7", eNodeBs.get(7), eNodeBs.get(8), 100);
+		Xtwo c8 = new Xtwo("connection8", eNodeBs.get(6), eNodeBs.get(8), 100);
+		Xtwo c9 = new Xtwo("connection9", eNodeBs.get(2), eNodeBs.get(3), 100);
+		Xtwo c10 = new Xtwo("connection10", eNodeBs.get(5), eNodeBs.get(6), 100);
 
 	}
 
