@@ -8,17 +8,19 @@ package failover;
  */
 
 public class Xtwo {
-	private int bw; // the maximum bandwidth of the connection
+	private String name;
+	private int bw; // the max throughput of the connection (in Mbps)
 	private ENodeB[] endpoints;
 
-	public Xtwo(ENodeB endpt0, ENodeB endpt1, int bw) {
+	public Xtwo(String name, ENodeB endpt0, ENodeB endpt1, int bw) {
+		this.name = name;
 		endpoints = new ENodeB[2];
 		endpoints[0] = endpt0;
 		endpoints[1] = endpt1;
 		this.bw = bw;
 		endpt0.addConnection(this);
 		endpt1.addConnection(this);
-		System.out.println(endpt0.getName() + " has a X2 connected to " + endpt1.getName());
+		System.out.println(endpt0.getName() + " has a X2 connection (" + name + ") to " + endpt1.getName());
 	}
 
 	/**
