@@ -10,16 +10,19 @@ package failover;
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ENodeB extends Entity implements Runnable {
 	private ArrayList<Xtwo> connections; // a list of connections to other eNodeBs
 	private Controller controller;
 	private int cHops; // the number of hops from the eNodeB to the controller
 	private int cBW; // the lowest throughput (Mbps) from the eNodeB to the controller
+	private HashMap<ENodeB, Integer> message;
 
 	public ENodeB(int name, int hops, long maxTime) {
 		super(("eNodeB" + Integer.toString(name)), maxTime);
 		connections = new ArrayList<Xtwo>();
+		message = new HashMap<ENodeB, Integer>();
 		cHops = hops;
 		System.out.println(getName() + " is created");
 	}
@@ -54,35 +57,6 @@ public class ENodeB extends Entity implements Runnable {
 		controller = c;
 		cHops = hops;
 		cBW = bw;
-		
-		
-		/*
-		if(c == null) {
-			controller = c;
-			cHops = 0;
-			cBW = 0;
-		}else if (controller == null) {
-			System.out.println("New Controller - setting " + c.getName() + " for " + name + "\thops: " + hops + "\tbw: "+ bw);
-			controller = c;
-			cHops = hops;
-			cBW = bw;
-			//System.out.println( name +" is null, " + c.getName() + " has bw: " + bw);
-			//c.addENodeB(this, hops, bw);
-		} else if (controller != null) {
-			System.out.println("Upgrade Controller - setting " + c.getName() + " for " + name + "\thops: " + hops + "\tbw: "+ bw);
-			if (cHops > hops && cBW < bw) {
-				controller = c;
-				cHops = hops;
-				cBW = bw;
-				System.out.println( name +" not null, "+c.getName()+" has bw: " + bw);
-				c.addENodeB(this, hops, bw);
-			}
-		}
-		*/
-		
-		
-		
-		
 	}
 	
 	/**
@@ -113,6 +87,15 @@ public class ENodeB extends Entity implements Runnable {
 					System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " is an orphan");
 					orphanNode();
 				}
+				
+				if (!message.isEmpty() && hasController() ) {
+					for (ENodeB b: message.keySet()) {
+						int X2bw = message.get(b);
+						int bw = (X2bw > cBW) ? cBW : X2bw;
+						controller.addOrphan(b, cHops + 1, bw);
+					}
+					message.clear();
+				}
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -139,10 +122,15 @@ public class ENodeB extends Entity implements Runnable {
 	 * @param eNodeB
 	 */
 	public void messageController(ENodeB eNodeB, int X2bw) {
+		//System.out.print(eNodeB.getName() + " sends message\tbw " + X2bw +"\t\t");
+		//System.out.println(name + " receives message\thops: " + cHops + "\tbw: " + cBW );
+		
 		if ( hasController() ) {
-			int bw = (X2bw > cBW) ? cBW : X2bw;
 			//System.out.println(name + "\tcurrent bw: " + cBW + "\tasking bw:" + X2bw + "\tcalculated: " + bw);
+			int bw = (X2bw > cBW) ? cBW : X2bw;
 			controller.addOrphan(eNodeB, cHops + 1, bw  );
+		} else {
+			message.put(eNodeB, X2bw);
 		}
 	}
 }

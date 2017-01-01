@@ -127,7 +127,7 @@ public class Controller extends Entity implements Runnable {
 					//System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " adopts (upgrades) " + b.getName() + "\thops: " + stats[0] + "\tbw: " + stats[1]);
 				}
 				else {
-					System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " can't adopt " + b.getName() + " Current hops: " + hops + "\tbw: " + bw + "\tProposed hops: " + stats[0] + "\tbw: " + stats[1]);
+					System.out.println("CANCEL UPGRADE: " + name + " can't adopt " + b.getName() + " Current hops: " + hops + "\tbw: " + bw + "\tProposed hops: " + stats[0] + "\tbw: " + stats[1]);
 				}
 			}
 		}
@@ -139,7 +139,7 @@ public class Controller extends Entity implements Runnable {
 	 */
 	private void removeController() {
 		for (ENodeB b : eNodeBs.keySet()) {
-			b.setController(null, 0, 0);
+			b.setController(null, 1000, 1000);
 		}
 		eNodeBs.clear();
 
