@@ -98,8 +98,8 @@ public class Simulation1 {
 		Xtwo x0 = new Xtwo("connection0", eNodeBs.get(0), eNodeBs.get(1), 100);
 		Xtwo x1 = new Xtwo("connection1", eNodeBs.get(1), eNodeBs.get(2), 100);
 		Xtwo x2 = new Xtwo("connection2", eNodeBs.get(0), eNodeBs.get(2), 100);
-		Xtwo x3 = new Xtwo("connection3", eNodeBs.get(3), eNodeBs.get(4), 100);
-		Xtwo x4 = new Xtwo("connection4", eNodeBs.get(4), eNodeBs.get(5), 100);
+		Xtwo x3 = new Xtwo("connection3", eNodeBs.get(3), eNodeBs.get(4), 40);
+		Xtwo x4 = new Xtwo("connection4", eNodeBs.get(4), eNodeBs.get(5), 30);
 		Xtwo x5 = new Xtwo("connection5", eNodeBs.get(3), eNodeBs.get(5), 100);
 		Xtwo x6 = new Xtwo("connection6", eNodeBs.get(6), eNodeBs.get(7), 100);
 		Xtwo x7 = new Xtwo("connection7", eNodeBs.get(7), eNodeBs.get(8), 100);
