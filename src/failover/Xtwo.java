@@ -20,13 +20,13 @@ public class Xtwo {
 		this.bw = bw;
 		endpt0.addConnection(this);
 		endpt1.addConnection(this);
-		System.out.println(endpt0.getName() + " has a X2 connection (" + name + ") to " + endpt1.getName());
+		System.out.println(endpt0.getName() + " has a X2 connection (" + name + ") to " + endpt1.getName() + "\tbw: " + bw);
 	}
 
 	/**
-	 * Gets the maximum potential bandwidth between eNodeBs (X2 connection)
+	 * Gets the maximum potential throughput between eNodeBs (X2 connection)
 	 * 
-	 * @return maximum bandwidth
+	 * @return maximum throughput
 	 */
 	public int getBW() {
 		return bw;
