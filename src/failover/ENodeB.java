@@ -10,17 +10,25 @@ package failover;
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ENodeB extends Entity implements Runnable {
 	private ArrayList<Xtwo> connections; // a list of connections to other eNodeBs
 	private Controller controller;
+	private int cHops; // the number of hops from the eNodeB to the controller
+	private int cBW; // the lowest throughput (Mbps) from the eNodeB to the controller
 	private Controller backupController;
+	private int backupHops; // backup hops
+	private int backupBW;  // back up bw
+	private HashMap<ENodeB, Integer> message;
 
-	public ENodeB(int name, long maxTime) {
+	public ENodeB(int name, int hops, long maxTime) {
 		super(("eNodeB" + Integer.toString(name)), maxTime);
 		connections = new ArrayList<Xtwo>();
-		System.out.println(getName() + " is created");
+		message = new HashMap<ENodeB, Integer>();
+		cHops = hops;
 		backupController = null;
+		System.out.println(getName() + " is created");
 	}
 
 	/**
@@ -32,14 +40,36 @@ public class ENodeB extends Entity implements Runnable {
 	public void addConnection(Xtwo x2) {
 		connections.add(x2);
 	}
-
+	
+	public ArrayList<Xtwo> getConnections() {
+		return connections;
+	}
+	
+	public int getCHops() {
+		return cHops;
+	}
+	
+	public int getCbw() {
+		return cBW;
+	}
+	
+	public int getBackupHops() {
+		return backupHops;
+	}
+	
+	public int getBackupBw() {
+		return backupBW;
+	}
+	
 	/**
 	 * Sets the controller for the eNodeB
 	 * 
 	 * @param c is the new controller for the eNodeB
 	 */
-	public void setController(Controller c) {
+	public void setController(Controller c, int hops, int bw) {
 		controller = c;
+		cHops = hops;
+		cBW = bw;
 	}
 
 	/**
@@ -47,9 +77,11 @@ public class ENodeB extends Entity implements Runnable {
 	 * 
 	 * @param c is the new controller for the eNodeB
 	 */
-	public void setBackupController(Controller c) {
-		System.out.println(getTime(System.currentTimeMillis()) + ": " + c.getName() + " is the backup controller for " + name);
+	public void setBackupController(Controller c, int hops, int bw) {
 		backupController = c;
+		backupHops = hops;
+		backupBW = bw;
+		System.out.println(getTime(System.currentTimeMillis()) + ": " + c.getName() + " is the backup controller for " + name + "\thop: " + hops + "\tbw " + bw);
 	}
 
 	/**
@@ -172,6 +204,24 @@ public class ENodeB extends Entity implements Runnable {
 	private void orphanNode() {
 		if (backupController != null) {
 			backupController.addOrphan(this);
+		}
+	}
+	
+	/**
+	 * Sends a message to the controller
+	 * 
+	 * @param eNodeB
+	 */
+	public void messageController(ENodeB eNodeB, int X2bw) {
+		//System.out.print(eNodeB.getName() + " sends message\tbw " + X2bw +"\t\t");
+		//System.out.println(name + " receives message\thops: " + cHops + "\tbw: " + cBW );
+		
+		if ( hasController() ) {
+			//System.out.println(name + "\tcurrent bw: " + cBW + "\tasking bw:" + X2bw + "\tcalculated: " + bw);
+			int bw = (X2bw > cBW) ? cBW : X2bw;
+			controller.addOrphan(eNodeB, cHops + 1, bw  );
+		} else {
+			message.put(eNodeB, X2bw);
 		}
 	}
 	
