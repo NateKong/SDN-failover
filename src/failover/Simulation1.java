@@ -63,13 +63,10 @@ public class Simulation1 {
 	 * Controllers eNodeBs X2 connections
 	 */
 	private static void system() {
-		long failTime = 10; // this is the fail time for Controller1
-		int numOfeNodeBs = 9;
-		int numOfControllers = 3;
-		int remainingCap = 20;
+		long failTime = 30; // this is the fail time for Controller1
 
 		printNewSection();
-		System.out.println("INITIALIZE SYSTEM\n");
+		System.out.println("INITIALIZE SYSTEM");
 
 		/* Create eNodeBs */
 		System.out.println("\nCreate eNodeBs");
@@ -101,7 +98,7 @@ public class Simulation1 {
 		Xtwo x2 = new Xtwo("connection2", eNodeBs.get(0), eNodeBs.get(2), 100);
 		Xtwo x3 = new Xtwo("connection3", eNodeBs.get(3), eNodeBs.get(4), 100);
 		Xtwo x4 = new Xtwo("connection4", eNodeBs.get(4), eNodeBs.get(5), 100);
-		Xtwo x5 = new Xtwo("connection5", eNodeBs.get(3), eNodeBs.get(5), 150);
+		Xtwo x5 = new Xtwo("connection5", eNodeBs.get(3), eNodeBs.get(5), 100);
 		Xtwo x6 = new Xtwo("connection6", eNodeBs.get(6), eNodeBs.get(7), 100);
 		Xtwo x7 = new Xtwo("connection7", eNodeBs.get(7), eNodeBs.get(8), 100);
 		Xtwo x8 = new Xtwo("connection8", eNodeBs.get(6), eNodeBs.get(8), 100);
