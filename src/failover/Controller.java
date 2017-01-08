@@ -45,19 +45,17 @@ public class Controller extends Entity implements Runnable {
 	 * @param e an eNodeB (LTE tower)
 	 */
 	public void addENodeB(ENodeB e) {
-		int bw = 0;
-		int numOfHops = 100;
+		int bw = -100;
+		int numOfHops = -100;
 		
 		for (ENodeB b: eNodeBs.keySet()) {
 			for (Xtwo x: b.getConnections()) {
 				if (x.getEndpoint(b).equals(e)) {
 					int hops = b.getCHops() + 1;
-					if ( hops < numOfHops ) {
+					if ( hops < numOfHops || numOfHops < 0) {
 						numOfHops = hops;  
 						bw = ( x.getBW() > b.getCbw() ) ? b.getCbw() : x.getBW();	
 					}
-					
-					
 				}
 			}
 		}
@@ -71,24 +69,38 @@ public class Controller extends Entity implements Runnable {
 	 * Adds to a list of orphan nodes
 	 */
 	public void addOrphan(ENodeB b, int hops, int bw) {
-		int[] stats = {hops, bw};
+		int[] newStats = {hops, bw};
 		if (orphans.containsKey(b)) {
-			int[] stat = orphans.get(b);
-			if (stat[0] > hops && bw > stat[1]) {
-				orphans.put(b, stats);
+			int[] oldStats = orphans.get(b);
+			if (newStats[0] <= oldStats[0] && newStats[1] > oldStats[1]) {
+				orphans.put(b, newStats);
 			}
 		} else {
-			orphans.put(b, stats);
+			orphans.put(b, newStats);
 		}
 	}
 	
 	/**
 	 * Adds to a list of orphan nodes for backup
 	 */
-	public void addBackup(ENodeB b) {
+	public void addBackup(ENodeB b, int hops, int bw) {
+		/*if (b.getName().equals("eNodeB0")){
+			System.out.println(name + " receives " + b.getName() +"\tnew hops: "+hops+"\tnew bw: "+ bw+ "\thas backup controller " + b.hasBackupController());
+		}*/
 		if ( !b.hasBackupController() ) {
-			b.setBackupController(this);
-		}
+			b.setBackupController(this, hops, bw);
+		} else if ( b.hasBackupController() ) {
+			int oldHops = b.getBackupHops();
+			int oldBW = b.getBackupBw();
+			/*if (b.getName().equals("eNodeB0")){
+				System.out.println("old hops:" + oldHops +"\tnew hops: "+hops+"\told bw: "+ oldBW +"\tnew bw: "+ bw);
+			}*/
+			if (hops < oldHops) {
+				b.setBackupController(this, hops, bw);
+			}else if (hops == oldHops && bw > oldBW) {
+				b.setBackupController(this, hops, bw);
+			}
+		} 
 	}
 
 	/**
@@ -127,8 +139,11 @@ public class Controller extends Entity implements Runnable {
 	 */
 	private void adoptOrphans() {
 		for (ENodeB b: orphans.keySet()) {
+			int[] stats = orphans.get(b);
+			int hop = stats[0];
+			int bw = stats[1];
 			System.out.print( getTime(System.currentTimeMillis()) + ": ");
-			addENodeB(b);
+			addENodeB(b, hop, bw);
 		}
 		orphans.clear();
 	}
@@ -138,7 +153,7 @@ public class Controller extends Entity implements Runnable {
 	 */
 	private void removeController() {
 		for (ENodeB b : eNodeBs.keySet()) {
-			b.setController(null, 1000, 1000);
+			b.setController(null, -100, -100);
 		}
 		eNodeBs.clear();
 
