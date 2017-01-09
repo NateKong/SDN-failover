@@ -1,5 +1,7 @@
 package failover;
 
+import java.util.ArrayList;
+
 /**
  * A Software Defined Network controller.
  * A controller for a LTE network
@@ -91,7 +93,7 @@ public class Controller extends Entity implements Runnable {
 		}
 		*/
 		if ( !b.hasBackupController() ) {
-			b.setBackupController(this, hops, bw);
+			b.setBackupController(this, hops, bw, false);
 		} else if ( b.hasBackupController() ) {
 			int oldHops = b.getBackupHops();
 			int oldBW = b.getBackupBw();
@@ -99,9 +101,9 @@ public class Controller extends Entity implements Runnable {
 				System.out.println("old hops:" + oldHops +"\tnew hops: "+hops+"\told bw: "+ oldBW +"\tnew bw: "+ bw);
 			}*/
 			if (hops < oldHops) {
-				b.setBackupController(this, hops, bw);
+				b.setBackupController(this, hops, bw, true);
 			}else if (hops == oldHops && bw > oldBW) {
-				b.setBackupController(this, hops, bw);
+				b.setBackupController(this, hops, bw, true);
 			}
 		} 
 	}
@@ -120,6 +122,19 @@ public class Controller extends Entity implements Runnable {
 
 				if (!orphans.isEmpty()) {
 					adoptOrphans();
+				}
+				
+				
+				if ( !eNodeBs.isEmpty() ) {
+					ArrayList<ENodeB> remove = new ArrayList<ENodeB>(); 
+					for (ENodeB e: eNodeBs.keySet() ){
+						if (!e.sameController(this)) {
+							remove.add(e);
+						}
+					}
+					for (ENodeB e: remove) {
+						eNodeBs.remove(e);
+					}
 				}
 			}
 		} catch (InterruptedException e) {
