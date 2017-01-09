@@ -126,9 +126,9 @@ public class Controller extends Entity implements Runnable {
 					//b.setController(this, stats[0], stats[1] );	
 					//System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " adopts (upgrades) " + b.getName() + "\thops: " + stats[0] + "\tbw: " + stats[1]);
 				}
-				else {
+				/*else {
 					System.out.println("CANCEL UPGRADE: " + name + " can't adopt " + b.getName() + " Current hops: " + hops + "\tbw: " + bw + "\tProposed hops: " + stats[0] + "\tbw: " + stats[1]);
-				}
+				}*/
 			}
 		}
 		orphans.clear();
