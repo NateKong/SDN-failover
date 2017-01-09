@@ -22,12 +22,14 @@ public class ENodeB extends Entity implements Runnable {
 	private int backupBW;  // back up bw
 	//private HashMap<ENodeB, HashMap> message;
 	private HashMap<ENodeB, Integer> message;
+	private HashMap<ENodeB, HashMap> forwardMessage;
 
 	public ENodeB(int name, int hops, long maxTime) {
 		super(("eNodeB" + Integer.toString(name)), maxTime);
 		connections = new ArrayList<Xtwo>();
 		//message = new HashMap<ENodeB, HashMap>();
 		message = new HashMap<ENodeB, Integer>();
+		forwardMessage = new HashMap<ENodeB, HashMap>();
 		cHops = hops;
 		backupController = null;
 		System.out.println(getName() + " is created");
@@ -79,11 +81,15 @@ public class ENodeB extends Entity implements Runnable {
 	 * 
 	 * @param c is the new controller for the eNodeB
 	 */
-	public void setBackupController(Controller c, int hops, int bw) {
+	public void setBackupController(Controller c, int hops, int bw, boolean upgrade) {
 		backupController = c;
 		backupHops = hops;
 		backupBW = bw;
 		System.out.println(getTime(System.currentTimeMillis()) + ": " + c.getName() + " is the backup controller for " + name + "\thop: " + hops + "\tbw " + bw);
+		
+		if(upgrade) {
+			reSetupBackup();
+		}
 	}
 
 	/**
@@ -141,9 +147,9 @@ public class ENodeB extends Entity implements Runnable {
 		try {
 			while (checkTime(System.currentTimeMillis())) {				
 				// check for backup controller
-				//if (backupController == null) {
+				if (backupController == null) {
 					setupBackup();	
-				//}
+				}
 				
 				// Let the thread sleep for between 1-5 seconds
 				Thread.sleep(random());
@@ -154,6 +160,16 @@ public class ENodeB extends Entity implements Runnable {
 						findController(b, message.get(b));
 					}
 					message.clear();
+				}
+				
+				if (!forwardMessage.isEmpty() && hasBackupController() ) {
+					for (ENodeB e: forwardMessage.keySet()) {
+						HashMap<Integer, Boolean> hm = forwardMessage.get(e);
+						for (Integer bw: hm.keySet()) {
+							boolean backup = hm.get(bw);
+							messageController(e, bw, backup);
+						}
+					}
 				}
 				
 				// check if has controller
@@ -176,6 +192,13 @@ public class ENodeB extends Entity implements Runnable {
 		}
 
 		System.out.println(getTime(System.currentTimeMillis()) + ": " + "Closing thread " + name);
+	}
+	
+	private void reSetupBackup() {
+		for (Xtwo x2: connections) {
+			ENodeB e = x2.getEndpoint(this);
+			e.setupBackup();
+		}
 	}
 	
 	/**
@@ -221,9 +244,9 @@ public class ENodeB extends Entity implements Runnable {
 			}*/
 			backupController.addBackup(eNodeB, backupHops + 1, bw );
 		} else {
-			if(eNodeB.getName().equals("eNodeB4") ) {
-				System.out.println(name + " receives from: " + eNodeB.getName() );
-			}
+			HashMap<Integer, Boolean> hm = new HashMap<Integer, Boolean>();
+			hm.put(X2bw, messageBackup);
+			forwardMessage.put(eNodeB, hm);
 		}
 	}
 	
