@@ -63,7 +63,7 @@ public class Simulation1 {
 	 * Controllers eNodeBs X2 connections
 	 */
 	private static void system() {
-		long failTime = 30; // this is the fail time for Controller1
+		long failTime = 10; // this is the fail time for Controller1
 
 		printNewSection();
 		System.out.println("INITIALIZE SYSTEM");

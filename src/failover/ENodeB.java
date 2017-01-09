@@ -123,6 +123,10 @@ public class ENodeB extends Entity implements Runnable {
 		return backupController == c;		
 	}
 	
+	public boolean backupControllerAlive() {
+		return backupController.isAlive();
+	}
+	
 	/**
 	 * Runs the thread ( thread.start() )
 	 */
@@ -164,7 +168,7 @@ public class ENodeB extends Entity implements Runnable {
 				
 				if ( backupController != null && !backupController.isAlive() ) {
 					backupController = null;
-					//System.out.println("backup down");
+					System.out.println("backup down");
 				}
 				
 			}
@@ -192,7 +196,7 @@ public class ENodeB extends Entity implements Runnable {
 			b.messageController(this, bw, false);
 		} 
 		//same main controllers; message backup controller
-		else if (b.hasBackupController() && !b.sameAsBackupController(controller)) {
+		else if (b.hasBackupController() && !b.sameAsBackupController(controller) ) {
 			//if(b.getName().equals("eNodeB2") ) {System.out.println(name + " sends to: " + b.getName() + "\tX2 bw: " + bw + " : 2");}
 			b.messageController(this, bw, true);
 		} else {
