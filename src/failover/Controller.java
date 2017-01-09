@@ -84,9 +84,12 @@ public class Controller extends Entity implements Runnable {
 	 * Adds to a list of orphan nodes for backup
 	 */
 	public void addBackup(ENodeB b, int hops, int bw) {
-		/*if (b.getName().equals("eNodeB0")){
+		/*
+		if (b.getName().equals("eNodeB4")){
+		 
 			System.out.println(name + " receives " + b.getName() +"\tnew hops: "+hops+"\tnew bw: "+ bw+ "\thas backup controller " + b.hasBackupController());
-		}*/
+		}
+		*/
 		if ( !b.hasBackupController() ) {
 			b.setBackupController(this, hops, bw);
 		} else if ( b.hasBackupController() ) {

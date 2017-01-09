@@ -141,9 +141,9 @@ public class ENodeB extends Entity implements Runnable {
 		try {
 			while (checkTime(System.currentTimeMillis())) {				
 				// check for backup controller
-				if (backupController == null) {
+				//if (backupController == null) {
 					setupBackup();	
-				}
+				//}
 				
 				// Let the thread sleep for between 1-5 seconds
 				Thread.sleep(random());
@@ -168,7 +168,6 @@ public class ENodeB extends Entity implements Runnable {
 				
 				if ( backupController != null && !backupController.isAlive() ) {
 					backupController = null;
-					System.out.println("backup down");
 				}
 				
 			}
@@ -211,17 +210,21 @@ public class ENodeB extends Entity implements Runnable {
 	 * @param eNodeB
 	 */
 	public void messageController(ENodeB eNodeB, int X2bw, boolean messageBackup) {
-		if ( !messageBackup && hasController() ) {
+		if ( !messageBackup && controller.isAlive() ) {
 			int bw = (X2bw > cBW) ? cBW : X2bw;
 			controller.addBackup(eNodeB, cHops + 1, bw );
-		} else if (messageBackup && hasBackupController() ) {
+		} else if (messageBackup && backupController.isAlive() ) {
 			int bw = (X2bw > backupBW) ? backupBW : X2bw;
 			
-			/*if(eNodeB.getName().equals("eNodeB0") ) {
+			/*if(eNodeB.getName().equals("eNodeB4") ) {
 				System.out.println(name + " receives from: " + eNodeB.getName() + "\tbw: " + bw +"\thops: " + (backupHops+1) + "\tsends to controller: " + backupController.getName() );
 			}*/
 			backupController.addBackup(eNodeB, backupHops + 1, bw );
-		} 
+		} else {
+			if(eNodeB.getName().equals("eNodeB4") ) {
+				System.out.println(name + " receives from: " + eNodeB.getName() );
+			}
+		}
 	}
 	
 	/**
