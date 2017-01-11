@@ -20,14 +20,12 @@ public class ENodeB extends Entity implements Runnable {
 	private Controller backupController;
 	private int backupHops; // backup hops
 	private int backupBW;  // back up bw
-	//private HashMap<ENodeB, HashMap> message;
 	private HashMap<ENodeB, Integer> message;
 	private HashMap<ENodeB, HashMap> forwardMessage;
 
 	public ENodeB(int name, int hops, long maxTime) {
 		super(("eNodeB" + Integer.toString(name)), maxTime);
 		connections = new ArrayList<Xtwo>();
-		//message = new HashMap<ENodeB, HashMap>();
 		message = new HashMap<ENodeB, Integer>();
 		forwardMessage = new HashMap<ENodeB, HashMap>();
 		cHops = hops;
@@ -38,13 +36,16 @@ public class ENodeB extends Entity implements Runnable {
 	/**
 	 * Adds a connection to other eNodeBs 
 	 * 
-	 * @param x2
-	 *            the connection between eNodeBs
+	 * @param x2 the connection between eNodeBs
 	 */
 	public void addConnection(Xtwo x2) {
 		connections.add(x2);
 	}
 	
+	/**
+	 * Gets a list of X2 connections
+	 * @return 
+	 */
 	public ArrayList<Xtwo> getConnections() {
 		return connections;
 	}
@@ -79,13 +80,14 @@ public class ENodeB extends Entity implements Runnable {
 	/**
 	 * Sets the backup controller for the eNodeB
 	 * 
-	 * @param c is the new controller for the eNodeB
+	 * @param c is the new backup controller for the eNodeB
 	 */
 	public void setBackupController(Controller c, int hops, int bw, boolean upgrade) {
 		backupController = c;
 		backupHops = hops;
 		backupBW = bw;
-		System.out.println(getTime(System.currentTimeMillis()) + ": " + c.getName() + " is the backup controller for " + name + "\thop: " + hops + "\tbw " + bw);
+		System.out.println(getTime(System.currentTimeMillis()) + ": " + c.getName() + 
+				" is the backup controller for " + name + "\thop: " + hops + "\tbw " + bw);
 		
 		if(upgrade) {
 			reSetupBackup();
@@ -111,9 +113,9 @@ public class ENodeB extends Entity implements Runnable {
 	}
 	
 	/**
-	 * Determines is the eNodeB has a back up controller
+	 * Determines is the eNodeB has a backup controller
 	 * 
-	 * @return true is the eNodeB has a back up controller
+	 * @return true is the eNodeB has a backup controller
 	 */
 	public boolean hasBackupController() {
 		return backupController != null;
@@ -129,6 +131,10 @@ public class ENodeB extends Entity implements Runnable {
 		return backupController == c;		
 	}
 	
+	/**
+	 * Determines if the backup controller is alive
+	 * @return true is the backup controller is alive
+	 */
 	public boolean backupControllerAlive() {
 		return backupController.isAlive();
 	}
@@ -156,7 +162,6 @@ public class ENodeB extends Entity implements Runnable {
 				
 				if (!message.isEmpty() && hasController() ) {
 					for (ENodeB b: message.keySet()) {
-						//if(b.getName().equals("eNodeB2") ) {System.out.println(name + " sends to: " + b.getName() + "\tX2 bw: " + message.get(b) );}
 						findController(b, message.get(b));
 					}
 					message.clear();
@@ -194,6 +199,9 @@ public class ENodeB extends Entity implements Runnable {
 		System.out.println(getTime(System.currentTimeMillis()) + ": " + "Closing thread " + name);
 	}
 	
+	/**
+	 * Resends messages if controller is upgraded.
+	 */
 	private void reSetupBackup() {
 		for (Xtwo x2: connections) {
 			ENodeB e = x2.getEndpoint(this);
@@ -211,15 +219,16 @@ public class ENodeB extends Entity implements Runnable {
 		}
 	}
 
+	/**
+	 * Determines which controller should be the backup controller 
+	 */
 	private void findController (ENodeB b, int bw) {
 		//different main controllers; message the other main controller
 		if ( b.hasController() && !b.sameController(controller) ) {
-			//if(b.getName().equals("eNodeB2") ) {System.out.println(name + " sends to: " + b.getName() + "\tX2 bw: " + bw + " : 1");}
 			b.messageController(this, bw, false);
 		} 
 		//same main controllers; message backup controller
 		else if (b.hasBackupController() && !b.sameAsBackupController(controller) ) {
-			//if(b.getName().equals("eNodeB2") ) {System.out.println(name + " sends to: " + b.getName() + "\tX2 bw: " + bw + " : 2");}
 			b.messageController(this, bw, true);
 		} else {
 			//same main controller and backup is null
@@ -230,7 +239,9 @@ public class ENodeB extends Entity implements Runnable {
 	/**
 	 * Sends a message to the controller
 	 * 
-	 * @param eNodeB
+	 * @param eNodeB is the eNodeB sending the message
+	 * @param X2bw the bandwidth of the X2
+	 * @param messageBackup is true if the backup controller should be messaged
 	 */
 	public void messageController(ENodeB eNodeB, int X2bw, boolean messageBackup) {
 		if ( !messageBackup && controller.isAlive() ) {
@@ -238,10 +249,6 @@ public class ENodeB extends Entity implements Runnable {
 			controller.addBackup(eNodeB, cHops + 1, bw );
 		} else if (messageBackup && backupController.isAlive() ) {
 			int bw = (X2bw > backupBW) ? backupBW : X2bw;
-			
-			/*if(eNodeB.getName().equals("eNodeB4") ) {
-				System.out.println(name + " receives from: " + eNodeB.getName() + "\tbw: " + bw +"\thops: " + (backupHops+1) + "\tsends to controller: " + backupController.getName() );
-			}*/
 			backupController.addBackup(eNodeB, backupHops + 1, bw );
 		} else {
 			HashMap<Integer, Boolean> hm = new HashMap<Integer, Boolean>();
