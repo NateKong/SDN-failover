@@ -9,7 +9,6 @@ package failover;
  * @since Jan 2017
  */
 
-//import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Controller extends Entity implements Runnable {
@@ -55,8 +54,6 @@ public class Controller extends Entity implements Runnable {
 						numOfHops = hops;  
 						bw = ( x.getBW() > b.getCbw() ) ? b.getCbw() : x.getBW();	
 					}
-					
-					
 				}
 			}
 		}
@@ -108,13 +105,15 @@ public class Controller extends Entity implements Runnable {
 		}
 	}
 
+	/**
+	 * Adopt Orphans nodes that call out
+	 * as orphans
+	 */
 	private void adoptOrphans() {
 		for (ENodeB b: orphans.keySet()) {
 			if ( !b.hasController() ) {
 				int [] stats = orphans.get(b);
 				addENodeB(b, stats[0], stats[1]);
-				//b.setController(this, stats[0], stats[1] );
-				//System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " adopts " + b.getName() + "\thops: " + stats[0] + "\tbw: " + stats[1]);
 			} else {
 				int hops = b.getCHops(); // current hops
 				int bw = b.getCbw(); // current bw
@@ -123,12 +122,7 @@ public class Controller extends Entity implements Runnable {
 				if (stats[0] <= hops && stats[1] > bw) {
 					System.out.print("UPGRADE: ");
 					addENodeB(b, stats[0], stats[1]);
-					//b.setController(this, stats[0], stats[1] );	
-					//System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " adopts (upgrades) " + b.getName() + "\thops: " + stats[0] + "\tbw: " + stats[1]);
 				}
-				/*else {
-					System.out.println("CANCEL UPGRADE: " + name + " can't adopt " + b.getName() + " Current hops: " + hops + "\tbw: " + bw + "\tProposed hops: " + stats[0] + "\tbw: " + stats[1]);
-				}*/
 			}
 		}
 		orphans.clear();
