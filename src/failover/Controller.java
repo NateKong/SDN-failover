@@ -30,10 +30,14 @@ public class Controller extends Entity implements Runnable {
 	 * @param hop is the number of x2 connections from the eNodeB to the controller
 	 * @param bw is the minimum throughput (Mbps) between the controller and the eNodeB
 	 */
-	public void addENodeB(ENodeB e, int hop, int bw) {
+	public void addENodeB(ENodeB e, int hop, int bw, boolean isSetup) {
 		e.setController(this, hop, bw);
 		eNodeBs.put(e,hop);
-		System.out.println(name + " adopts " + e.getName() + "\thop: " + hop + "\tbw " + bw);
+		if (isSetup){
+			System.out.println( name + " adopts " + e.getName() + "\thop: " + hop + "\tbw " + bw);
+		} else {
+			System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " adopts " + e.getName() + "\thop: " + hop + "\tbw " + bw);
+		}
 	}
 	
 	/**
@@ -113,7 +117,7 @@ public class Controller extends Entity implements Runnable {
 		for (ENodeB b: orphans.keySet()) {
 			if ( !b.hasController() ) {
 				int [] stats = orphans.get(b);
-				addENodeB(b, stats[0], stats[1]);
+				addENodeB(b, stats[0], stats[1], false);
 			} else {
 				int hops = b.getCHops(); // current hops
 				int bw = b.getCbw(); // current bw
@@ -121,7 +125,7 @@ public class Controller extends Entity implements Runnable {
 				
 				if (stats[0] <= hops && stats[1] > bw) {
 					System.out.print("UPGRADE: ");
-					addENodeB(b, stats[0], stats[1]);
+					addENodeB(b, stats[0], stats[1], false);
 				}
 			}
 		}

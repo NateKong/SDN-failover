@@ -6,21 +6,21 @@ package failover;
  * The controller manages eNodeBs (towers).
  * 
  * Architecture:
- *   C1       C2       C3
+ *   C0       C1       C2
  *   
- *   E1       E4       E7
+ *   E1-------E4-------E7
  * 	/  \     /  \     /  \
  * E0---E2--E3---E5--E6---E8
  * 
  * C = controller
  * E = eNodeB
  * 
- * C1 controls E0,E1,E2
- * C2 controls E3,E4,E5
- * C3 controls E6,E7,E8
+ * C0 controls E0,E1,E2
+ * C1 controls E3,E4,E5
+ * C2 controls E6,E7,E8
  * 
  * Simulation:
- * Using the above architecture, C2 fails
+ * Using the above architecture, C1 fails
  * and the other controllers recover orphan nodes.
  * 
  * @author Nathan Kong
@@ -29,7 +29,7 @@ package failover;
 
 import java.util.ArrayList;
 
-public class Simulation1 {
+public class Simulation3 {
 	private static ArrayList<Controller> controllers;
 	private static ArrayList<ENodeB> eNodeBs;
 	public static final long maxTime = 30; // this is in seconds
@@ -64,8 +64,6 @@ public class Simulation1 {
 	 */
 	private static void system() {
 		long failTime = 10; // this is the fail time for Controller1
-		int numOfeNodeBs = 9;
-		int numOfControllers = 3;
 
 		printNewSection();
 		System.out.println("INITIALIZE SYSTEM");
@@ -100,13 +98,14 @@ public class Simulation1 {
 		Xtwo x2 = new Xtwo("connection2", eNodeBs.get(0), eNodeBs.get(2), 100);
 		Xtwo x3 = new Xtwo("connection3", eNodeBs.get(3), eNodeBs.get(4), 40);
 		Xtwo x4 = new Xtwo("connection4", eNodeBs.get(4), eNodeBs.get(5), 30);
-		Xtwo x5 = new Xtwo("connection5", eNodeBs.get(3), eNodeBs.get(5), 150);
+		Xtwo x5 = new Xtwo("connection5", eNodeBs.get(3), eNodeBs.get(5), 100);
 		Xtwo x6 = new Xtwo("connection6", eNodeBs.get(6), eNodeBs.get(7), 100);
 		Xtwo x7 = new Xtwo("connection7", eNodeBs.get(7), eNodeBs.get(8), 100);
 		Xtwo x8 = new Xtwo("connection8", eNodeBs.get(6), eNodeBs.get(8), 100);
 		Xtwo x9 = new Xtwo("connection9", eNodeBs.get(2), eNodeBs.get(3), 50);
 		Xtwo x10 = new Xtwo("connection10", eNodeBs.get(5), eNodeBs.get(6), 70);
-		
+		Xtwo x11 = new Xtwo("connection11", eNodeBs.get(1), eNodeBs.get(4), 100);
+		Xtwo x12 = new Xtwo("connection12", eNodeBs.get(7), eNodeBs.get(4), 100);
 
 		/* Create Controllers */
 		System.out.println("\nCreate Controllers");
@@ -126,7 +125,6 @@ public class Simulation1 {
 		c2.addENodeB(B7, 0, 150, true);
 		c2.addENodeB(B6);
 		c2.addENodeB(B8);
-
 	}
 
 	/**
@@ -146,7 +144,7 @@ public class Simulation1 {
 			threads.add(t);
 			t.start();
 		}
-		
+
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e1) {
@@ -170,8 +168,6 @@ public class Simulation1 {
 				e.printStackTrace();
 			}
 		}
-
-		// System.out.println("finished main");
 	}
 
 	/**

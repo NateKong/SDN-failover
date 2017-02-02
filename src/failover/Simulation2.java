@@ -111,17 +111,17 @@ public class Simulation2 {
 		
 		Controller c0 = new Controller(0, maxTime);
 		controllers.add(c0);
-		c0.addENodeB(B1, 0, 150);
+		c0.addENodeB(B1, 0, 150, true);
 		c0.addENodeB(B0);
 		c0.addENodeB(B2);
 		Controller c1 = new Controller(1, failTime);
 		controllers.add(c1);
-		c1.addENodeB(B4, 0, 150);
+		c1.addENodeB(B4, 0, 150, true);
 		c1.addENodeB(B3);
 		c1.addENodeB(B5);
 		Controller c2 = new Controller(2, maxTime);
 		controllers.add(c2);
-		c2.addENodeB(B7, 0, 150);
+		c2.addENodeB(B7, 0, 150, true);
 		c2.addENodeB(B6);
 		c2.addENodeB(B8);
 	}
