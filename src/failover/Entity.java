@@ -67,8 +67,14 @@ public class Entity {
 	 * @return a number between 1000 - 5000
 	 */
 	public int random() {
+		//int i = 5; //seconds
+		//int i = 10;
+		//int i = 15;
+		int i = 20;
+		
+		
 		Random r = new Random();
-		return r.nextInt(4000) + 1000;
+		return r.nextInt(i*1000);
 	}
 
 	/**
