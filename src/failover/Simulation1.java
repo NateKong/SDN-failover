@@ -6,7 +6,7 @@ package failover;
  * The controller manages eNodeBs (towers).
  * 
  * Architecture:
- *   C1       C2       C3
+ *   C0       C1       C2
  *   
  *   E1       E4       E7
  * 	/  \     /  \     /  \
@@ -15,12 +15,12 @@ package failover;
  * C = controller
  * E = eNodeB
  * 
- * C1 controls E0,E1,E2
- * C2 controls E3,E4,E5
- * C3 controls E6,E7,E8
+ * C0 controls E0,E1,E2
+ * C1 controls E3,E4,E5
+ * C2 controls E6,E7,E8
  * 
  * Simulation:
- * Using the above architecture, C2 fails
+ * Using the above architecture, C1 fails
  * and the other controllers recover orphan nodes.
  * 
  * @author Nathan Kong
@@ -32,9 +32,21 @@ import java.util.ArrayList;
 public class Simulation1 {
 	private static ArrayList<Controller> controllers;
 	private static ArrayList<ENodeB> eNodeBs;
-	public static final long maxTime = 30; // this is in seconds
-
+	//public static final long maxTime = 30; // this is in seconds
+	//public static final long maxTime = 60;
+	//public static final long maxTime = 90;
+	public static final long maxTime = 120;	
+	
 	public static void main(String[] args) {
+		for (int i=1; i<=10; i++) {
+			printNewSection();
+			System.out.println("RUN " + i);
+			start();
+			System.out.println("\n");
+		}
+	}
+	
+	private static void start(){
 		System.out.println("Simulation of failover for Distributed SDN Controllers");
 
 		// setup
@@ -63,7 +75,11 @@ public class Simulation1 {
 	 * Controllers eNodeBs X2 connections
 	 */
 	private static void system() {
-		long failTime = 10; // this is the fail time for Controller1
+		//long failTime = 10; // this is the fail time for Controller1
+		//long failTime = 20;
+		//long failTime = 40;
+		long failTime = 60;
+		
 		int numOfeNodeBs = 9;
 		int numOfControllers = 3;
 		int remainingCap = 20;
