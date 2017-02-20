@@ -35,19 +35,27 @@ public class Simulation2 {
 	public static final long maxTime = 30; // this is in seconds
 
 	public static void main(String[] args) {
+
+		for (int i=1; i<=10; i++){
+			System.out.println("RUN " + i );	
+			start();
+		}
+	}
+	
+	private static void start(){
 		System.out.println("Simulation of failover for Distributed SDN Controllers");
 
 		// setup
 		setup();
-
+		
 		// system architecture
 		system();
 
 		// run simulation
 		run();
-
+		
 		printNewSection();
-		System.out.println("SIMULATION COMPLETE");
+		System.out.println("SIMULATION COMPLETE");	
 	}
 
 	/**
