@@ -64,11 +64,16 @@ public class Entity {
 	/**
 	 * Random number creation for time in milliseconds.
 	 * 
-	 * @return a number between 1000 - 5000
+	 * @return a number between 0 - 5 seconds
 	 */
 	public int random() {
+		//int i = 5; //time in seconds
+		//int i = 10;
+		//int i = 15;
+		int i = 20;
+		
 		Random r = new Random();
-		return r.nextInt(4000) + 1000;
+		return r.nextInt(i*1000);
 	}
 
 	/**
