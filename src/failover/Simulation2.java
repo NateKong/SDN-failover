@@ -32,13 +32,20 @@ import java.util.ArrayList;
 public class Simulation2 {
 	private static ArrayList<Controller> controllers;
 	private static ArrayList<ENodeB> eNodeBs;
-	public static final long maxTime = 30; // this is in seconds
-
+	//public static final long maxTime = 30; // this is in seconds
+	public static final long maxTime = 60;
+	//public static final long maxTime = 90;
+	//public static final long maxTime = 120;
+	
+	
+	
 	public static void main(String[] args) {
 
 		for (int i=1; i<=10; i++){
+			printNewSection();
 			System.out.println("RUN " + i );	
 			start();
+			System.out.println("\n\n");
 		}
 	}
 	
@@ -71,8 +78,11 @@ public class Simulation2 {
 	 * Controllers eNodeBs X2 connections
 	 */
 	private static void system() {
-		long failTime = 10; // this is the fail time for Controller1
-
+		//long failTime = 10; // this is the fail time for Controller1 in seconds
+		long failTime = 20;
+		//long failTime = 40;
+		//long failTime = 60;
+		
 		printNewSection();
 		System.out.println("INITIALIZE SYSTEM");
 
