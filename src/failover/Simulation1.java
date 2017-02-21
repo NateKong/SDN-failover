@@ -33,9 +33,9 @@ public class Simulation1 {
 	private static ArrayList<Controller> controllers;
 	private static ArrayList<ENodeB> eNodeBs;
 	//public static final long maxTime = 30; // this is in seconds
-	//public static final long maxTime = 60;
+	public static final long maxTime = 60;
 	//public static final long maxTime = 90;
-	public static final long maxTime = 120;
+	//public static final long maxTime = 120;
 
 	public static void main(String[] args) {
 		for (int i = 1; i<=10;i++){
@@ -77,9 +77,9 @@ public class Simulation1 {
 	 */
 	private static void system() {
 		//long failTime = 10; // this is the fail time for Controller1
-		//long failTime = 20;
+		long failTime = 20;
 		//long failTime = 40;
-		long failTime = 60;
+		//long failTime = 60;
 		
 		int numOfeNodeBs = 9;
 		int numOfControllers = 3;

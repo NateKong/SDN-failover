@@ -68,9 +68,9 @@ public class Entity {
 	 */
 	public int random() {
 		//int i = 5; //time in seconds
-		//int i = 10;
+		int i = 10;
 		//int i = 15;
-		int i = 20;
+		//int i = 20;
 		
 		Random r = new Random();
 		return r.nextInt(i*1000);
