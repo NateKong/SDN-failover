@@ -78,10 +78,12 @@ public class Controller extends Entity implements Runnable {
 		if (name.equals("Controller1")){
 			removeController();
 			System.out.println();
+			System.out.println(getTime(System.currentTimeMillis()) + ": "+ name + " failed\n" );
+		}else {
+			System.out.println(getTime(System.currentTimeMillis()) + ": Closing thread " + name);	
 		}
-		
+			
 		isAlive = false;
-		System.out.println(getTime(System.currentTimeMillis()) + ": Closing thread " + name);
 	}
 
 	/**
