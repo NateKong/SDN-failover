@@ -156,6 +156,10 @@ public class ENodeB extends Entity implements Runnable {
 				if (backupController == null) {
 					setupBackup();	
 				}
+				//controller load
+				else if(name.equals("eNodeB3") | name.equals("eNodeB4") | name.equals("eNodeB5")){
+					System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " checks if backup controller exists");
+				}
 				
 				// Let the thread sleep for between 1-5 seconds
 				Thread.sleep(random());
