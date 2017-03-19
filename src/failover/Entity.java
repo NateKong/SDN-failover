@@ -22,7 +22,7 @@ public class Entity {
 	private long maxTime;
 	protected static DecimalFormat decFor;
 	protected ArrayList<Connection> connections; // a list of connections to other eNodeBs
-	protected int load;
+	private int load;
 
 	public Entity(String name, long maxTime, int load) {
 		this.name = name;
@@ -78,8 +78,8 @@ public class Entity {
 	 * @param load is the percent load 
 	 * @return a number in milliseconds
 	 */
-	public int random(int time) {
-		time *= 10;
+	public int random() {
+		int time = load * 10;
 		
 		Random r = new Random();
 		return r.nextInt(time);
@@ -104,8 +104,8 @@ public class Entity {
 	 * @return String of time formatted to 2 decimal points rounded to the
 	 *         ceiling
 	 */
-	public String getTime(long currentTime) {
-		double t = time(currentTime);
+	public String getTime() {
+		double t = time(System.currentTimeMillis());
 		return decFor.format(t);
 	}
 
@@ -116,5 +116,13 @@ public class Entity {
 	 */
 	public void addConnection(Connection c) {
 		connections.add(c);
+	}
+
+	/**
+	 * requires override message
+	 * @param eNodeB
+	 */
+	public void messageController(Entity e) {
+
 	}
 }

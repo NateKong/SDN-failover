@@ -47,10 +47,10 @@ public class Controller extends Entity implements Runnable {
 	 */
 	@Override
 	public void run() {
-		System.out.println(getTime(System.currentTimeMillis()) + ": Running thread " + name);
+		System.out.println(getTime() + ": Running thread " + name);
 		try {
 			while (checkTime(System.currentTimeMillis())) {
-				Thread.sleep(random(load));
+				Thread.sleep(random());
 
 				if (!orphans.isEmpty()) {
 					adoptOrphans();
@@ -65,7 +65,7 @@ public class Controller extends Entity implements Runnable {
 			System.out.println();
 		}
 		
-		System.out.println(getTime(System.currentTimeMillis()) + ": Closing thread " + name);
+		System.out.println(getTime() + ": Closing thread " + name);
 
 	}
 
@@ -73,7 +73,7 @@ public class Controller extends Entity implements Runnable {
 		for (ENodeB b: orphans.keySet()) {
 			if ( !b.hasController() ) {
 				b.setController(this);
-				System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " adopts " + b.getName());
+				System.out.println(getTime() + ": " + name + " adopts " + b.getName());
 			}
 		}
 		orphans.clear();
