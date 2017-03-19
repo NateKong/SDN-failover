@@ -1,5 +1,7 @@
 package failover;
 
+import java.util.ArrayList;
+
 /**
  * An Entity in LTE.
  * This is a parent object
@@ -19,10 +21,12 @@ public class Entity {
 	protected static long startTime;
 	private long maxTime;
 	protected static DecimalFormat decFor;
+	protected ArrayList<Connection> connections; // a list of connections to other eNodeBs
 
 	public Entity(String name, long maxTime) {
 		this.name = name;
 		this.maxTime = maxTime;
+		connections = new ArrayList<Connection>();
 		Entity.decFor = new DecimalFormat("#0.00");
 		decFor.setRoundingMode(RoundingMode.CEILING);
 	}
@@ -98,5 +102,14 @@ public class Entity {
 	public String getTime(long currentTime) {
 		double t = time(currentTime);
 		return decFor.format(t);
+	}
+
+	/**
+	 * Adds a connection to other eNodeBs or controllers
+	 * 
+	 * @param c the connection between eNodeBs
+	 */
+	public void addConnection(Connection c) {
+		connections.add(c);
 	}
 }

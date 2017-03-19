@@ -87,51 +87,62 @@ public class Simulation1 {
 
 		printNewSection();
 		System.out.println("INITIALIZE SYSTEM\n");
-
-		/* Create Controllers */
-		System.out.println("Create Controllers");
-		for (int i = 0; i < numOfControllers; i++) {
-			if (i == 1) {
-				Controller c = new Controller(i, remainingCap, failTime);
-				controllers.add(c);
-			} else {
-				Controller c = new Controller(i, remainingCap, maxTime);
-				controllers.add(c);
-			}
-
-		}
-
+		
 		/* Create eNodeBs */
 		System.out.println("\nCreate eNodeBs");
-		for (int i = 0, j = 0; i < numOfeNodeBs; i++) {
-			ENodeB B = new ENodeB(i, maxTime);
-			eNodeBs.add(B);
 
-			Controller C = controllers.get(j);
-			C.addENodeB(B);
-			if (i % 3 == 2) {
-				j++;
-			}
-
-		}
+		ENodeB B0 = new ENodeB(0, maxTime);
+		eNodeBs.add(B0);
+		ENodeB B1 = new ENodeB(1, maxTime);
+		eNodeBs.add(B1);
+		ENodeB B2 = new ENodeB(2, maxTime);
+		eNodeBs.add(B2);
+		ENodeB B3 = new ENodeB(3, maxTime);
+		eNodeBs.add(B3);
+		ENodeB B4 = new ENodeB(4, maxTime);
+		eNodeBs.add(B4);
+		ENodeB B5 = new ENodeB(5, maxTime);
+		eNodeBs.add(B5);
+		ENodeB B6 = new ENodeB(6, maxTime);
+		eNodeBs.add(B6);
+		ENodeB B7 = new ENodeB(7, maxTime);
+		eNodeBs.add(B7);
+		ENodeB B8 = new ENodeB(8, maxTime);
+		eNodeBs.add(B8);
 
 		/* Creates connections between ENodeBs */
 		System.out.println("\nCreate Connections");
+		
+		Connection x0 = new Connection("connection0", eNodeBs.get(0), eNodeBs.get(1));
+		Connection x1 = new Connection("connection1", eNodeBs.get(1), eNodeBs.get(2));
+		Connection x2 = new Connection("connection2", eNodeBs.get(0), eNodeBs.get(2));
+		Connection x3 = new Connection("connection3", eNodeBs.get(3), eNodeBs.get(4));
+		Connection x4 = new Connection("connection4", eNodeBs.get(4), eNodeBs.get(5));
+		Connection x5 = new Connection("connection5", eNodeBs.get(3), eNodeBs.get(5));
+		Connection x6 = new Connection("connection6", eNodeBs.get(6), eNodeBs.get(7));
+		Connection x7 = new Connection("connection7", eNodeBs.get(7), eNodeBs.get(8));
+		Connection x8 = new Connection("connection8", eNodeBs.get(6), eNodeBs.get(8));
+		Connection x9 = new Connection("connection9", eNodeBs.get(2), eNodeBs.get(3));
+		Connection x10 = new Connection("connection10", eNodeBs.get(5), eNodeBs.get(6));
 
-		for (int i = 1; i < numOfeNodeBs; i++) {
-			int bw = 20;
-
-			// creates a connection between the eNodeB and the previously
-			// created one
-			new Xtwo(eNodeBs.get(i - 1), eNodeBs.get(i), bw);
-
-			// if this is the third eNodeB in the set
-			// e.g. eNodeB 2, 5, and 8
-			if (i % 3 == 2) {
-				new Xtwo(eNodeBs.get(i - 2), eNodeBs.get(i), bw);
-			}
-		}
-
+		/* Create Controllers */
+		System.out.println("\nCreate Controllers");
+		
+		Controller c0 = new Controller(0, maxTime);
+		controllers.add(c0);
+		c0.addENodeB(B1);
+		c0.addENodeB(B0);
+		c0.addENodeB(B2);
+		Controller c1 = new Controller(1, failTime);
+		controllers.add(c1);
+		c1.addENodeB(B4);
+		c1.addENodeB(B3);
+		c1.addENodeB(B5);
+		Controller c2 = new Controller(2, maxTime);
+		controllers.add(c2);
+		c2.addENodeB(B7);
+		c2.addENodeB(B6);
+		c2.addENodeB(B8);
 	}
 
 	/**

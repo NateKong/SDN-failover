@@ -12,12 +12,12 @@ package failover;
 import java.util.ArrayList;
 
 public class ENodeB extends Entity implements Runnable {
-	private ArrayList<Xtwo> connections; // a list of connections to other eNodeBs
+	//private ArrayList<Connection> connections; // a list of connections to other eNodeBs
 	private Controller controller;
 
 	public ENodeB(int name, long maxTime) {
 		super(("eNodeB" + Integer.toString(name)), maxTime);
-		connections = new ArrayList<Xtwo>();
+		//connections = new ArrayList<Connection>();
 		System.out.println(getName() + " is created");
 	}
 
@@ -25,10 +25,10 @@ public class ENodeB extends Entity implements Runnable {
 	 * Adds a connection to other eNodeBs
 	 * 
 	 * @param x2 the connection between eNodeBs
-	 */
-	public void addConnection(Xtwo x2) {
+	 
+	public void addConnection(Connection x2) {
 		connections.add(x2);
-	}
+	}*/
 
 	/**
 	 * Sets the controller for the eNodeB
@@ -80,8 +80,8 @@ public class ENodeB extends Entity implements Runnable {
 	 * orphan.
 	 */
 	private void orphanNode() {
-		for (Xtwo x2 : connections) {
-			ENodeB b = x2.getEndpoint(this);
+		for (Connection c : connections) {
+			ENodeB b = (ENodeB) c.getEndpoint(this);
 			b.messageController(this);
 		}
 	}

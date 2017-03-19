@@ -14,12 +14,10 @@ import java.util.HashMap;
 
 public class Controller extends Entity implements Runnable {
 	private ArrayList<ENodeB> eNodeBs;
-	private int remainingCap; // Remaining capacity of the system (system capacity minus load)
 	private HashMap<ENodeB, String> orphans; // orphan eNodeBs
 
-	public Controller(int name, int rCap, long maxTime) {
+	public Controller(int name, long maxTime) {
 		super(("Controller" + Integer.toString(name)), maxTime);
-		this.remainingCap = rCap;
 		eNodeBs = new ArrayList<ENodeB>();
 		orphans = new HashMap<ENodeB, String>();
 		System.out.println(getName() + " is created");
