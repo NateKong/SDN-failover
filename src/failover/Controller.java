@@ -16,8 +16,8 @@ public class Controller extends Entity implements Runnable {
 	private ArrayList<ENodeB> eNodeBs;
 	private HashMap<ENodeB, String> orphans; // orphan eNodeBs
 
-	public Controller(int name, long maxTime) {
-		super(("Controller" + Integer.toString(name)), maxTime);
+	public Controller(int name, long maxTime, int load) {
+		super(("Controller" + Integer.toString(name)), maxTime, load);
 		eNodeBs = new ArrayList<ENodeB>();
 		orphans = new HashMap<ENodeB, String>();
 		System.out.println(getName() + " is created");
@@ -50,7 +50,7 @@ public class Controller extends Entity implements Runnable {
 		System.out.println(getTime(System.currentTimeMillis()) + ": Running thread " + name);
 		try {
 			while (checkTime(System.currentTimeMillis())) {
-				Thread.sleep(random());
+				Thread.sleep(random(load));
 
 				if (!orphans.isEmpty()) {
 					adoptOrphans();

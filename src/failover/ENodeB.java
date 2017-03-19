@@ -12,23 +12,12 @@ package failover;
 import java.util.ArrayList;
 
 public class ENodeB extends Entity implements Runnable {
-	//private ArrayList<Connection> connections; // a list of connections to other eNodeBs
 	private Controller controller;
 
-	public ENodeB(int name, long maxTime) {
-		super(("eNodeB" + Integer.toString(name)), maxTime);
-		//connections = new ArrayList<Connection>();
+	public ENodeB(int name, long maxTime, int load) {
+		super(("eNodeB" + Integer.toString(name)), maxTime, load);
 		System.out.println(getName() + " is created");
 	}
-
-	/**
-	 * Adds a connection to other eNodeBs
-	 * 
-	 * @param x2 the connection between eNodeBs
-	 
-	public void addConnection(Connection x2) {
-		connections.add(x2);
-	}*/
 
 	/**
 	 * Sets the controller for the eNodeB
@@ -60,8 +49,8 @@ public class ENodeB extends Entity implements Runnable {
 
 		try {
 			while (checkTime(System.currentTimeMillis())) {
-				// Let the thread sleep for between 1-5 seconds
-				Thread.sleep(random());
+				
+				Thread.sleep(random(load));
 
 				if ( !hasController() ) {
 					System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " is an orphan");

@@ -32,19 +32,42 @@ import java.util.ArrayList;
 public class Simulation1 {
 	private static ArrayList<Controller> controllers;
 	private static ArrayList<ENodeB> eNodeBs;
-	//public static final long maxTime = 30; // this is in seconds
-	public static final long maxTime = 60;
-	//public static final long maxTime = 90;
-	//public static final long maxTime = 120;
+	public static long maxTime;
+	public static int load;
+
+	public static long failTime = 10;
 
 	public static void main(String[] args) {
-		for (int i = 1; i<=10;i++){
+		
+		// create different loads for different simulations
+		int sim = 1;
+		
+		switch (sim) {
+		case 1: maxTime = 10;
+				load = 25;
+				failTime = 5;
+				break;
+		case 2: maxTime = 30;
+				load = 50;
+				failTime = 10;
+				break;
+		case 3: maxTime = 30;
+				load = 75;
+				failTime = 10;
+				break;
+		default: maxTime = 30;
+				load = 95;
+				failTime = 10;
+				break;
+		}		
+		
+		//for (int i = 1; i<=10;i++){
 			printNewSection();
-			System.out.println("RUN "+i);
+			//System.out.println("RUN "+i);
 			start();
 			System.out.println("\n");
 			
-		}
+		//}
 	}
 	
 	private static void start(){
@@ -76,38 +99,29 @@ public class Simulation1 {
 	 * Controllers eNodeBs X2 connections
 	 */
 	private static void system() {
-		//long failTime = 10; // this is the fail time for Controller1
-		long failTime = 20;
-		//long failTime = 40;
-		//long failTime = 60;
-		
-		int numOfeNodeBs = 9;
-		int numOfControllers = 3;
-		int remainingCap = 20;
-
 		printNewSection();
 		System.out.println("INITIALIZE SYSTEM\n");
 		
 		/* Create eNodeBs */
 		System.out.println("\nCreate eNodeBs");
 
-		ENodeB B0 = new ENodeB(0, maxTime);
+		ENodeB B0 = new ENodeB(0, maxTime, load);
 		eNodeBs.add(B0);
-		ENodeB B1 = new ENodeB(1, maxTime);
+		ENodeB B1 = new ENodeB(1, maxTime, load);
 		eNodeBs.add(B1);
-		ENodeB B2 = new ENodeB(2, maxTime);
+		ENodeB B2 = new ENodeB(2, maxTime, load);
 		eNodeBs.add(B2);
-		ENodeB B3 = new ENodeB(3, maxTime);
+		ENodeB B3 = new ENodeB(3, maxTime, load);
 		eNodeBs.add(B3);
-		ENodeB B4 = new ENodeB(4, maxTime);
+		ENodeB B4 = new ENodeB(4, maxTime, load);
 		eNodeBs.add(B4);
-		ENodeB B5 = new ENodeB(5, maxTime);
+		ENodeB B5 = new ENodeB(5, maxTime, load);
 		eNodeBs.add(B5);
-		ENodeB B6 = new ENodeB(6, maxTime);
+		ENodeB B6 = new ENodeB(6, maxTime, load);
 		eNodeBs.add(B6);
-		ENodeB B7 = new ENodeB(7, maxTime);
+		ENodeB B7 = new ENodeB(7, maxTime, load);
 		eNodeBs.add(B7);
-		ENodeB B8 = new ENodeB(8, maxTime);
+		ENodeB B8 = new ENodeB(8, maxTime, load);
 		eNodeBs.add(B8);
 
 		/* Creates connections between ENodeBs */
@@ -128,17 +142,17 @@ public class Simulation1 {
 		/* Create Controllers */
 		System.out.println("\nCreate Controllers");
 		
-		Controller c0 = new Controller(0, maxTime);
+		Controller c0 = new Controller(0, maxTime, load);
 		controllers.add(c0);
 		c0.addENodeB(B1);
 		c0.addENodeB(B0);
 		c0.addENodeB(B2);
-		Controller c1 = new Controller(1, failTime);
+		Controller c1 = new Controller(1, failTime, load);
 		controllers.add(c1);
 		c1.addENodeB(B4);
 		c1.addENodeB(B3);
 		c1.addENodeB(B5);
-		Controller c2 = new Controller(2, maxTime);
+		Controller c2 = new Controller(2, maxTime, load);
 		controllers.add(c2);
 		c2.addENodeB(B7);
 		c2.addENodeB(B6);

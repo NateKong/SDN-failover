@@ -22,12 +22,14 @@ public class Entity {
 	private long maxTime;
 	protected static DecimalFormat decFor;
 	protected ArrayList<Connection> connections; // a list of connections to other eNodeBs
+	protected int load;
 
-	public Entity(String name, long maxTime) {
+	public Entity(String name, long maxTime, int load) {
 		this.name = name;
 		this.maxTime = maxTime;
+		this.load = load;
 		connections = new ArrayList<Connection>();
-		Entity.decFor = new DecimalFormat("#0.00");
+		Entity.decFor = new DecimalFormat("#0.000");
 		decFor.setRoundingMode(RoundingMode.CEILING);
 	}
 
@@ -67,17 +69,20 @@ public class Entity {
 
 	/**
 	 * Random number creation for time in milliseconds.
+	 * where
+	 * 25% load is between 0 - 250 milliseconds
+	 * 50% load is between 0 - 500 milliseconds
+	 * 75% load is between 0 - 750 milliseconds
+	 * 95% load is between 0 - 950 milliseconds
 	 * 
-	 * @return a number between 0 - 5 seconds
+	 * @param load is the percent load 
+	 * @return a number in milliseconds
 	 */
-	public int random() {
-		//int i = 5; //time in seconds
-		int i = 10;
-		//int i = 15;
-		//int i = 20;
+	public int random(int time) {
+		time *= 10;
 		
 		Random r = new Random();
-		return r.nextInt(i*1000);
+		return r.nextInt(time);
 	}
 
 	/**
