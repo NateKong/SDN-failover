@@ -9,8 +9,10 @@ package failover;
 
 public class Xtwo {
 	private ENodeB[] endpoints;
+	private String name;
 
-	public Xtwo(ENodeB endpt0, ENodeB endpt1) {
+	public Xtwo(String name, ENodeB endpt0, ENodeB endpt1) {
+		this.name = name;
 		endpoints = new ENodeB[2];
 		endpoints[0] = endpt0;
 		endpoints[1] = endpt1;
@@ -19,6 +21,14 @@ public class Xtwo {
 		System.out.println(endpt0.getName() + " has a X2 connected to " + endpt1.getName());
 	}
 
+	/**
+	 * Gets the name of the connection
+	 * @return the name of the connection
+	 */
+	public String getName(){
+		return name;
+	}
+	
 	/**
 	 * Used to for an eNodeB to figure out the other eNodeB thats attached to
 	 * it.
