@@ -8,26 +8,15 @@ package failover;
  */
 
 public class Xtwo {
-	private int bw; // the maximum bandwidth of the connection
 	private ENodeB[] endpoints;
 
-	public Xtwo(ENodeB endpt0, ENodeB endpt1, int bw) {
+	public Xtwo(ENodeB endpt0, ENodeB endpt1) {
 		endpoints = new ENodeB[2];
 		endpoints[0] = endpt0;
 		endpoints[1] = endpt1;
-		this.bw = bw;
 		endpt0.addConnection(this);
 		endpt1.addConnection(this);
 		System.out.println(endpt0.getName() + " has a X2 connected to " + endpt1.getName());
-	}
-
-	/**
-	 * Gets the maximum potential bandwidth between eNodeBs (X2 connection)
-	 * 
-	 * @return maximum bandwidth
-	 */
-	public int getBW() {
-		return bw;
 	}
 
 	/**
