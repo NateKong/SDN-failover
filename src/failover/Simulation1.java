@@ -144,19 +144,23 @@ public class Simulation1 {
 		
 		Controller c0 = new Controller(0, maxTime, load);
 		controllers.add(c0);
-		c0.addENodeB(B1);
-		c0.addENodeB(B0);
-		c0.addENodeB(B2);
+		c0.addENodeB(B1,c0);
+		c0.addENodeB(B0, B1);
+		c0.addENodeB(B2, B1);
 		Controller c1 = new Controller(1, failTime, load);
 		controllers.add(c1);
-		c1.addENodeB(B4);
-		c1.addENodeB(B3);
-		c1.addENodeB(B5);
+		c1.addENodeB(B4, c1);
+		c1.addENodeB(B3, B4);
+		c1.addENodeB(B5, B4);
 		Controller c2 = new Controller(2, maxTime, load);
 		controllers.add(c2);
-		c2.addENodeB(B7);
-		c2.addENodeB(B6);
-		c2.addENodeB(B8);
+		c2.addENodeB(B7, c2);
+		c2.addENodeB(B6, B7);
+		c2.addENodeB(B8, B7);
+		
+		Connection x11 = new Connection("connection11", eNodeBs.get(1), controllers.get(0));
+		//Connection x12 = new Connection("connection12", eNodeBs.get(4), controllers.get(1));
+		Connection x13 = new Connection("connection13", eNodeBs.get(7), controllers.get(2));
 	}
 
 	/**

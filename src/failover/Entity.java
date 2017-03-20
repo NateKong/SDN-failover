@@ -1,6 +1,7 @@
 package failover;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * An Entity in LTE.
@@ -119,10 +120,12 @@ public class Entity {
 	}
 
 	/**
-	 * requires override message
-	 * @param eNodeB
+	 * THIS REQUIRES AN OVERRIDE 
+	 * @param e
+	 * @param hashMap
 	 */
-	public void messageController(Entity e) {
-
+	public void messageController(ENodeB e, HashMap<ENodeB, ENodeB> hashMap) {
+		// TODO Auto-generated method stub
+		
 	}
 }
