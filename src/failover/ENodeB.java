@@ -9,7 +9,6 @@ package failover;
  * @since Jan 2017
  */
 
-import java.util.HashMap;
 import java.util.ArrayList;
 
 public class ENodeB extends Entity implements Runnable {
@@ -17,9 +16,13 @@ public class ENodeB extends Entity implements Runnable {
 	private Entity toController;
 	private ArrayList<Message> orphanMessages;
 	private ArrayList<Message> adoptionMessages;
+	private int bw;
+	private int hops;
 	
-	public ENodeB(int name, long maxTime, int load) {
+	public ENodeB(int name, long maxTime, int load, int bw, int hops) {
 		super(("eNodeB" + Integer.toString(name)), maxTime, load);
+		this.bw = bw;
+		this.hops = hops;
 		orphanMessages = new ArrayList<Message>();
 		adoptionMessages = new ArrayList<Message>();
 		//System.out.println(getName() + " is created");
@@ -71,12 +74,25 @@ public class ENodeB extends Entity implements Runnable {
 				//eNodeB becomes an orphan
 				if ( !hasController() ) {
 					//System.out.println(getTime() + ": " + name + " is an orphan");
+					bw = 0;
+					hops = 100;
 					orphanNode();
 				}
 				
 				// pass message from orphan to controller
 				if ( !orphanMessages.isEmpty() && hasController()){
 					for (Message m: orphanMessages){
+						//find the connection between this eNodeB and the next eNodeB
+						for (Connection c: connections) {
+							if (c.getEndpoint(this).equals(toController)){
+								//update to lowest bandwidth
+								int messageBw = m.getBw();
+								int connectionBw = c.getBw();
+								if (connectionBw < messageBw) {
+									m.setBw(connectionBw);
+								}
+							}
+						}
 						toController.messageController(m);
 						//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends orphan message to " + toController.getName() + " from orphan " + m.getOrphan().getName() );}
 					}
@@ -88,7 +104,7 @@ public class ENodeB extends Entity implements Runnable {
 					for (Message m: adoptionMessages){
 						if( m.atOrphan() ){
 							ENodeB orphan = m.getOrphan();
-							orphan.acceptAdoption(m.getController(), this);
+							orphan.acceptAdoption(m, this);
 							//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + orphan.getName());}
 						}else{
 							ENodeB e = m.removeBreadcrumb();
@@ -115,8 +131,9 @@ public class ENodeB extends Entity implements Runnable {
 		for (Connection c : connections) {
 			Entity b = c.getEndpoint(this);
 			Message orphanBroadcast = new Message(this);
+			orphanBroadcast.setBw(c.getBw());
 			b.messageController(orphanBroadcast);
-			if (name.equals("eNodeB7")) {System.out.println(getTime() + ": " + name + " broadcasts message to " + b.getName());}
+			//if (name.equals("eNodeB7")) {System.out.println(getTime() + ": " + name + " broadcasts message to " + b.getName());}
 		}
 	}
 
@@ -132,18 +149,29 @@ public class ENodeB extends Entity implements Runnable {
 	}
 	
 	/**
-	 * Addes messages for adoption
+	 * Adds messages for adoption
 	 * @param adoptMessage
 	 */
 	public void sendAdoptionMessage(Message adoptMessage) {
 		adoptionMessages.add(adoptMessage);
 	}
 	
-	private void acceptAdoption(Controller c, ENodeB e) {
+	private void acceptAdoption(Message message, ENodeB e) {
+		Controller c = message.getController();
+		int messageBw = message.getBw();
+		int messageHops = message.getHops();
+		
 		if (controller == null) {
 			controller = c;
-			System.out.println(getTime() + ": " + c.getName() + " adopts " + name);
-			
+			bw = messageBw;
+			hops = messageHops;
+			System.out.println(getTime() + ": " + c.getName() + " adopts " + name + "\tBW: " + bw + "\thops: " +  hops);
+			toController = e;
+		}else if ( messageHops <= hops && messageBw > bw ) {
+			controller = c;
+			bw = messageBw;
+			hops = messageHops;
+			System.out.println(getTime() + ": " + c.getName() + " UPGRADES adoption for " + name + "\tBW: " + bw + "\thops: " +  hops);
 			toController = e;
 		}
 	}
