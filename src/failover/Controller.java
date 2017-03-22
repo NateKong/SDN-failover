@@ -10,7 +10,6 @@ package failover;
  */
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Controller extends Entity implements Runnable {
 	private ArrayList<ENodeB> eNodeBs;
@@ -71,13 +70,10 @@ public class Controller extends Entity implements Runnable {
 	 */
 	private void adoptOrphans() {
 		for (Message m: orphans) {
-			ENodeB orphan = m.getOrphan();
-			if ( !orphan.hasController() ) {
-				ENodeB e = m.removeBreadcrumb();
-				m.setController(this);
-				e.sendAdoptionMessage(m);
-				//System.out.println(getTime() + ": " + name + " sends adoption message to " + e.getName() + " for orphan " + orphan.getName());
-			}
+			ENodeB e = m.removeBreadcrumb();
+			m.setController(this);
+			e.sendAdoptionMessage(m);
+			//System.out.println(getTime() + ": " + name + " sends adoption message to " + e.getName() + " for orphan " + orphan.getName());
 		}
 		orphans.clear();
 	}
