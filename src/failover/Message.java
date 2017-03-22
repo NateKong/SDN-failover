@@ -12,11 +12,15 @@ public class Message {
 	private Controller controller;
 	private ENodeB orphan;
 	private ArrayList<ENodeB> eNodeB;
+	private int bw;
+	private int hops;
 	
 	public Message (ENodeB orphan){
 		controller = null;
 		this.orphan = orphan;
 		this.eNodeB = new ArrayList<ENodeB>();
+		this.bw = 0;
+		this.hops = 0;
 	}
 	
 	/**
@@ -44,6 +48,27 @@ public class Message {
 	}
 	
 	/**
+	 * Gets the amount of hops
+	 */
+	public int getHops() {
+		return hops;
+	}
+	
+	/**
+	 * Gets the smallest bw for the connection
+	 */
+	public int getBw() {
+		return bw;
+	}
+	
+	/**
+	 * set the bw
+	 */
+	public void setBw(int bw) {
+		this.bw = bw;
+	}
+	
+	/**
 	 * Adds the last eNodeB that
 	 * sends the orphan message
 	 * 
@@ -51,6 +76,7 @@ public class Message {
 	 */
 	public void addBreadcrumb(ENodeB e){
 		eNodeB.add(e);
+		hops++;
 	}
 	
 	/**
