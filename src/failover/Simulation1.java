@@ -61,13 +61,13 @@ public class Simulation1 {
 				break;
 		}		
 		
-		//for (int i = 1; i<=10;i++){
+		for (int i = 1; i<=100;i++){
 			printNewSection();
-			//System.out.println("RUN "+i);
+			System.out.println("RUN "+i);
 			start();
 			System.out.println("\n");
 			
-		//}
+		}
 	}
 	
 	private static void start(){
@@ -99,11 +99,11 @@ public class Simulation1 {
 	 * Controllers eNodeBs X2 connections
 	 */
 	private static void system() {
-		printNewSection();
-		System.out.println("INITIALIZE SYSTEM\n");
+		//printNewSection();
+		//System.out.println("INITIALIZE SYSTEM\n");
 		
 		/* Create eNodeBs */
-		System.out.println("\nCreate eNodeBs");
+		//System.out.println("\nCreate eNodeBs");
 
 		ENodeB B0 = new ENodeB(0, maxTime, load);
 		eNodeBs.add(B0);
@@ -125,7 +125,7 @@ public class Simulation1 {
 		eNodeBs.add(B8);
 
 		/* Creates connections between ENodeBs */
-		System.out.println("\nCreate Connections");
+		//System.out.println("\nCreate Connections");
 		
 		Connection x0 = new Connection("connection0", eNodeBs.get(0), eNodeBs.get(1));
 		Connection x1 = new Connection("connection1", eNodeBs.get(1), eNodeBs.get(2));
@@ -140,7 +140,7 @@ public class Simulation1 {
 		Connection x10 = new Connection("connection10", eNodeBs.get(5), eNodeBs.get(6));
 
 		/* Create Controllers */
-		System.out.println("\nCreate Controllers");
+		//System.out.println("\nCreate Controllers");
 		
 		Controller c0 = new Controller(0, maxTime, load);
 		controllers.add(c0);
@@ -159,7 +159,7 @@ public class Simulation1 {
 		c2.addENodeB(B8, B7);
 		
 		Connection x11 = new Connection("connection11", eNodeBs.get(1), controllers.get(0));
-		//Connection x12 = new Connection("connection12", eNodeBs.get(4), controllers.get(1));
+		Connection x12 = new Connection("connection12", eNodeBs.get(4), controllers.get(1));
 		Connection x13 = new Connection("connection13", eNodeBs.get(7), controllers.get(2));
 	}
 
@@ -170,7 +170,7 @@ public class Simulation1 {
 		ArrayList<Thread> threads = new ArrayList<Thread>();
 		long startTime = System.currentTimeMillis();
 
-		printNewSection();
+		//printNewSection();
 		System.out.println("RUN SIMULATION\n");
 
 		// create threads components

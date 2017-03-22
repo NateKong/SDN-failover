@@ -14,13 +14,13 @@ import java.util.HashMap;
 
 public class Controller extends Entity implements Runnable {
 	private ArrayList<ENodeB> eNodeBs;
-	private HashMap<ENodeB, HashMap<ENodeB,ENodeB>> orphans; // orphan eNodeBs
-
+	private ArrayList<Message> orphans;
+	
 	public Controller(int name, long maxTime, int load) {
 		super(("Controller" + Integer.toString(name)), maxTime, load);
 		eNodeBs = new ArrayList<ENodeB>();
-		orphans = new HashMap<ENodeB, HashMap<ENodeB,ENodeB>>();
-		System.out.println(getName() + " is created");
+		orphans = new ArrayList<Message>();//new HashMap<ENodeB, HashMap<ENodeB,ENodeB>>();
+		//System.out.println(getName() + " is created");
 	}
 
 	/**
@@ -33,7 +33,7 @@ public class Controller extends Entity implements Runnable {
 		e1.setController(this);
 		e1.setEntity(e2);
 		eNodeBs.add(e1);
-		System.out.println(name + " adopts " + e1.getName());
+		//System.out.println(name + " adopts " + e1.getName());
 	}
 
 	/**
@@ -55,6 +55,10 @@ public class Controller extends Entity implements Runnable {
 		}
 
 		if (name.equals("Controller1")){
+			for (Connection c: connections) {
+				Entity e = c.getEndpoint(this);
+				e.removeConnection(c);
+			}
 			removeController();
 			System.out.println("\n" + getTime() + ": Closing thread " + name + "\n");
 		} else {
@@ -62,12 +66,17 @@ public class Controller extends Entity implements Runnable {
 		}
 	}
 
+	/**
+	 * Sends adoption message back to eNodeBs
+	 */
 	private void adoptOrphans() {
-		for (ENodeB b: orphans.keySet()) {
-			if ( !b.hasController() ) {
-				//b.setController(this);
-				//System.out.println(getTime() + ": " + name + " adopts " + b.getName());
-				System.out.println("\n\n" + getTime() + ": " + name + " Gets message\n\n");
+		for (Message m: orphans) {
+			ENodeB orphan = m.getOrphan();
+			if ( !orphan.hasController() ) {
+				ENodeB e = m.removeBreadcrumb();
+				m.setController(this);
+				e.sendAdoptionMessage(m);
+				//System.out.println(getTime() + ": " + name + " sends adoption message to " + e.getName() + " for orphan " + orphan.getName());
 			}
 		}
 		orphans.clear();
@@ -89,7 +98,7 @@ public class Controller extends Entity implements Runnable {
 	 * 
 	 * @param eNodeB
 	 */
-	public void messageController(ENodeB orphan, HashMap<ENodeB,ENodeB> sender) {
-		orphans.put(orphan, sender);
+	 public void messageController(Message orphanMessage) {
+		orphans.add(orphanMessage);
 	}
 }

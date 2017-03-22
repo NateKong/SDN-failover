@@ -10,16 +10,19 @@ package failover;
  */
 
 import java.util.HashMap;
+import java.util.ArrayList;
 
 public class ENodeB extends Entity implements Runnable {
 	private Controller controller;
 	private Entity toController;
-	private HashMap<ENodeB, HashMap<ENodeB,ENodeB>> messages; // the first entity is where it originates from, the second is the messages sender
-
+	private ArrayList<Message> orphanMessages;
+	private ArrayList<Message> adoptionMessages;
+	
 	public ENodeB(int name, long maxTime, int load) {
 		super(("eNodeB" + Integer.toString(name)), maxTime, load);
-		messages = new HashMap<ENodeB, HashMap<ENodeB,ENodeB>>();
-		System.out.println(getName() + " is created");
+		orphanMessages = new ArrayList<Message>();
+		adoptionMessages = new ArrayList<Message>();
+		//System.out.println(getName() + " is created");
 	}
 
 	/**
@@ -64,22 +67,37 @@ public class ENodeB extends Entity implements Runnable {
 
 		try {
 			while (checkTime(System.currentTimeMillis())) {
+				Thread.sleep(random());
 				//eNodeB becomes an orphan
 				if ( !hasController() ) {
-					System.out.println(getTime() + ": " + name + " is an orphan");
+					//System.out.println(getTime() + ": " + name + " is an orphan");
 					orphanNode();
-					Thread.sleep(random());
-				}else {
-					Thread.sleep(1);
 				}
-				// other eNodeBs pass message to controller
-				if ( !messages.isEmpty() && hasController()){
-					Thread.sleep(random());
-					for (ENodeB e: messages.keySet()){
-						toController.messageController(e, messages.get(e));
-						System.out.println(getTime() + ": " + name + " sends " + e.getName() + " message to " + toController.getName());
+				
+				// pass message from orphan to controller
+				if ( !orphanMessages.isEmpty() && hasController()){
+					for (Message m: orphanMessages){
+						toController.messageController(m);
+						//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends orphan message to " + toController.getName() + " from orphan " + m.getOrphan().getName() );}
 					}
-					messages.clear();
+					orphanMessages.clear();
+				}
+				
+				// pass message from controller to orphan
+				if ( !adoptionMessages.isEmpty() ) {
+					for (Message m: adoptionMessages){
+						if( m.atOrphan() ){
+							ENodeB orphan = m.getOrphan();
+							orphan.acceptAdoption(m.getController(), this);
+							//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + orphan.getName());}
+						}else{
+							ENodeB e = m.removeBreadcrumb();
+							e.sendAdoptionMessage(m);
+							//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + e.getName());}
+						}
+							
+					}
+					adoptionMessages.clear();
 				}
 			}
 		} catch (InterruptedException e) {
@@ -96,10 +114,9 @@ public class ENodeB extends Entity implements Runnable {
 	private void orphanNode() {
 		for (Connection c : connections) {
 			Entity b = c.getEndpoint(this);
-			HashMap<ENodeB, ENodeB> map = new HashMap<ENodeB, ENodeB>();
-			map.put(this, this);
-			b.messageController(this, map);
-			System.out.println(getTime() + ": " + name + " broadcasts message to " + b.getName());
+			Message orphanBroadcast = new Message(this);
+			b.messageController(orphanBroadcast);
+			//if (name.equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " broadcasts message to " + b.getName());}
 		}
 	}
 
@@ -108,7 +125,26 @@ public class ENodeB extends Entity implements Runnable {
 	 * 
 	 * @param eNodeB
 	 */
-	public void messageController(ENodeB orphan, HashMap<ENodeB,ENodeB> sender) {
-			messages.put(orphan, sender);			
+	public void messageController(Message orphanMessage) {
+		//if(orphanMessage.getOrphan().getName().equals("eNodeB4")){ System.out.println(name + " receives message from eNB4");; }
+		orphanMessage.addBreadcrumb(this);
+		orphanMessages.add(orphanMessage);			
+	}
+	
+	/**
+	 * Addes messages for adoption
+	 * @param adoptMessage
+	 */
+	public void sendAdoptionMessage(Message adoptMessage) {
+		adoptionMessages.add(adoptMessage);
+	}
+	
+	private void acceptAdoption(Controller c, ENodeB e) {
+		if (controller == null) {
+			controller = c;
+			System.out.println(getTime() + ": " + c.getName() + " adopts " + name);
+			
+			toController = e;
+		}
 	}
 }

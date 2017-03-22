@@ -18,7 +18,7 @@ public class Connection {
 		endpoints[1] = endpt1;
 		endpt0.addConnection(this);
 		endpt1.addConnection(this);
-		System.out.println(endpt0.getName() + " has a X2 connected to " + endpt1.getName());
+		//System.out.println(endpt0.getName() + " has a X2 connected to " + endpt1.getName());
 	}
 
 	/**

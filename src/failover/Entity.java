@@ -118,14 +118,21 @@ public class Entity {
 	public void addConnection(Connection c) {
 		connections.add(c);
 	}
+	
+	/**
+	 * Removes a connection
+	 * 
+	 * @param c
+	 */
+	public void removeConnection(Connection c) {
+		connections.remove(c);
+	}
 
 	/**
 	 * THIS REQUIRES AN OVERRIDE 
-	 * @param e
-	 * @param hashMap
+	 * @param orphanBoardcast
 	 */
-	public void messageController(ENodeB e, HashMap<ENodeB, ENodeB> hashMap) {
-		// TODO Auto-generated method stub
+	public void messageController(Message orphanBroadcast) {
 		
 	}
 }
