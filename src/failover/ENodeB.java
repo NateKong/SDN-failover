@@ -116,7 +116,7 @@ public class ENodeB extends Entity implements Runnable {
 			Entity b = c.getEndpoint(this);
 			Message orphanBroadcast = new Message(this);
 			b.messageController(orphanBroadcast);
-			//if (name.equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " broadcasts message to " + b.getName());}
+			//if (name.equals("eNodeB7")) {System.out.println(getTime() + ": " + name + " broadcasts message to " + b.getName());}
 		}
 	}
 

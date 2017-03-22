@@ -63,13 +63,13 @@ public class Simulation2 {
 				break;
 		}		
 		
-		for (int i = 1; i<=100;i++){
+		//for (int i = 1; i<=100;i++){
 			printNewSection();
-			System.out.println("RUN "+i);
+			//System.out.println("RUN "+i);
 			start();
 			System.out.println("\n");
 			
-		}
+		//}
 	}
 	
 	private static void start(){
@@ -126,9 +126,9 @@ public class Simulation2 {
 		ENodeB B8 = new ENodeB(8, maxTime, load);
 		eNodeBs.add(B8);
 		ENodeB B9 = new ENodeB(9, maxTime, load);
-		eNodeBs.add(B8);
+		eNodeBs.add(B9);
 		ENodeB B10 = new ENodeB(10, maxTime, load);
-		eNodeBs.add(B8);
+		eNodeBs.add(B10);
 
 		/* Create Controllers */
 		//System.out.println("\nCreate Controllers");
