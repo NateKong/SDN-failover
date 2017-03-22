@@ -20,7 +20,7 @@ public class Message {
 		this.orphan = orphan;
 		this.eNodeB = new ArrayList<ENodeB>();
 		this.bw = 0;
-		this.hops = 0;
+		this.hops = 1; //adds one for the last hop to the controller
 	}
 	
 	/**
