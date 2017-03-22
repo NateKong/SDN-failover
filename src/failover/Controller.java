@@ -51,7 +51,7 @@ public class Controller extends Entity implements Runnable {
 		int numOfHops = 100;
 		
 		for (ENodeB b: eNodeBs.keySet()) {
-			for (Xtwo x: b.getConnections()) {
+			for (Connection x: b.getConnections()) {
 				if (x.getEndpoint(b).equals(e)) {
 					int hops = b.getCHops() + 1;
 					if ( hops < numOfHops ) {

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ENodeB extends Entity implements Runnable {
-	private ArrayList<Xtwo> connections; // a list of connections to other eNodeBs
+	private ArrayList<Connection> connections; // a list of connections to other eNodeBs
 	private Controller controller;
 	private int cHops; // the number of hops from the eNodeB to the controller
 	private int cBW; // the lowest throughput (Mbps) from the eNodeB to the controller
@@ -21,7 +21,7 @@ public class ENodeB extends Entity implements Runnable {
 
 	public ENodeB(int name, int hops, long maxTime) {
 		super(("eNodeB" + Integer.toString(name)), maxTime);
-		connections = new ArrayList<Xtwo>();
+		connections = new ArrayList<Connection>();
 		message = new HashMap<ENodeB, Integer>();
 		cHops = hops;
 		System.out.println(getName() + " is created");
@@ -32,11 +32,11 @@ public class ENodeB extends Entity implements Runnable {
 	 * 
 	 * @param x2 the connection between eNodeBs
 	 */
-	public void addConnection(Xtwo x2) {
+	public void addConnection(Connection x2) {
 		connections.add(x2);
 	}
 
-	public ArrayList<Xtwo> getConnections() {
+	public ArrayList<Connection> getConnections() {
 		return connections;
 	}
 	
@@ -108,9 +108,9 @@ public class ENodeB extends Entity implements Runnable {
 	 * orphan.
 	 */
 	private void orphanNode() {
-		for (Xtwo x2 : connections) {
-			ENodeB b = x2.getEndpoint(this);
-			b.messageController(this, x2.getBW());
+		for (Connection connection : connections) {
+			ENodeB b = connection.getEndpoint(this);
+			b.messageController(this, connection.getBW());
 		}
 	}
 
