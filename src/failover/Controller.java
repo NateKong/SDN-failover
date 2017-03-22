@@ -9,77 +9,31 @@ package failover;
  * @since Jan 2017
  */
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Controller extends Entity implements Runnable {
-	private HashMap<ENodeB, Integer> eNodeBs;
-	private HashMap<ENodeB, int[]> orphans; // orphan eNodeBs
-
-	public Controller(int name, long maxTime) {
-		super(("Controller" + Integer.toString(name)), maxTime);
-		eNodeBs = new HashMap<ENodeB, Integer>();
-		orphans = new HashMap<ENodeB, int[]>();
-		System.out.println(getName() + " is created");
-	}
-
-	/**
-	 * Adds an eNodeB to the controllers database.
-	 * Sets the controller to the eNodeB
-	 * 
-	 * @param e an eNodeB (LTE tower)
-	 * @param hop is the number of x2 connections from the eNodeB to the controller
-	 * @param bw is the minimum throughput (Mbps) between the controller and the eNodeB
-	 */
-	public void addENodeB(ENodeB e, int hop, int bw, boolean isSetup) {
-		e.setController(this, hop, bw);
-		eNodeBs.put(e,hop);
-		if (isSetup){
-			System.out.println( name + " adopts " + e.getName() + "\thop: " + hop + "\tbw " + bw);
-		} else {
-			System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " adopts " + e.getName() + "\thop: " + hop + "\tbw " + bw);
-		}
-	}
+	private ArrayList<ENodeB> eNodeBs;
+	private ArrayList<Message> orphans;
 	
-	/**
-	 * Adds an eNodeB to the controllers database
-	 * without knowing hops or bw
-	 * 
-	 * @param e an eNodeB (LTE tower)
-	 */
-	public void addENodeB(ENodeB e) {
-		int bw = 0;
-		int numOfHops = 100;
-		
-		for (ENodeB b: eNodeBs.keySet()) {
-			for (Connection x: b.getConnections()) {
-				if (x.getEndpoint(b).equals(e)) {
-					int hops = b.getCHops() + 1;
-					if ( hops < numOfHops ) {
-						numOfHops = hops;  
-						bw = ( x.getBW() > b.getCbw() ) ? b.getCbw() : x.getBW();	
-					}
-				}
-			}
-		}
-		
-		eNodeBs.put(e, numOfHops);
-		e.setController(this, numOfHops, bw);
-		System.out.println(name + " adopts " + e.getName() + "\thop: " + numOfHops + "\tbw " + bw);
+	public Controller(int name, long maxTime, int load) {
+		super(("Controller" + Integer.toString(name)), maxTime, load);
+		eNodeBs = new ArrayList<ENodeB>();
+		orphans = new ArrayList<Message>();//new HashMap<ENodeB, HashMap<ENodeB,ENodeB>>();
+		//System.out.println(getName() + " is created");
 	}
 
 	/**
-	 * Adds to a list of orphan nodes
+	 * Adds an eNodeB to the controllers database. Sets the controller to the
+	 * eNodeB
+	 * 
+	 * @param e an eNodeB (LTE tower)
 	 */
-	public void addOrphan(ENodeB b, int hops, int bw) {
-		int[] stats = {hops, bw};
-		if (orphans.containsKey(b)) {
-			int[] stat = orphans.get(b);
-			if (stat[0] > hops && bw > stat[1]) {
-				orphans.put(b, stats);
-			}
-		} else {
-			orphans.put(b, stats);
-		}
+	public void addENodeB(ENodeB e1, Entity e2) {
+		e1.setController(this);
+		e1.setEntity(e2);
+		eNodeBs.add(e1);
+		//System.out.println(name + " adopts " + e1.getName());
 	}
 
 	/**
@@ -87,7 +41,7 @@ public class Controller extends Entity implements Runnable {
 	 */
 	@Override
 	public void run() {
-		System.out.println(getTime(System.currentTimeMillis()) + ": Running thread " + name);
+		System.out.println(getTime() + ": Running thread " + name);
 		try {
 			while (checkTime(System.currentTimeMillis())) {
 				Thread.sleep(random());
@@ -101,32 +55,28 @@ public class Controller extends Entity implements Runnable {
 		}
 
 		if (name.equals("Controller1")){
+			for (Connection c: connections) {
+				Entity e = c.getEndpoint(this);
+				e.removeConnection(c);
+			}
 			removeController();
-			System.out.println();
-			System.out.println(getTime(System.currentTimeMillis()) + ": "+ name + " failed\n" );
-		}else {
-			System.out.println(getTime(System.currentTimeMillis()) + ": Closing thread " + name);	
+			System.out.println("\n" + getTime() + ": Closing thread " + name + "\n");
+		} else {
+			System.out.println(getTime() + ": Closing thread " + name);
 		}
 	}
 
 	/**
-	 * Adopt Orphans nodes that call out
-	 * as orphans
+	 * Sends adoption message back to eNodeBs
 	 */
 	private void adoptOrphans() {
-		for (ENodeB b: orphans.keySet()) {
-			if ( !b.hasController() ) {
-				int [] stats = orphans.get(b);
-				addENodeB(b, stats[0], stats[1], false);
-			} else {
-				int hops = b.getCHops(); // current hops
-				int bw = b.getCbw(); // current bw
-				int [] stats = orphans.get(b); // proposed hops and bw 
-				
-				if (stats[0] <= hops && stats[1] > bw) {
-					System.out.print("UPGRADE: ");
-					addENodeB(b, stats[0], stats[1], false);
-				}
+		for (Message m: orphans) {
+			ENodeB orphan = m.getOrphan();
+			if ( !orphan.hasController() ) {
+				ENodeB e = m.removeBreadcrumb();
+				m.setController(this);
+				e.sendAdoptionMessage(m);
+				//System.out.println(getTime() + ": " + name + " sends adoption message to " + e.getName() + " for orphan " + orphan.getName());
 			}
 		}
 		orphans.clear();
@@ -136,10 +86,19 @@ public class Controller extends Entity implements Runnable {
 	 * Removes the controller from the eNodeBs This acts as controller failure
 	 */
 	private void removeController() {
-		for (ENodeB b : eNodeBs.keySet()) {
-			b.setController(null, 1000, 1000);
+		for (ENodeB b : eNodeBs) {
+			b.setController(null);
 		}
 		eNodeBs.clear();
 
+	}
+	
+	/**
+	 * Sends a message to the controller
+	 * 
+	 * @param eNodeB
+	 */
+	 public void messageController(Message orphanMessage) {
+		orphans.add(orphanMessage);
 	}
 }

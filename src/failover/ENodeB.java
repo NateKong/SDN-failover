@@ -9,54 +9,41 @@ package failover;
  * @since Jan 2017
  */
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.ArrayList;
 
 public class ENodeB extends Entity implements Runnable {
-	private ArrayList<Connection> connections; // a list of connections to other eNodeBs
 	private Controller controller;
-	private int cHops; // the number of hops from the eNodeB to the controller
-	private int cBW; // the lowest throughput (Mbps) from the eNodeB to the controller
-	private HashMap<ENodeB, Integer> message;
-
-	public ENodeB(int name, int hops, long maxTime) {
-		super(("eNodeB" + Integer.toString(name)), maxTime);
-		connections = new ArrayList<Connection>();
-		message = new HashMap<ENodeB, Integer>();
-		cHops = hops;
-		System.out.println(getName() + " is created");
-	}
-
-	/**
-	 * Adds a connection to other eNodeBs
-	 * 
-	 * @param x2 the connection between eNodeBs
-	 */
-	public void addConnection(Connection x2) {
-		connections.add(x2);
+	private Entity toController;
+	private ArrayList<Message> orphanMessages;
+	private ArrayList<Message> adoptionMessages;
+	
+	public ENodeB(int name, long maxTime, int load) {
+		super(("eNodeB" + Integer.toString(name)), maxTime, load);
+		orphanMessages = new ArrayList<Message>();
+		adoptionMessages = new ArrayList<Message>();
+		//System.out.println(getName() + " is created");
 	}
 
-	public ArrayList<Connection> getConnections() {
-		return connections;
-	}
-	
-	public int getCHops() {
-		return cHops;
-	}
-	
-	public int getCbw() {
-		return cBW;
-	}
-	
 	/**
 	 * Sets the controller for the eNodeB
 	 * 
 	 * @param c is the new controller for the eNodeB
 	 */
-	public void setController(Controller c, int hops, int bw) {
+	public void setController(Controller c) {
 		controller = c;
-		cHops = hops;
-		cBW = bw;
+	}
+	
+	/**
+	 * Emulates a table registry in the eNodeB
+	 * to contact the controller the eNodeB knows to
+	 * send all messages to Entity e, where e could be
+	 * another eNodeB or the controller itself
+	 * 
+	 * @param e the Entity to the controller
+	 */
+	public void setEntity(Entity e) {
+		toController = e;
 	}
 	
 	/**
@@ -73,34 +60,51 @@ public class ENodeB extends Entity implements Runnable {
 	 */
 	@Override
 	public void run() {
-		System.out.println(getTime(System.currentTimeMillis()) + ": Running thread " + name);
+		System.out.println(getTime() + ": Running thread " + name);
 		
 		//pauses the system to start at the same time
 		while ( time(System.currentTimeMillis() ) < 1.0 ) {	}
 
 		try {
 			while (checkTime(System.currentTimeMillis())) {
-				// Let the thread sleep for between 1-5 seconds
 				Thread.sleep(random());
-
+				//eNodeB becomes an orphan
 				if ( !hasController() ) {
-					System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " is an orphan");
+					//System.out.println(getTime() + ": " + name + " is an orphan");
 					orphanNode();
 				}
 				
-				if (!message.isEmpty() && hasController() ) {
-					for (ENodeB b: message.keySet()) {
-						int X2bw = message.get(b);
-						int bw = (X2bw > cBW) ? cBW : X2bw;
-						controller.addOrphan(b, cHops + 1, bw);
+				// pass message from orphan to controller
+				if ( !orphanMessages.isEmpty() && hasController()){
+					for (Message m: orphanMessages){
+						toController.messageController(m);
+						//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends orphan message to " + toController.getName() + " from orphan " + m.getOrphan().getName() );}
 					}
-					message.clear();
+					orphanMessages.clear();
+				}
+				
+				// pass message from controller to orphan
+				if ( !adoptionMessages.isEmpty() ) {
+					for (Message m: adoptionMessages){
+						if( m.atOrphan() ){
+							ENodeB orphan = m.getOrphan();
+							orphan.acceptAdoption(m.getController(), this);
+							//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + orphan.getName());}
+						}else{
+							ENodeB e = m.removeBreadcrumb();
+							e.sendAdoptionMessage(m);
+							//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + e.getName());}
+						}
+							
+					}
+					adoptionMessages.clear();
 				}
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		System.out.println(getTime(System.currentTimeMillis()) + ": " + "Closing thread " + name);
+
+		System.out.println(getTime() + ": Closing thread " + name);
 	}
 
 	/**
@@ -108,9 +112,11 @@ public class ENodeB extends Entity implements Runnable {
 	 * orphan.
 	 */
 	private void orphanNode() {
-		for (Connection connection : connections) {
-			ENodeB b = connection.getEndpoint(this);
-			b.messageController(this, connection.getBW());
+		for (Connection c : connections) {
+			Entity b = c.getEndpoint(this);
+			Message orphanBroadcast = new Message(this);
+			b.messageController(orphanBroadcast);
+			if (name.equals("eNodeB7")) {System.out.println(getTime() + ": " + name + " broadcasts message to " + b.getName());}
 		}
 	}
 
@@ -119,13 +125,26 @@ public class ENodeB extends Entity implements Runnable {
 	 * 
 	 * @param eNodeB
 	 */
-	public void messageController(ENodeB eNodeB, int X2bw) {
-		
-		if ( hasController() ) {
-			int bw = (X2bw > cBW) ? cBW : X2bw;
-			controller.addOrphan(eNodeB, cHops + 1, bw  );
-		} else {
-			message.put(eNodeB, X2bw);
+	public void messageController(Message orphanMessage) {
+		//if(orphanMessage.getOrphan().getName().equals("eNodeB4")){ System.out.println(name + " receives message from eNB4");; }
+		orphanMessage.addBreadcrumb(this);
+		orphanMessages.add(orphanMessage);			
+	}
+	
+	/**
+	 * Addes messages for adoption
+	 * @param adoptMessage
+	 */
+	public void sendAdoptionMessage(Message adoptMessage) {
+		adoptionMessages.add(adoptMessage);
+	}
+	
+	private void acceptAdoption(Controller c, ENodeB e) {
+		if (controller == null) {
+			controller = c;
+			System.out.println(getTime() + ": " + c.getName() + " adopts " + name);
+			
+			toController = e;
 		}
 	}
 }

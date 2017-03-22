@@ -154,27 +154,23 @@ public class Simulation2 {
 		/* Creates connections between ENodeBs */
 		//System.out.println("\nCreate Connections");
 		
-		Connection x0 = new Connection("C0-E0", controllers.get(0), eNodeBs.get(0));
-		Connection x1 = new Connection("C1-E4", controllers.get(1), eNodeBs.get(4));
-		Connection x2 = new Connection("C2-E10", controllers.get(2), eNodeBs.get(10));
-		Connection x3 = new Connection("E0-E1", eNodeBs.get(0), eNodeBs.get(1));
-		Connection x4 = new Connection("E0-E2", eNodeBs.get(0), eNodeBs.get(2));
-		Connection x5 = new Connection("E0-E3", eNodeBs.get(0), eNodeBs.get(3));
-		Connection x6 = new Connection("E1-E4", eNodeBs.get(1), eNodeBs.get(4));
-		Connection x7 = new Connection("E2-E5", eNodeBs.get(2), eNodeBs.get(5));
-		Connection x8 = new Connection("E3-E6", eNodeBs.get(3), eNodeBs.get(6));
-		Connection x9 = new Connection("E4-E7", eNodeBs.get(4), eNodeBs.get(7));
-		Connection x10 = new Connection("E5-E8", eNodeBs.get(5), eNodeBs.get(8));
-		Connection x11 = new Connection("E6-E9", eNodeBs.get(6), eNodeBs.get(9));
-		Connection x12 = new Connection("E10-E7", eNodeBs.get(10), eNodeBs.get(7));
-		Connection x13 = new Connection("E10-E8", eNodeBs.get(10), eNodeBs.get(8));
-		Connection x14 = new Connection("E10-E9", eNodeBs.get(10), eNodeBs.get(9));
-		Connection x15 = new Connection("E1-E2", eNodeBs.get(1), eNodeBs.get(2));
-		Connection x16 = new Connection("E2-E3", eNodeBs.get(2), eNodeBs.get(3));
-		Connection x17 = new Connection("E4-E5", eNodeBs.get(4), eNodeBs.get(5));
-		Connection x18 = new Connection("E5-E6", eNodeBs.get(5), eNodeBs.get(6));
-		Connection x19 = new Connection("E7-E8", eNodeBs.get(7), eNodeBs.get(8));
-		Connection x20 = new Connection("E8-E9", eNodeBs.get(8), eNodeBs.get(9));
+		Connection x0 = new Connection("C0-E0", controllers.get(0), eNodeBs.get(0), 175);
+		Connection x1 = new Connection("C1-E4", controllers.get(1), eNodeBs.get(4), 175);
+		Connection x2 = new Connection("C2-E10", controllers.get(2), eNodeBs.get(10), 175);
+		Connection x4 = new Connection("E0-E2", eNodeBs.get(0), eNodeBs.get(2), 175);
+		Connection x6 = new Connection("E1-E4", eNodeBs.get(1), eNodeBs.get(4), 150);
+		Connection x7 = new Connection("E2-E5", eNodeBs.get(2), eNodeBs.get(5), 50);
+		Connection x8 = new Connection("E3-E6", eNodeBs.get(3), eNodeBs.get(6), 75);
+		Connection x9 = new Connection("E4-E7", eNodeBs.get(4), eNodeBs.get(7), 125);
+		Connection x10 = new Connection("E5-E8", eNodeBs.get(5), eNodeBs.get(8), 75);
+		Connection x11 = new Connection("E6-E9", eNodeBs.get(6), eNodeBs.get(9), 50);
+		Connection x13 = new Connection("E10-E8", eNodeBs.get(10), eNodeBs.get(8), 175);
+		Connection x15 = new Connection("E1-E2", eNodeBs.get(1), eNodeBs.get(2), 125);
+		Connection x16 = new Connection("E2-E3", eNodeBs.get(2), eNodeBs.get(3), 100);
+		Connection x17 = new Connection("E4-E5", eNodeBs.get(4), eNodeBs.get(5), 75);
+		Connection x18 = new Connection("E5-E6", eNodeBs.get(5), eNodeBs.get(6), 100);
+		Connection x19 = new Connection("E7-E8", eNodeBs.get(7), eNodeBs.get(8), 100);
+		Connection x20 = new Connection("E8-E9", eNodeBs.get(8), eNodeBs.get(9), 150);
 		
 	}
 
