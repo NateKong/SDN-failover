@@ -36,34 +36,26 @@ public class Simulation2 {
 	private static ArrayList<ENodeB> eNodeBs;
 	public static long maxTime;
 	public static int load;
-
-	public static long failTime = 10;
+	public static long failTime;
 
 	public static void main(String[] args) {
-		
+		maxTime = 10;
+		failTime = 5;
 		// create different loads for different simulations
 		int sim = 1;
 		
 		switch (sim) {
-		case 1: maxTime = 10;
-				load = 25;
-				failTime = 5;
+		case 1: load = 4; // 25% load
 				break;
-		case 2: maxTime = 30;
-				load = 50;
-				failTime = 10;
+		case 2: load = 9; // 50% load
 				break;
-		case 3: maxTime = 30;
-				load = 75;
-				failTime = 10;
+		case 3: load = 13; // 75% load
 				break;
-		default: maxTime = 30;
-				load = 95;
-				failTime = 10;
+		default:load = 17; // 95% load
 				break;
 		}		
 		
-		for (int i = 1; i<=100;i++){
+		for (int i = 1; i<=1;i++){
 			printNewSection();
 			System.out.println("RUN "+i);
 			start();

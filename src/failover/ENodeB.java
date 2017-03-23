@@ -9,19 +9,18 @@ package failover;
  * @since Jan 2017
  */
 
-
-import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ENodeB extends Entity implements Runnable {
 	private Controller controller;
 	private Entity toController;
-	private ArrayList<Message> orphanMessages;
-	private ArrayList<Message> adoptionMessages;
+	private ConcurrentLinkedQueue<Message> orphanMessages;
+	private ConcurrentLinkedQueue<Message> adoptionMessages;
 	
 	public ENodeB(int name, long maxTime, int load) {
 		super(("eNodeB" + Integer.toString(name)), maxTime, load);
-		orphanMessages = new ArrayList<Message>();
-		adoptionMessages = new ArrayList<Message>();
+		orphanMessages = new ConcurrentLinkedQueue<Message>();
+		adoptionMessages = new ConcurrentLinkedQueue<Message>();
 		//System.out.println(getName() + " is created");
 	}
 
@@ -47,15 +46,6 @@ public class ENodeB extends Entity implements Runnable {
 	}
 	
 	/**
-	 * determines if the eNodeB has a controller
-	 * 
-	 * @return true if there is a controller
-	 */
-	public boolean hasController() {
-		return !(controller == null);
-	}
-	
-	/**
 	 * Runs the thread ( thread.start() )
 	 */
 	@Override
@@ -69,35 +59,30 @@ public class ENodeB extends Entity implements Runnable {
 			while (checkTime(System.currentTimeMillis())) {
 				Thread.sleep(random());
 				//eNodeB becomes an orphan
-				if ( !hasController() ) {
+				if ( controller == null ) {
 					//System.out.println(getTime() + ": " + name + " is an orphan");
 					orphanNode();
 				}
 				
 				// pass message from orphan to controller
-				if ( !orphanMessages.isEmpty() && hasController()){
-					for (Message m: orphanMessages){
-						toController.messageController(m);
-						//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends orphan message to " + toController.getName() + " from orphan " + m.getOrphan().getName() );}
-					}
-					orphanMessages.clear();
+				while(!orphanMessages.isEmpty() && controller != null) {
+					Message m = orphanMessages.poll();
+					toController.messageController(m);
+					//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends orphan message to " + toController.getName() + " from orphan " + m.getOrphan().getName() );}
 				}
-				
+								
 				// pass message from controller to orphan
-				if ( !adoptionMessages.isEmpty() ) {
-					for (Message m: adoptionMessages){
-						if( m.atOrphan() ){
-							ENodeB orphan = m.getOrphan();
-							orphan.acceptAdoption(m.getController(), this);
-							//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + orphan.getName());}
-						}else{
-							ENodeB e = m.removeBreadcrumb();
-							e.sendAdoptionMessage(m);
-							//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + e.getName());}
-						}
-							
+				while (!adoptionMessages.isEmpty()) {
+					Message m = adoptionMessages.poll();
+					if( m.atOrphan() ){
+						ENodeB orphan = m.getOrphan();
+						orphan.acceptAdoption(m.getController(), this);
+						//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + orphan.getName());}
+					}else{
+						ENodeB e = m.removeBreadcrumb();
+						e.sendAdoptionMessage(m);
+						//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + e.getName());}
 					}
-					adoptionMessages.clear();
 				}
 			}
 		} catch (InterruptedException e) {
