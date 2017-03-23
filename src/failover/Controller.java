@@ -10,16 +10,18 @@ package failover;
  */
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Controller extends Entity implements Runnable {
 	private ArrayList<ENodeB> eNodeBs;
-	private ArrayList<Message> orphans;
+	//private ArrayList<Message> orphans;
+	private ConcurrentLinkedQueue<Message> orphans;
 	
 	public Controller(int name, long maxTime, int load) {
 		super(("Controller" + Integer.toString(name)), maxTime, load);
 		eNodeBs = new ArrayList<ENodeB>();
-		orphans = new ArrayList<Message>();//new HashMap<ENodeB, HashMap<ENodeB,ENodeB>>();
+		//orphans = new ArrayList<Message>();//new HashMap<ENodeB, HashMap<ENodeB,ENodeB>>();
+		orphans = new ConcurrentLinkedQueue<Message>();
 		//System.out.println(getName() + " is created");
 	}
 
@@ -70,7 +72,14 @@ public class Controller extends Entity implements Runnable {
 	 * Sends adoption message back to eNodeBs
 	 */
 	private void adoptOrphans() {
-		for (Message m: orphans) {
+		while (!orphans.isEmpty()){
+			Message m = orphans.poll();
+			ENodeB e = m.removeBreadcrumb();
+			m.setController(this);
+			e.sendAdoptionMessage(m);
+		}
+		
+		/*for (Message m: orphans) {
 			ENodeB orphan = m.getOrphan();
 			//if ( !orphan.hasController() ) {
 				ENodeB e = m.removeBreadcrumb();
@@ -79,7 +88,7 @@ public class Controller extends Entity implements Runnable {
 				//System.out.println(getTime() + ": " + name + " sends adoption message to " + e.getName() + " for orphan " + orphan.getName());
 			//}
 		}
-		orphans.clear();
+		orphans.clear();*/
 	}
 
 	/**
