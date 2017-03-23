@@ -1,5 +1,8 @@
 package failover;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * An Entity in LTE.
  * This is a parent object
@@ -19,11 +22,15 @@ public class Entity {
 	protected static long startTime;
 	private long maxTime;
 	protected static DecimalFormat decFor;
+	protected ArrayList<Connection> connections; // a list of connections to other eNodeBs
+	private int load;
 
-	public Entity(String name, long maxTime) {
+	public Entity(String name, long maxTime, int load) {
 		this.name = name;
 		this.maxTime = maxTime;
-		Entity.decFor = new DecimalFormat("#0.00");
+		this.load = load;
+		connections = new ArrayList<Connection>();
+		Entity.decFor = new DecimalFormat("#0.000");
 		decFor.setRoundingMode(RoundingMode.CEILING);
 	}
 
@@ -55,22 +62,26 @@ public class Entity {
 	 * @return false if the simulation has reached its maximum time
 	 */
 	public boolean checkTime(long currentTime) {
-		return (time(currentTime) < maxTime);
+		if (time(currentTime) > maxTime) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
 	 * Random number creation for time in milliseconds.
+	 * where
+	 * 25% load is between 0 - 250 milliseconds
+	 * 50% load is between 0 - 500 milliseconds
+	 * 75% load is between 0 - 750 milliseconds
+	 * 95% load is between 0 - 950 milliseconds
 	 * 
-	 * @return a number between 0 - 5 seconds
+	 * @param load is the percent load 
+	 * @return a number in milliseconds
 	 */
 	public int random() {
-		//int i = 5; //seconds
-		//int i = 10;
-		//int i = 15;
-		int i = 20;
-		
 		Random r = new Random();
-		return r.nextInt(i*1000);
+		return r.nextInt(load);
 	}
 
 	/**
@@ -92,8 +103,34 @@ public class Entity {
 	 * @return String of time formatted to 2 decimal points rounded to the
 	 *         ceiling
 	 */
-	public String getTime(long currentTime) {
-		double t = time(currentTime);
+	public String getTime() {
+		double t = time(System.currentTimeMillis());
 		return decFor.format(t);
+	}
+
+	/**
+	 * Adds a connection to other eNodeBs or controllers
+	 * 
+	 * @param c the connection between eNodeBs
+	 */
+	public void addConnection(Connection c) {
+		connections.add(c);
+	}
+	
+	/**
+	 * Removes a connection
+	 * 
+	 * @param c
+	 */
+	public void removeConnection(Connection c) {
+		connections.remove(c);
+	}
+
+	/**
+	 * THIS REQUIRES AN OVERRIDE 
+	 * @param orphanBoardcast
+	 */
+	public void messageController(Message orphanBroadcast) {
+		
 	}
 }

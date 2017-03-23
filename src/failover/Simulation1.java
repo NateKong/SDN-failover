@@ -50,13 +50,13 @@ public class Simulation1 {
 		System.out.println("Simulation of failover for Distributed SDN Controllers");
 
 		// setup
-		setup();
+		//setup();
 
 		// system architecture
-		system();
+		//system();
 
 		// run simulation
-		run();
+		//run();
 
 		printNewSection();
 		System.out.println("SIMULATION COMPLETE");
@@ -78,7 +78,7 @@ public class Simulation1 {
 		//long failTime = 10; // this is the fail time for Controller1
 		//long failTime = 20;
 		//long failTime = 40;
-		long failTime = 60;
+/*		long failTime = 60;
 		
 		int numOfeNodeBs = 9;
 		int numOfControllers = 3;
@@ -87,7 +87,7 @@ public class Simulation1 {
 		printNewSection();
 		System.out.println("INITIALIZE SYSTEM\n");
 
-		/* Create Controllers */
+		/* Create Controllers 
 		System.out.println("Create Controllers");
 		for (int i = 0; i < numOfControllers; i++) {
 			if (i == 1) {
@@ -100,7 +100,7 @@ public class Simulation1 {
 
 		}
 
-		/* Create eNodeBs */
+		/* Create eNodeBs
 		System.out.println("\nCreate eNodeBs");
 		for (int i = 0, j = 0; i < numOfeNodeBs; i++) {
 			ENodeB B = new ENodeB(i, maxTime);
@@ -114,7 +114,7 @@ public class Simulation1 {
 
 		}
 
-		/* Creates connections between ENodeBs */
+		/* Creates connections between ENodeBs
 		System.out.println("\nCreate Connections");
 
 		for (int i = 1; i < numOfeNodeBs; i++) {
@@ -130,7 +130,7 @@ public class Simulation1 {
 				new Xtwo(eNodeBs.get(i - 2), eNodeBs.get(i), bw);
 			}
 		}
-
+*/
 	}
 
 	/**

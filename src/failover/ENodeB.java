@@ -9,28 +9,24 @@ package failover;
  * @since Jan 2017
  */
 
+
 import java.util.ArrayList;
 
 public class ENodeB extends Entity implements Runnable {
-	private ArrayList<Xtwo> connections; // a list of connections to other eNodeBs
 	private Controller controller;
-	private Controller backupController;
-
-	public ENodeB(int name, long maxTime) {
-		super(("eNodeB" + Integer.toString(name)), maxTime);
-		connections = new ArrayList<Xtwo>();
-		System.out.println(getName() + " is created");
-		backupController = null;
-	}
-
-	/**
-	 * Adds a connection to other eNodeBs 
-	 * 
-	 * @param x2
-	 *            the connection between eNodeBs
-	 */
-	public void addConnection(Xtwo x2) {
-		connections.add(x2);
+	private Controller bkController;
+	private Entity toController;
+	private Entity toBkController;
+	private ArrayList<Message> orphanMessages;
+	private ArrayList<Message> adoptionMessages;
+	
+	public ENodeB(int name, long maxTime, int load) {
+		super(("eNodeB" + Integer.toString(name)), maxTime, load);
+		controller = bkController = null;
+		toController = toBkController = null;
+		orphanMessages = new ArrayList<Message>();
+		adoptionMessages = new ArrayList<Message>();
+		//System.out.println(getName() + " is created");
 	}
 
 	/**
@@ -41,91 +37,26 @@ public class ENodeB extends Entity implements Runnable {
 	public void setController(Controller c) {
 		controller = c;
 	}
-
+	
 	/**
-	 * Sets the controller for the eNodeB
+	 * Emulates a table registry in the eNodeB
+	 * to contact the controller the eNodeB knows to
+	 * send all messages to Entity e, where e could be
+	 * another eNodeB or the controller itself
 	 * 
-	 * @param c is the new controller for the eNodeB
+	 * @param e the Entity to the controller
 	 */
-	public void setBackupController(Controller c) {
-		System.out.println(getTime(System.currentTimeMillis()) + ": " + c.getName() + " is the backup controller for " + name);
-		backupController = c;
+	public void setEntity(Entity e) {
+		toController = e;
 	}
-
+	
 	/**
-	 * Determines if the eNodeB has a controller
+	 * determines if the eNodeB has a controller
 	 * 
-	 * @return true is the eNodeB has a controller
+	 * @return true if there is a controller
 	 */
 	public boolean hasController() {
-		return controller != null;
-	}
-	
-	/**
-	 * Calls out to other connected eNodeBs and 
-	 * determine backup controller 
-	 */
-	public void setupBackup(){
-		while (backupController == null) {
-			for (Xtwo x2 : connections) {
-				ENodeB b = x2.getEndpoint(this);
-				if (!b.sameController(controller) ) {
-					b.messageController(this);					
-				} else if (b.hasBackupController() && !b.sameAsBackupController(controller)) {
-					b.messageBackupController(this);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Determines if the eNodeB controllers are the same
-	 * 
-	 * @return true if the eNodeB has a controller
-	 */
-	public boolean sameController(Controller c) {
-		return controller == c;		
-	}
-	
-	/**
-	 * Sends a message to the controller
-	 * 
-	 * @param eNodeB
-	 */
-	public void messageController(ENodeB eNodeB) {
-		if ( hasController() && controller.isAlive() == true ) {
-			controller.addBackup(eNodeB);
-		}
-	}
-	
-	/**
-	 * Sends a message to the back up controller
-	 * 
-	 * @param eNodeB
-	 */
-	public void messageBackupController(ENodeB eNodeB) {
-		if ( hasController() && backupController.isAlive() == true ) {
-			backupController.addBackup(eNodeB);
-		}
-	}
-	
-	/**
-	 * Determines is the eNodeB has a back up controller
-	 * 
-	 * @return true is the eNodeB has a back up controller
-	 */
-	public boolean hasBackupController() {
-		return backupController != null;
-	}	
-	
-	/**
-	 * Determines if the eNodeB Controller c 
-	 * is the same as the back up controller
-	 * 
-	 * @return true if they are
-	 */
-	public boolean sameAsBackupController(Controller c) {
-		return backupController == c;		
+		return !(controller == null);
 	}
 	
 	/**
@@ -133,50 +64,102 @@ public class ENodeB extends Entity implements Runnable {
 	 */
 	@Override
 	public void run() {
-		System.out.println(getTime(System.currentTimeMillis()) + ": Running thread " + name);
+		System.out.println(getTime() + ": Running thread " + name);
 		
-		while ( time(System.currentTimeMillis() ) < 1.0 ) {
-			
-		}
-		
+		//pauses the system to start at the same time
+		while ( time(System.currentTimeMillis() ) < 1.0 ) {	}
+
 		try {
-			while (checkTime(System.currentTimeMillis())) {							
-				// check for backup controller
-				if (backupController == null) {
-					setupBackup();	
-				}
-				//controller load
-				else if(name.equals("eNodeB3") | name.equals("eNodeB4") | name.equals("eNodeB5")){
-					System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " checks if backup controller exists");
-				}
-				
-				// Let the thread sleep for between 1-5 seconds
+			while (checkTime(System.currentTimeMillis())) {
 				Thread.sleep(random());
-				
-				// check if has controller
-				if ( !hasController() ) {
-					System.out.println(getTime(System.currentTimeMillis()) + ": " + name + " is an orphan");
+				//eNodeB becomes an orphan
+				if ( controller == null ) {
+					//System.out.println(getTime() + ": " + name + " is an Orphan");
 					orphanNode();
 				}
+				//eNodeB needs a backup controller
+				if ( bkController == null ) {
+					//System.out.println(getTime() + ": " + name + " needs a backup controller");
+					orphanBkNode();
+				}
 				
-				if (controller != null && controller.equals(backupController)) {
-					backupController = null;
+				// pass message from orphan to controller
+				if ( !orphanMessages.isEmpty() && bkController != null){
+					for (Message m: orphanMessages){
+						toController.messageController(m);
+						//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends orphan message to " + toController.getName() + " from orphan " + m.getOrphan().getName() );}
+					}
+					orphanMessages.clear();
+				}
+				
+				// pass message from controller to orphan
+				if ( !adoptionMessages.isEmpty() ) {
+					for (Message m: adoptionMessages){
+						if( m.atOrphan() ){
+							ENodeB orphan = m.getOrphan();
+							orphan.acceptAdoption(m.getController(), this);
+							//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + orphan.getName());}
+						}else{
+							ENodeB e = m.removeBreadcrumb();
+							e.sendAdoptionMessage(m);
+							//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + e.getName());}
+						}
+							
+					}
+					adoptionMessages.clear();
 				}
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
-		System.out.println(getTime(System.currentTimeMillis()) + ": " + "Closing thread " + name);
+		System.out.println(getTime() + ": Closing thread " + name);
 	}
 
 	/**
-	 * Calls controller if eNodeB is a orphan
+	 * calls out to the backup controller
 	 */
 	private void orphanNode() {
-		if (backupController != null) {
-			backupController.addOrphan(this);
+		
+	}
+
+	/**
+	 * call out to other connected eNodeBs and inform them
+	 * that this eNodeB needs a back up controller
+	 */
+	private void orphanBkNode() {
+		for (Connection c : connections) {
+			Entity b = c.getEndpoint(this);
+			Message orphanBroadcast = new Message(this);
+			b.messageController(orphanBroadcast);
+			//if (name.equals("eNodeB7")) {System.out.println(getTime() + ": " + name + " broadcasts message to " + b.getName());}
 		}
 	}
+
+	/**
+	 * Sends a message to the controller
+	 * 
+	 * @param eNodeB
+	 */
+	public void messageController(Message orphanMessage) {
+		//if(orphanMessage.getOrphan().getName().equals("eNodeB4")){ System.out.println(name + " receives message from eNB4");; }
+		orphanMessage.addBreadcrumb(this);
+		orphanMessages.add(orphanMessage);			
+	}
 	
+	/**
+	 * Adds messages for adoption
+	 * @param adoptMessage
+	 */
+	public void sendAdoptionMessage(Message adoptMessage) {
+		adoptionMessages.add(adoptMessage);
+	}
+	
+	private void acceptAdoption(Controller c, ENodeB e) {
+		if (controller == null) {
+			controller = c;
+			System.out.println(getTime() + ": " + c.getName() + " adopts " + name);
+			toBkController = e;
+		}
+	}
 }

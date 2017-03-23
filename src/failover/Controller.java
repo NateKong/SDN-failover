@@ -14,17 +14,13 @@ import java.util.HashMap;
 
 public class Controller extends Entity implements Runnable {
 	private ArrayList<ENodeB> eNodeBs;
-	private int remainingCap; // Remaining capacity of the system (system capacity - load)
-	private HashMap<ENodeB, String> orphans; // orphan eNodeBs
-	private boolean isAlive;
-
-	public Controller(int name, int rCap, long maxTime) {
-		super(("Controller" + Integer.toString(name)), maxTime);
-		this.remainingCap = rCap;
+	private ArrayList<Message> orphans;
+	
+	public Controller(int name, long maxTime, int load) {
+		super(("Controller" + Integer.toString(name)), maxTime, load);
 		eNodeBs = new ArrayList<ENodeB>();
-		orphans = new HashMap<ENodeB, String>();
-		isAlive = false;
-		System.out.println(getName() + " is created");
+		orphans = new ArrayList<Message>();//new HashMap<ENodeB, HashMap<ENodeB,ENodeB>>();
+		//System.out.println(getName() + " is created");
 	}
 
 	/**
@@ -33,26 +29,11 @@ public class Controller extends Entity implements Runnable {
 	 * 
 	 * @param e an eNodeB (LTE tower)
 	 */
-	public void addENodeB(ENodeB e) {
-		e.setController(this);
-		eNodeBs.add(e);
-		System.out.println(name + " adopts " + e.getName());
-	}
-
-	/**
-	 * Adds to a list of orphan nodes
-	 */
-	public void addOrphan(ENodeB b) {
-		orphans.put(b, "");
-	}
-	
-	/**
-	 * Adds to a list of orphan nodes for backup
-	 */
-	public void addBackup(ENodeB b) {
-		if ( !b.hasBackupController() ) {
-			b.setBackupController(this);
-		}
+	public void addENodeB(ENodeB e1, Entity e2) {
+		e1.setController(this);
+		e1.setEntity(e2);
+		eNodeBs.add(e1);
+		//System.out.println(name + " adopts " + e1.getName());
 	}
 
 	/**
@@ -60,9 +41,7 @@ public class Controller extends Entity implements Runnable {
 	 */
 	@Override
 	public void run() {
-		System.out.println(getTime(System.currentTimeMillis()) + ": Running thread " + name);
-		isAlive = true;
-		
+		System.out.println(getTime() + ": Running thread " + name);
 		try {
 			while (checkTime(System.currentTimeMillis())) {
 				Thread.sleep(random());
@@ -76,23 +55,28 @@ public class Controller extends Entity implements Runnable {
 		}
 
 		if (name.equals("Controller1")){
+			for (Connection c: connections) {
+				Entity e = c.getEndpoint(this);
+				e.removeConnection(c);
+			}
 			removeController();
-			System.out.println();
-			System.out.println(getTime(System.currentTimeMillis()) + ": "+ name + " failed\n" );
-		}else {
-			System.out.println(getTime(System.currentTimeMillis()) + ": Closing thread " + name);	
+			System.out.println("\n" + getTime() + ": Closing thread " + name + "\n");
+		} else {
+			System.out.println(getTime() + ": Closing thread " + name);
 		}
-			
-		isAlive = false;
 	}
 
 	/**
-	 * Adopts orphan eNodeBs when controller fails
+	 * Sends adoption message back to eNodeBs
 	 */
 	private void adoptOrphans() {
-		for (ENodeB b: orphans.keySet()) {
-			System.out.print( getTime(System.currentTimeMillis()) + ": ");
-			addENodeB(b);
+		for (Message m: orphans) {
+			ENodeB orphan = m.getOrphan();
+			ENodeB e = m.removeBreadcrumb();
+			m.setController(this);
+			e.sendAdoptionMessage(m);
+			//System.out.println(getTime() + ": " + name + " sends adoption message to " + e.getName() + " for orphan " + orphan.getName());
+		
 		}
 		orphans.clear();
 	}
@@ -105,9 +89,15 @@ public class Controller extends Entity implements Runnable {
 			b.setController(null);
 		}
 		eNodeBs.clear();
-	}
 
-	public boolean isAlive() {
-		return isAlive;
+	}
+	
+	/**
+	 * Sends a message to the controller
+	 * 
+	 * @param eNodeB
+	 */
+	 public void messageController(Message orphanMessage) {
+		orphans.add(orphanMessage);
 	}
 }
