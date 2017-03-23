@@ -63,13 +63,13 @@ public class Simulation2 {
 				break;
 		}		
 		
-		//for (int i = 1; i<=100;i++){
+		for (int i = 1; i<=100;i++){
 			printNewSection();
-			//System.out.println("RUN "+i);
+			System.out.println("RUN "+i);
 			start();
 			System.out.println("\n");
 			
-		//}
+		}
 	}
 	
 	private static void start(){
