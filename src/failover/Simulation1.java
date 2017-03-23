@@ -32,19 +32,31 @@ import java.util.ArrayList;
 public class Simulation1 {
 	private static ArrayList<Controller> controllers;
 	private static ArrayList<ENodeB> eNodeBs;
-	public static final long maxTime = 30; // this is in seconds
-
+	//public static final long maxTime = 30; // this is in seconds
+	//public static final long maxTime = 60;
+	//public static final long maxTime = 90;
+	public static final long maxTime = 120;
+	
 	public static void main(String[] args) {
+		for(int i=1; i<=10; i++){
+			printNewSection();
+			System.out.println("RUN " + i);
+			start();
+			System.out.println("\n");
+		}
+	}
+	
+	private static void start(){
 		System.out.println("Simulation of failover for Distributed SDN Controllers");
 
 		// setup
 		setup();
 
 		// system architecture
-		system();
+		//system();
 
 		// run simulation
-		run();
+		//run();
 
 		printNewSection();
 		System.out.println("SIMULATION COMPLETE");
@@ -63,12 +75,15 @@ public class Simulation1 {
 	 * Controllers eNodeBs X2 connections
 	 */
 	private static void system() {
-		long failTime = 10; // this is the fail time for Controller1
-
+		//long failTime = 10; // this is the fail time for Controller1
+		//long failTime = 20;
+		//long failTime = 40;
+		long failTime = 60;
+		
 		printNewSection();
 		System.out.println("INITIALIZE SYSTEM");
 
-		/* Create eNodeBs */
+		/* Create eNodeBs 
 		System.out.println("\nCreate eNodeBs");
 
 		ENodeB B0 = new ENodeB(0, 1, maxTime);
@@ -90,40 +105,41 @@ public class Simulation1 {
 		ENodeB B8 = new ENodeB(8, 1, maxTime);
 		eNodeBs.add(B8);
 
-		/* Creates connections between ENodeBs */
+		/* Creates connections between ENodeBs 
 		System.out.println("\nCreate Connections");
 		
-		Xtwo x0 = new Xtwo("connection0", eNodeBs.get(0), eNodeBs.get(1), 100);
-		Xtwo x1 = new Xtwo("connection1", eNodeBs.get(1), eNodeBs.get(2), 100);
-		Xtwo x2 = new Xtwo("connection2", eNodeBs.get(0), eNodeBs.get(2), 100);
-		Xtwo x3 = new Xtwo("connection3", eNodeBs.get(3), eNodeBs.get(4), 100);
-		Xtwo x4 = new Xtwo("connection4", eNodeBs.get(4), eNodeBs.get(5), 100);
-		Xtwo x5 = new Xtwo("connection5", eNodeBs.get(3), eNodeBs.get(5), 100);
-		Xtwo x6 = new Xtwo("connection6", eNodeBs.get(6), eNodeBs.get(7), 100);
-		Xtwo x7 = new Xtwo("connection7", eNodeBs.get(7), eNodeBs.get(8), 100);
-		Xtwo x8 = new Xtwo("connection8", eNodeBs.get(6), eNodeBs.get(8), 100);
-		Xtwo x9 = new Xtwo("connection9", eNodeBs.get(2), eNodeBs.get(3), 50);
-		Xtwo x10 = new Xtwo("connection10", eNodeBs.get(5), eNodeBs.get(6), 70);
+		Connection x0 = new Connection("connection0", eNodeBs.get(0), eNodeBs.get(1), 100);
+		Connection x1 = new Connection("connection1", eNodeBs.get(1), eNodeBs.get(2), 100);
+		Connection x2 = new Connection("connection2", eNodeBs.get(0), eNodeBs.get(2), 100);
+		Connection x3 = new Connection("connection3", eNodeBs.get(3), eNodeBs.get(4), 40);
+		Connection x4 = new Connection("connection4", eNodeBs.get(4), eNodeBs.get(5), 30);
+		Connection x5 = new Connection("connection5", eNodeBs.get(3), eNodeBs.get(5), 100);
+		Connection x6 = new Connection("connection6", eNodeBs.get(6), eNodeBs.get(7), 100);
+		Connection x7 = new Connection("connection7", eNodeBs.get(7), eNodeBs.get(8), 100);
+		Connection x8 = new Connection("connection8", eNodeBs.get(6), eNodeBs.get(8), 100);
+		Connection x9 = new Connection("connection9", eNodeBs.get(2), eNodeBs.get(3), 50);
+		Connection x10 = new Connection("connection10", eNodeBs.get(5), eNodeBs.get(6), 70);
 		
 
-		/* Create Controllers */
+		/* Create Controllers 
 		System.out.println("\nCreate Controllers");
 		
 		Controller c0 = new Controller(0, maxTime);
 		controllers.add(c0);
-		c0.addENodeB(B1, 0, 150);
+		c0.addENodeB(B1, 0, 150, true);
 		c0.addENodeB(B0);
 		c0.addENodeB(B2);
 		Controller c1 = new Controller(1, failTime);
 		controllers.add(c1);
-		c1.addENodeB(B4, 0, 150);
+		c1.addENodeB(B4, 0, 150, true);
 		c1.addENodeB(B3);
 		c1.addENodeB(B5);
 		Controller c2 = new Controller(2, maxTime);
 		controllers.add(c2);
-		c2.addENodeB(B7, 0, 150);
+		c2.addENodeB(B7, 0, 150, true);
 		c2.addENodeB(B6);
 		c2.addENodeB(B8);
+		*/
 	}
 
 	/**
