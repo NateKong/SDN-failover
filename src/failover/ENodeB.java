@@ -9,7 +9,7 @@ package failover;
  * @since Jan 2017
  */
 
-import java.util.HashMap;
+
 import java.util.ArrayList;
 
 public class ENodeB extends Entity implements Runnable {
