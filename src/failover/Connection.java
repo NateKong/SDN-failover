@@ -1,7 +1,7 @@
 package failover;
 
 /**
- * A X2 connection between two eNodeBs.
+ * A connection between eNodeBs or controllers and eNodeBs.
  * 
  * @author Nathan Kong
  * @since Jan 2017

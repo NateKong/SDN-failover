@@ -132,7 +132,7 @@ public class ENodeB extends Entity implements Runnable {
 	}
 	
 	/**
-	 * Addes messages for adoption
+	 * Adds messages for adoption
 	 * @param adoptMessage
 	 */
 	public void sendAdoptionMessage(Message adoptMessage) {
