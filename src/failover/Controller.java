@@ -72,11 +72,12 @@ public class Controller extends Entity implements Runnable {
 	private void adoptOrphans() {
 		for (Message m: orphans) {
 			ENodeB orphan = m.getOrphan();
-			ENodeB e = m.removeBreadcrumb();
-			m.setController(this);
-			e.sendAdoptionMessage(m);
-			//System.out.println(getTime() + ": " + name + " sends adoption message to " + e.getName() + " for orphan " + orphan.getName());
-		
+			//if ( !orphan.hasController() ) {
+				ENodeB e = m.removeBreadcrumb();
+				m.setController(this);
+				e.sendAdoptionMessage(m);
+				//System.out.println(getTime() + ": " + name + " sends adoption message to " + e.getName() + " for orphan " + orphan.getName());
+			//}
 		}
 		orphans.clear();
 	}

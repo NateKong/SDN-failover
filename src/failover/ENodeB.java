@@ -14,16 +14,12 @@ import java.util.ArrayList;
 
 public class ENodeB extends Entity implements Runnable {
 	private Controller controller;
-	private Controller bkController;
 	private Entity toController;
-	private Entity toBkController;
 	private ArrayList<Message> orphanMessages;
 	private ArrayList<Message> adoptionMessages;
 	
 	public ENodeB(int name, long maxTime, int load) {
 		super(("eNodeB" + Integer.toString(name)), maxTime, load);
-		controller = bkController = null;
-		toController = toBkController = null;
 		orphanMessages = new ArrayList<Message>();
 		adoptionMessages = new ArrayList<Message>();
 		//System.out.println(getName() + " is created");
@@ -51,15 +47,6 @@ public class ENodeB extends Entity implements Runnable {
 	}
 	
 	/**
-	 * determines if the eNodeB has a controller
-	 * 
-	 * @return true if there is a controller
-	 */
-	public boolean hasController() {
-		return !(controller == null);
-	}
-	
-	/**
 	 * Runs the thread ( thread.start() )
 	 */
 	@Override
@@ -74,17 +61,12 @@ public class ENodeB extends Entity implements Runnable {
 				Thread.sleep(random());
 				//eNodeB becomes an orphan
 				if ( controller == null ) {
-					//System.out.println(getTime() + ": " + name + " is an Orphan");
+					//System.out.println(getTime() + ": " + name + " is an orphan");
 					orphanNode();
-				}
-				//eNodeB needs a backup controller
-				if ( bkController == null ) {
-					//System.out.println(getTime() + ": " + name + " needs a backup controller");
-					orphanBkNode();
 				}
 				
 				// pass message from orphan to controller
-				if ( !orphanMessages.isEmpty() && bkController != null){
+				if ( !orphanMessages.isEmpty() && controller != null){
 					for (Message m: orphanMessages){
 						toController.messageController(m);
 						//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends orphan message to " + toController.getName() + " from orphan " + m.getOrphan().getName() );}
@@ -117,17 +99,10 @@ public class ENodeB extends Entity implements Runnable {
 	}
 
 	/**
-	 * calls out to the backup controller
+	 * call out to other connected eNodeBs and inform them this eNodeB is an
+	 * orphan.
 	 */
 	private void orphanNode() {
-		
-	}
-
-	/**
-	 * call out to other connected eNodeBs and inform them
-	 * that this eNodeB needs a back up controller
-	 */
-	private void orphanBkNode() {
 		for (Connection c : connections) {
 			Entity b = c.getEndpoint(this);
 			Message orphanBroadcast = new Message(this);
@@ -159,7 +134,8 @@ public class ENodeB extends Entity implements Runnable {
 		if (controller == null) {
 			controller = c;
 			System.out.println(getTime() + ": " + c.getName() + " adopts " + name);
-			toBkController = e;
+			
+			toController = e;
 		}
 	}
 }
