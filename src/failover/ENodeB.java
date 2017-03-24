@@ -67,7 +67,7 @@ public class ENodeB extends Entity implements Runnable {
 				}
 				
 				// pass message from orphan to controller
-				while (!orphanMessages.isEmpty() && bkController != null){
+				while (!orphanMessages.isEmpty() && controller != null){
 					Message m = orphanMessages.poll();
 					toController.messageController(m);
 				}
@@ -100,9 +100,11 @@ public class ENodeB extends Entity implements Runnable {
 	private void orphanNode() {
 		for (Connection c : connections) {
 			Entity b = c.getEndpoint(this);
+			if (!b.equals(controller)) {
 			Message orphanBroadcast = new Message(this);
 			b.messageController(orphanBroadcast);
 			//if (name.equals("eNodeB7")) {System.out.println(getTime() + ": " + name + " broadcasts message to " + b.getName());}
+			}
 		}
 	}
 
@@ -114,7 +116,7 @@ public class ENodeB extends Entity implements Runnable {
 	public void messageController(Message orphanMessage) {
 		//if(orphanMessage.getOrphan().getName().equals("eNodeB4")){ System.out.println(name + " receives message from eNB4");; }
 		orphanMessage.addBreadcrumb(this);
-		orphanMessages.add(orphanMessage);			
+		orphanMessages.add(orphanMessage);
 	}
 	
 	/**
@@ -122,8 +124,8 @@ public class ENodeB extends Entity implements Runnable {
 	 * @param adoptMessage
 	 */
 	public void replyMessage(Message adoptMessage) {
-		System.out.println(name + " recieves message");
-		//replyMessages.add(adoptMessage);
+		//System.out.println(name + " recieves message");
+		replyMessages.add(adoptMessage);
 	}
 	
 	private void acceptBackup(Controller c, ENodeB e) {

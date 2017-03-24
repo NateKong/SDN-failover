@@ -69,6 +69,10 @@ public class Message {
 		}
 	}
 	
+	public int getSize() {
+		return eNodeB.size();
+	}
+	
 	/**
 	 * Gets the Orphan eNodeB when
 	 * 1) sending messages to the controller

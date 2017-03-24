@@ -74,8 +74,8 @@ public class Controller extends Entity implements Runnable {
 			Message m = eNodeBMessages.poll();
 			ENodeB e = m.removeBreadcrumb();
 			m.setController(this);
-			System.out.println(e);
-			//e.replyMessage(m);
+			//System.out.println(m.getOrphan().getName() + m.getController().getName() + m.getSize());
+			e.replyMessage(m);
 		}
 		
 	}
