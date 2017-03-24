@@ -49,6 +49,14 @@ public class ENodeB extends Entity implements Runnable {
 		toController = e;
 	}
 	
+	public boolean hasController(){
+		return controller !=null;
+	}
+	
+	public boolean hasBkController() {
+		return bkController != null;
+	}
+	
 	/**
 	 * Gets the domain of the eNodeB
 	 */
@@ -69,13 +77,19 @@ public class ENodeB extends Entity implements Runnable {
 		try {
 			while (checkTime(System.currentTimeMillis())) {
 				Thread.sleep(random());
+				
 				//eNodeB becomes an orphan
-				if ( bkController == null ) {
-					//System.out.println(getTime() + ": " + name + " is an orphan");
+				if (controller == null) {
 					orphanNode();
 				}
 				
-				// pass message from orphan to controller
+				// needs a backup controller
+				if ( bkController == null ) {
+					//System.out.println(getTime() + ": " + name + " is an orphan");
+					getBackup();
+				}
+				
+				// processes messages from orphan to controller
 				while (!orphanMessages.isEmpty() && controller != null){
 					Message m = orphanMessages.poll();
 					ENodeB e = m.getOrphan();
@@ -84,8 +98,6 @@ public class ENodeB extends Entity implements Runnable {
 					}else if (domain != e.getDomain()){
 						toController.messageController(m);	
 					}
-					
-					//if (name.equals("eNodeB2")) {System.out.println( "poll to " + toController.getName());}
 				}
 				
 				// pass message from controller to orphan
@@ -93,8 +105,12 @@ public class ENodeB extends Entity implements Runnable {
 					Message m = replyMessages.poll();
 					if( m.atOrphan() ){
 						ENodeB orphan = m.getOrphan();
-						orphan.acceptBackup(m.getController(), this);
-						//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + orphan.getName());}
+						if(!orphan.hasBkController()){
+							orphan.acceptBackup(m.getController(), this);
+							//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + orphan.getName());}
+						}else if (!orphan.hasController()){
+							orphan.acceptAdoption(domain);
+						}
 					}else{
 						ENodeB e = m.removeBreadcrumb();
 						e.replyMessage(m);
@@ -110,10 +126,20 @@ public class ENodeB extends Entity implements Runnable {
 	}
 
 	/**
-	 * call out to other connected eNodeBs and inform them this eNodeB is an
-	 * orphan.
+	 * call out to backup controller
 	 */
 	private void orphanNode() {
+		Message newController = new Message(this);
+		toBkController.messageController(newController);
+		//if (name.equals("eNodeB7")) {System.out.println(getTime() + ": " + name + " broadcasts message to " + b.getName());}	
+	}
+	
+	/**
+	 * calls out to other connected eNodeBs 
+	 * and inform them this eNodeB needs
+	 * a backup
+	 */
+	private void getBackup() {
 		for (Connection c : connections) {
 			Entity b = c.getEndpoint(this);
 			if (!b.equals(controller)) {
@@ -144,6 +170,12 @@ public class ENodeB extends Entity implements Runnable {
 		replyMessages.add(adoptMessage);
 	}
 	
+	/**
+	 * Accepts the message from the Controller
+	 * Assigns a backup controller
+	 * @param c is the backup controller
+	 * @param e is the eNodeB to get to the backup controller
+	 */
 	private void acceptBackup(Controller c, ENodeB e) {
 		if (bkController == null && !c.equals(controller) ) {
 			bkController = c;
@@ -151,5 +183,19 @@ public class ENodeB extends Entity implements Runnable {
 			
 			toBkController = e;
 		}
+	}
+	
+	/**
+	 * Accepts the adoption.
+	 * Switches the backup controller
+	 * to the controller
+	 */
+	private void acceptAdoption(int domainNum){
+		controller = bkController;
+		bkController = null;
+		toController = toBkController;
+		toBkController = null;
+		domain = domainNum;
+		System.out.println(getTime() + ": " + controller.getName() + " adopts " + name);
 	}
 }
