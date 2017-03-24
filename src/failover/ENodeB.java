@@ -9,22 +9,20 @@ package failover;
  * @since Jan 2017
  */
 
-
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ENodeB extends Entity implements Runnable {
 	private Controller controller;
+	private Controller bkController;
 	private Entity toController;
-	//private ArrayList<Message> orphanMessages;
-	//private ArrayList<Message> adoptionMessages;
+	private Entity toBkController;
 	private ConcurrentLinkedQueue<Message> orphanMessages;
-	private ConcurrentLinkedQueue<Message> adoptionMessages;
+	private ConcurrentLinkedQueue<Message> replyMessages;
 	
 	public ENodeB(int name, long maxTime, int load) {
 		super(("eNodeB" + Integer.toString(name)), maxTime, load);
 		orphanMessages = new ConcurrentLinkedQueue<Message>();
-		adoptionMessages = new ConcurrentLinkedQueue<Message>();
+		replyMessages = new ConcurrentLinkedQueue<Message>();
 		//System.out.println(getName() + " is created");
 	}
 
@@ -63,27 +61,27 @@ public class ENodeB extends Entity implements Runnable {
 			while (checkTime(System.currentTimeMillis())) {
 				Thread.sleep(random());
 				//eNodeB becomes an orphan
-				if ( controller == null ) {
+				if ( bkController == null ) {
 					//System.out.println(getTime() + ": " + name + " is an orphan");
 					orphanNode();
 				}
 				
 				// pass message from orphan to controller
-				while (!orphanMessages.isEmpty() && controller != null){
+				while (!orphanMessages.isEmpty() && bkController != null){
 					Message m = orphanMessages.poll();
 					toController.messageController(m);
 				}
 				
 				// pass message from controller to orphan
-				while ( !adoptionMessages.isEmpty() ) {
-					Message m = adoptionMessages.poll();
+				while ( !replyMessages.isEmpty() ) {
+					Message m = replyMessages.poll();
 					if( m.atOrphan() ){
 						ENodeB orphan = m.getOrphan();
-						orphan.acceptAdoption(m.getController(), this);
+						orphan.acceptBackup(m.getController(), this);
 						//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + orphan.getName());}
 					}else{
 						ENodeB e = m.removeBreadcrumb();
-						e.sendAdoptionMessage(m);
+						e.replyMessage(m);
 						//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + e.getName());}
 					}
 				}
@@ -123,16 +121,17 @@ public class ENodeB extends Entity implements Runnable {
 	 * Adds messages for adoption
 	 * @param adoptMessage
 	 */
-	public void sendAdoptionMessage(Message adoptMessage) {
-		adoptionMessages.add(adoptMessage);
+	public void replyMessage(Message adoptMessage) {
+		System.out.println(name + " recieves message");
+		//replyMessages.add(adoptMessage);
 	}
 	
-	private void acceptAdoption(Controller c, ENodeB e) {
-		if (controller == null) {
-			controller = c;
+	private void acceptBackup(Controller c, ENodeB e) {
+		if (bkController == null) {
+			bkController = c;
 			System.out.println(getTime() + ": " + c.getName() + " adopts " + name);
 			
-			toController = e;
+			toBkController = e;
 		}
 	}
 }

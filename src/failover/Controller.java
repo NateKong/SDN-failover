@@ -14,12 +14,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Controller extends Entity implements Runnable {
 	private ArrayList<ENodeB> eNodeBs;
-	private ConcurrentLinkedQueue<Message> orphans;
+	private ConcurrentLinkedQueue<Message> eNodeBMessages;
 	
 	public Controller(int name, long maxTime, int load) {
 		super(("Controller" + Integer.toString(name)), maxTime, load);
 		eNodeBs = new ArrayList<ENodeB>();
-		orphans = new ConcurrentLinkedQueue<Message>();
+		eNodeBMessages = new ConcurrentLinkedQueue<Message>();
 		//System.out.println(getName() + " is created");
 	}
 
@@ -46,8 +46,8 @@ public class Controller extends Entity implements Runnable {
 			while (checkTime(System.currentTimeMillis())) {
 				Thread.sleep(random());
 
-				if (!orphans.isEmpty()) {
-					adoptOrphans();
+				if (!eNodeBMessages.isEmpty()) {
+					replyMessage();
 				}
 			}
 		} catch (InterruptedException e) {
@@ -69,12 +69,13 @@ public class Controller extends Entity implements Runnable {
 	/**
 	 * Sends adoption message back to eNodeBs
 	 */
-	private void adoptOrphans() {
-		while (!orphans.isEmpty()){
-			Message m = orphans.poll();
+	private void replyMessage() {
+		if (!eNodeBMessages.isEmpty()){
+			Message m = eNodeBMessages.poll();
 			ENodeB e = m.removeBreadcrumb();
 			m.setController(this);
-			e.sendAdoptionMessage(m);
+			System.out.println(e);
+			//e.replyMessage(m);
 		}
 		
 	}
@@ -96,6 +97,6 @@ public class Controller extends Entity implements Runnable {
 	 * @param eNodeB
 	 */
 	 public void messageController(Message orphanMessage) {
-		orphans.add(orphanMessage);
+		 eNodeBMessages.add(orphanMessage);
 	}
 }
