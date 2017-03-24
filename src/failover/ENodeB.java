@@ -13,18 +13,22 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ENodeB extends Entity implements Runnable {
 	private Controller controller;
+	private Controller bkController;
 	private Entity toController;
+	private Entity toBkController;
 	private ConcurrentLinkedQueue<Message> orphanMessages;
-	private ConcurrentLinkedQueue<Message> adoptionMessages;
+	private ConcurrentLinkedQueue<Message> replyMessages;
+	private int domain;
 	private int bw;
 	private int hops;
 	
-	public ENodeB(int name, long maxTime, int load, int bw, int hops) {
+	public ENodeB(int name, long maxTime, int load, int domain, int bw, int hops) {
 		super(("eNodeB" + Integer.toString(name)), maxTime, load);
+		orphanMessages = new ConcurrentLinkedQueue<Message>();
+		replyMessages = new ConcurrentLinkedQueue<Message>();
+		this.domain = domain;
 		this.bw = bw;
 		this.hops = hops;
-		orphanMessages = new ConcurrentLinkedQueue<Message>();
-		adoptionMessages = new ConcurrentLinkedQueue<Message>();
 		//System.out.println(getName() + " is created");
 	}
 
@@ -49,6 +53,21 @@ public class ENodeB extends Entity implements Runnable {
 		toController = e;
 	}
 	
+	public boolean hasController(){
+		return controller !=null;
+	}
+	
+	public boolean hasBkController() {
+		return bkController != null;
+	}
+	
+	/**
+	 * Gets the domain of the eNodeB
+	 */
+	public int getDomain(){
+		return domain;
+	}
+	
 	/**
 	 * Runs the thread ( thread.start() )
 	 */
@@ -62,43 +81,43 @@ public class ENodeB extends Entity implements Runnable {
 		try {
 			while (checkTime(System.currentTimeMillis())) {
 				Thread.sleep(random());
+				
 				//eNodeB becomes an orphan
-				if ( controller == null ) {
-					//System.out.println(getTime() + ": " + name + " is an orphan");
-					bw = 0;
-					hops = 100;
+				if (controller == null) {
 					orphanNode();
 				}
 				
-				// pass message from orphan to controller
-				while ( !orphanMessages.isEmpty() && controller != null){
-					Message m = orphanMessages.poll();
-					//find the connection between this eNodeB and the next eNodeB
-					for (Connection c: connections) {
-						if (c.getEndpoint(this).equals(toController)){
-							//update to lowest bandwidth
-							int messageBw = m.getBw();
-							int connectionBw = c.getBw();
-							if (connectionBw < messageBw) {
-								m.setBw(connectionBw);
-							}
-						}
-					}
-					toController.messageController(m);
-					//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends orphan message to " + toController.getName() + " from orphan " + m.getOrphan().getName() );}
+				// needs a backup controller
+				if ( bkController == null ) {
+					//System.out.println(getTime() + ": " + name + " is an orphan");
+					getBackup();
+				}
 				
+				// processes messages from orphan to controller
+				while (!orphanMessages.isEmpty() && controller != null){
+					Message m = orphanMessages.poll();
+					ENodeB e = m.getOrphan();
+					if (domain == e.getDomain() && toBkController != null){
+						toBkController.messageController(m);
+					}else if (domain != e.getDomain()){
+						toController.messageController(m);	
+					}
 				}
 				
 				// pass message from controller to orphan
-				while ( !adoptionMessages.isEmpty() ) {
-					Message m = adoptionMessages.poll();
+				while ( !replyMessages.isEmpty() ) {
+					Message m = replyMessages.poll();
 					if( m.atOrphan() ){
 						ENodeB orphan = m.getOrphan();
-						orphan.acceptAdoption(m, this);
-						//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + orphan.getName());}
+						if(!orphan.hasBkController()){
+							orphan.acceptBackup(m.getController(), this);
+							//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + orphan.getName());}
+						}else if (!orphan.hasController()){
+							orphan.acceptAdoption(domain);
+						}
 					}else{
 						ENodeB e = m.removeBreadcrumb();
-						e.sendAdoptionMessage(m);
+						e.replyMessage(m);
 						//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + e.getName());}
 					}
 				}
@@ -111,16 +130,27 @@ public class ENodeB extends Entity implements Runnable {
 	}
 
 	/**
-	 * call out to other connected eNodeBs and inform them this eNodeB is an
-	 * orphan.
+	 * call out to backup controller
 	 */
 	private void orphanNode() {
+		Message newController = new Message(this);
+		toBkController.messageController(newController);
+		//if (name.equals("eNodeB7")) {System.out.println(getTime() + ": " + name + " broadcasts message to " + b.getName());}	
+	}
+	
+	/**
+	 * calls out to other connected eNodeBs 
+	 * and inform them this eNodeB needs
+	 * a backup
+	 */
+	private void getBackup() {
 		for (Connection c : connections) {
 			Entity b = c.getEndpoint(this);
+			if (!b.equals(controller)) {
 			Message orphanBroadcast = new Message(this);
-			orphanBroadcast.setBw(c.getBw());
 			b.messageController(orphanBroadcast);
 			//if (name.equals("eNodeB7")) {System.out.println(getTime() + ": " + name + " broadcasts message to " + b.getName());}
+			}
 		}
 	}
 
@@ -130,36 +160,46 @@ public class ENodeB extends Entity implements Runnable {
 	 * @param eNodeB
 	 */
 	public void messageController(Message orphanMessage) {
-		//if(orphanMessage.getOrphan().getName().equals("eNodeB4")){ System.out.println(name + " receives message from eNB4");; }
+		//if(orphanMessage.getOrphan().getName().equals("eNodeB1") && name.equals("eNodeB2")){ System.out.println(name + " receives message from eNB1");; }
 		orphanMessage.addBreadcrumb(this);
-		orphanMessages.add(orphanMessage);			
+		orphanMessages.add(orphanMessage);
 	}
 	
 	/**
 	 * Adds messages for adoption
 	 * @param adoptMessage
 	 */
-	public void sendAdoptionMessage(Message adoptMessage) {
-		adoptionMessages.add(adoptMessage);
+	public void replyMessage(Message adoptMessage) {
+		//System.out.println(name + " receives message");
+		replyMessages.add(adoptMessage);
 	}
 	
-	private void acceptAdoption(Message message, ENodeB e) {
-		Controller c = message.getController();
-		int messageBw = message.getBw();
-		int messageHops = message.getHops();
-		
-		if (controller == null) {
-			controller = c;
-			bw = messageBw;
-			hops = messageHops;
-			System.out.println(getTime() + ": " + c.getName() + " adopts " + name + "\tBW: " + bw + "\thops: " +  hops);
-			toController = e;
-		}else if ( messageHops <= hops && messageBw > bw ) {
-			controller = c;
-			bw = messageBw;
-			hops = messageHops;
-			System.out.println(getTime() + ": " + c.getName() + " UPGRADES adoption for " + name + "\tBW: " + bw + "\thops: " +  hops);
-			toController = e;
+	/**
+	 * Accepts the message from the Controller
+	 * Assigns a backup controller
+	 * @param c is the backup controller
+	 * @param e is the eNodeB to get to the backup controller
+	 */
+	private void acceptBackup(Controller c, ENodeB e) {
+		if (bkController == null && !c.equals(controller) ) {
+			bkController = c;
+			System.out.println(getTime() + ": " + c.getName() + " is the back up for " + name);
+			
+			toBkController = e;
 		}
+	}
+	
+	/**
+	 * Accepts the adoption.
+	 * Switches the backup controller
+	 * to the controller
+	 */
+	private void acceptAdoption(int domainNum){
+		controller = bkController;
+		bkController = null;
+		toController = toBkController;
+		toBkController = null;
+		domain = domainNum;
+		System.out.println(getTime() + ": " + controller.getName() + " adopts " + name);
 	}
 }

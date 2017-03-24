@@ -14,12 +14,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Controller extends Entity implements Runnable {
 	private ArrayList<ENodeB> eNodeBs;
-	private ConcurrentLinkedQueue<Message> orphans;
+	private ConcurrentLinkedQueue<Message> eNodeBMessages;
 	
 	public Controller(int name, long maxTime, int load) {
 		super(("Controller" + Integer.toString(name)), maxTime, load);
 		eNodeBs = new ArrayList<ENodeB>();
-		orphans = new ConcurrentLinkedQueue<Message>();
+		eNodeBMessages = new ConcurrentLinkedQueue<Message>();
 		//System.out.println(getName() + " is created");
 	}
 
@@ -46,8 +46,8 @@ public class Controller extends Entity implements Runnable {
 			while (checkTime(System.currentTimeMillis())) {
 				Thread.sleep(random());
 
-				if (!orphans.isEmpty()) {
-					adoptOrphans();
+				if (!eNodeBMessages.isEmpty()) {
+					replyMessage();
 				}
 			}
 		} catch (InterruptedException e) {
@@ -58,6 +58,7 @@ public class Controller extends Entity implements Runnable {
 			for (Connection c: connections) {
 				Entity e = c.getEndpoint(this);
 				e.removeConnection(c);
+				//removeConnection(c);
 			}
 			removeController();
 			System.out.println("\n" + getTime() + ": Closing thread " + name + "\n");
@@ -69,12 +70,15 @@ public class Controller extends Entity implements Runnable {
 	/**
 	 * Sends adoption message back to eNodeBs
 	 */
-	private void adoptOrphans() {
-		Message m = orphans.poll();
-		ENodeB e = m.removeBreadcrumb();
-		m.setController(this);
-		e.sendAdoptionMessage(m);
-		//System.out.println(getTime() + ": " + name + " sends adoption message to " + e.getName() + " for orphan " + orphan.getName());
+	private void replyMessage() {
+		if (!eNodeBMessages.isEmpty()){
+			Message m = eNodeBMessages.poll();
+			ENodeB e = m.removeBreadcrumb();
+			m.setController(this);
+			//if(m.getOrphan().equals("eNodeB1")){System.out.println("eNodeB1");}
+			e.replyMessage(m);
+		}
+		
 	}
 
 	/**
@@ -94,6 +98,7 @@ public class Controller extends Entity implements Runnable {
 	 * @param eNodeB
 	 */
 	 public void messageController(Message orphanMessage) {
-		orphans.add(orphanMessage);
+		 eNodeBMessages.add(orphanMessage);
+		 if(orphanMessage.getOrphan().equals("eNodeB1")){System.out.println("eNodeB1");}
 	}
 }

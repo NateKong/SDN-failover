@@ -80,10 +80,8 @@ public class Entity {
 	 * @return a number in milliseconds
 	 */
 	public int random() {
-		int time = load * 10;
-		
 		Random r = new Random();
-		return r.nextInt(time);
+		return r.nextInt(load);
 	}
 
 	/**
