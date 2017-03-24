@@ -1,7 +1,7 @@
 package failover;
 
 /**
- * A connection between eNodeBs or controllers and eNodeBs.
+ * A General connection between two Entities.
  * 
  * @author Nathan Kong
  * @since Jan 2017
@@ -10,9 +10,11 @@ package failover;
 public class Connection {
 	private Entity[] endpoints;
 	private String name;
+	private int bw;
 
-	public Connection(String name, Entity endpt0, Entity endpt1) {
+	public Connection(String name, Entity endpt0, Entity endpt1, int bw) {
 		this.name = name;
+		this.bw = bw;
 		endpoints = new Entity[2];
 		endpoints[0] = endpt0;
 		endpoints[1] = endpt1;
@@ -44,5 +46,13 @@ public class Connection {
 		}
 		return null;
 	}
-
+	
+	/**
+	 * Get the bandwidth of the connection
+	 * 
+	 * @return the bandwidth of the connection
+	 */
+	public int getBw(){
+		return bw;
+	}
 }
