@@ -58,6 +58,7 @@ public class Controller extends Entity implements Runnable {
 			for (Connection c: connections) {
 				Entity e = c.getEndpoint(this);
 				e.removeConnection(c);
+				//removeConnection(c);
 			}
 			removeController();
 			System.out.println("\n" + getTime() + ": Closing thread " + name + "\n");
@@ -74,7 +75,7 @@ public class Controller extends Entity implements Runnable {
 			Message m = eNodeBMessages.poll();
 			ENodeB e = m.removeBreadcrumb();
 			m.setController(this);
-			//System.out.println(m.getOrphan().getName() + m.getController().getName() + m.getSize());
+			//if(m.getOrphan().equals("eNodeB1")){System.out.println("eNodeB1");}
 			e.replyMessage(m);
 		}
 		
@@ -98,5 +99,6 @@ public class Controller extends Entity implements Runnable {
 	 */
 	 public void messageController(Message orphanMessage) {
 		 eNodeBMessages.add(orphanMessage);
+		 if(orphanMessage.getOrphan().equals("eNodeB1")){System.out.println("eNodeB1");}
 	}
 }

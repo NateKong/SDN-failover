@@ -18,11 +18,13 @@ public class ENodeB extends Entity implements Runnable {
 	private Entity toBkController;
 	private ConcurrentLinkedQueue<Message> orphanMessages;
 	private ConcurrentLinkedQueue<Message> replyMessages;
+	private int domain;
 	
-	public ENodeB(int name, long maxTime, int load) {
+	public ENodeB(int name, long maxTime, int load, int domain) {
 		super(("eNodeB" + Integer.toString(name)), maxTime, load);
 		orphanMessages = new ConcurrentLinkedQueue<Message>();
 		replyMessages = new ConcurrentLinkedQueue<Message>();
+		this.domain = domain;
 		//System.out.println(getName() + " is created");
 	}
 
@@ -48,6 +50,13 @@ public class ENodeB extends Entity implements Runnable {
 	}
 	
 	/**
+	 * Gets the domain of the eNodeB
+	 */
+	public int getDomain(){
+		return domain;
+	}
+	
+	/**
 	 * Runs the thread ( thread.start() )
 	 */
 	@Override
@@ -69,7 +78,14 @@ public class ENodeB extends Entity implements Runnable {
 				// pass message from orphan to controller
 				while (!orphanMessages.isEmpty() && controller != null){
 					Message m = orphanMessages.poll();
-					toController.messageController(m);
+					ENodeB e = m.getOrphan();
+					if (domain == e.getDomain() && toBkController != null){
+						toBkController.messageController(m);
+					}else if (domain != e.getDomain()){
+						toController.messageController(m);	
+					}
+					
+					//if (name.equals("eNodeB2")) {System.out.println( "poll to " + toController.getName());}
 				}
 				
 				// pass message from controller to orphan
@@ -114,7 +130,7 @@ public class ENodeB extends Entity implements Runnable {
 	 * @param eNodeB
 	 */
 	public void messageController(Message orphanMessage) {
-		//if(orphanMessage.getOrphan().getName().equals("eNodeB4")){ System.out.println(name + " receives message from eNB4");; }
+		//if(orphanMessage.getOrphan().getName().equals("eNodeB1") && name.equals("eNodeB2")){ System.out.println(name + " receives message from eNB1");; }
 		orphanMessage.addBreadcrumb(this);
 		orphanMessages.add(orphanMessage);
 	}
@@ -124,14 +140,14 @@ public class ENodeB extends Entity implements Runnable {
 	 * @param adoptMessage
 	 */
 	public void replyMessage(Message adoptMessage) {
-		//System.out.println(name + " recieves message");
+		//System.out.println(name + " receives message");
 		replyMessages.add(adoptMessage);
 	}
 	
 	private void acceptBackup(Controller c, ENodeB e) {
-		if (bkController == null) {
+		if (bkController == null && !c.equals(controller) ) {
 			bkController = c;
-			System.out.println(getTime() + ": " + c.getName() + " adopts " + name);
+			System.out.println(getTime() + ": " + c.getName() + " is the back up for " + name);
 			
 			toBkController = e;
 		}
