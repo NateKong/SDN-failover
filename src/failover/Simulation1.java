@@ -30,7 +30,7 @@ package failover;
 import java.util.ArrayList;
 
 public class Simulation1 {
-	private static ArrayList<Controller> controllers;
+	/*private static ArrayList<Controller> controllers;
 	private static ArrayList<ENodeB> eNodeBs;
 	public static long maxTime;
 	public static int load;
@@ -89,7 +89,7 @@ public class Simulation1 {
 	/**
 	 * Initialization of the program.
 	 */
-	private static void setup() {
+	/*private static void setup() {
 		controllers = new ArrayList<Controller>();
 		eNodeBs = new ArrayList<ENodeB>();
 	}
@@ -98,11 +98,11 @@ public class Simulation1 {
 	 * Initialization of the system architecture. Creates system components:
 	 * Controllers eNodeBs X2 connections
 	 */
-	private static void system() {
+/*	private static void system() {
 		//printNewSection();
 		//System.out.println("INITIALIZE SYSTEM\n");
 		
-		/* Create eNodeBs */
+		// Create eNodeBs
 		//System.out.println("\nCreate eNodeBs");
 
 		ENodeB B0 = new ENodeB(0, maxTime, load);
@@ -124,7 +124,7 @@ public class Simulation1 {
 		ENodeB B8 = new ENodeB(8, maxTime, load);
 		eNodeBs.add(B8);
 
-		/* Creates connections between ENodeBs */
+		// Creates connections between ENodeBs
 		//System.out.println("\nCreate Connections");
 		
 		Connection x0 = new Connection("connection0", eNodeBs.get(0), eNodeBs.get(1));
@@ -139,7 +139,7 @@ public class Simulation1 {
 		Connection x9 = new Connection("connection9", eNodeBs.get(2), eNodeBs.get(3));
 		Connection x10 = new Connection("connection10", eNodeBs.get(5), eNodeBs.get(6));
 
-		/* Create Controllers */
+		// Create Controllers
 		//System.out.println("\nCreate Controllers");
 		
 		Controller c0 = new Controller(0, maxTime, load);
@@ -166,7 +166,7 @@ public class Simulation1 {
 	/**
 	 * Runs the simulation
 	 */
-	private static void run() {
+	/*private static void run() {
 		ArrayList<Thread> threads = new ArrayList<Thread>();
 		long startTime = System.currentTimeMillis();
 
