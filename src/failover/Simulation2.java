@@ -99,27 +99,27 @@ public class Simulation2 {
 		/* Create eNodeBs */
 		//System.out.println("\nCreate eNodeBs");
 
-		ENodeB B0 = new ENodeB(0, maxTime, load);
+		ENodeB B0 = new ENodeB(0, maxTime, load, 0);
 		eNodeBs.add(B0);
-		ENodeB B1 = new ENodeB(1, maxTime, load);
+		ENodeB B1 = new ENodeB(1, maxTime, load, 1);
 		eNodeBs.add(B1);
-		ENodeB B2 = new ENodeB(2, maxTime, load);
+		ENodeB B2 = new ENodeB(2, maxTime, load, 1);
 		eNodeBs.add(B2);
-		ENodeB B3 = new ENodeB(3, maxTime, load);
+		ENodeB B3 = new ENodeB(3, maxTime, load, 1);
 		eNodeBs.add(B3);
-		ENodeB B4 = new ENodeB(4, maxTime, load);
+		ENodeB B4 = new ENodeB(4, maxTime, load, 1);
 		eNodeBs.add(B4);
-		ENodeB B5 = new ENodeB(5, maxTime, load);
+		ENodeB B5 = new ENodeB(5, maxTime, load, 1);
 		eNodeBs.add(B5);
-		ENodeB B6 = new ENodeB(6, maxTime, load);
+		ENodeB B6 = new ENodeB(6, maxTime, load, 1);
 		eNodeBs.add(B6);
-		ENodeB B7 = new ENodeB(7, maxTime, load);
+		ENodeB B7 = new ENodeB(7, maxTime, load, 1);
 		eNodeBs.add(B7);
-		ENodeB B8 = new ENodeB(8, maxTime, load);
+		ENodeB B8 = new ENodeB(8, maxTime, load, 1);
 		eNodeBs.add(B8);
-		ENodeB B9 = new ENodeB(9, maxTime, load);
+		ENodeB B9 = new ENodeB(9, maxTime, load, 1);
 		eNodeBs.add(B9);
-		ENodeB B10 = new ENodeB(10, maxTime, load);
+		ENodeB B10 = new ENodeB(10, maxTime, load, 2);
 		eNodeBs.add(B10);
 
 		/* Create Controllers */
