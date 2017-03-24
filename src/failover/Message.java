@@ -69,6 +69,22 @@ public class Message {
 		}
 	}
 	
+	/**
+	 * 
+	 */
+	public ENodeB getLastBreadcrumb(){
+		if(!eNodeB.isEmpty()) {
+			return eNodeB.get(eNodeB.size()-1);
+		}
+		else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Gets the size of the breadcrumb list
+	 * @return
+	 */
 	public int getSize() {
 		return eNodeB.size();
 	}
