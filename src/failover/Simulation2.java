@@ -119,7 +119,7 @@ public class Simulation2 {
 		eNodeBs.add(B8);
 		ENodeB B9 = new ENodeB(9, maxTime, load, 1, 100, 4);
 		eNodeBs.add(B9);
-		ENodeB B10 = new ENodeB(10, maxTime, load, 1, 175, 1);
+		ENodeB B10 = new ENodeB(10, maxTime, load, 2, 175, 1);
 		eNodeBs.add(B10);
 
 		/* Create Controllers */
