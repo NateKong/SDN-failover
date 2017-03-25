@@ -76,6 +76,7 @@ public class Message {
 	 */
 	public void addBreadcrumb(ENodeB e){
 		eNodeB.add(e);
+		hops++;
 	}
 	
 	/**
