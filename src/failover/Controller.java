@@ -75,7 +75,7 @@ public class Controller extends Entity implements Runnable {
 			Message m = eNodeBMessages.poll();
 			ENodeB e = m.removeBreadcrumb();
 			m.setController(this);
-			//if(m.getOrphan().equals("eNodeB1")){System.out.println("eNodeB1");}
+			//if(name.equals("Controller2")&& m.getOrphan().getName().equals("eNodeB5")){System.out.println("Controller2");}
 			e.replyMessage(m);
 		}
 		
@@ -99,6 +99,7 @@ public class Controller extends Entity implements Runnable {
 	 */
 	 public void messageController(Message orphanMessage) {
 		 eNodeBMessages.add(orphanMessage);
-		 if(orphanMessage.getOrphan().equals("eNodeB1")){System.out.println("eNodeB1");}
+		 //if(orphanMessage.getOrphan().equals("eNodeB1")){System.out.println("eNodeB1");}
+		 //if(name.equals("Controller2") && orphanMessage.getOrphan().getName().equals("eNodeB5")){System.out.println("Controller2");}
 	}
 }
