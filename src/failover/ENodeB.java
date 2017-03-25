@@ -110,7 +110,7 @@ public class ENodeB extends Entity implements Runnable {
 					if( m.atOrphan() ){
 						ENodeB orphan = m.getOrphan();
 						if(!orphan.hasBkController()){
-							orphan.acceptBackup(m.getController(), this);
+							orphan.acceptBackup(m, this);
 							//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + orphan.getName());}
 						}else if (!orphan.hasController()){
 							orphan.acceptAdoption(domain);
@@ -180,12 +180,18 @@ public class ENodeB extends Entity implements Runnable {
 	 * @param c is the backup controller
 	 * @param e is the eNodeB to get to the backup controller
 	 */
-	private void acceptBackup(Controller c, ENodeB e) {
+	private void acceptBackup(Message m, ENodeB e) {
+		Controller c = m.getController();
 		if (bkController == null && !c.equals(controller) ) {
 			bkController = c;
 			System.out.println(getTime() + ": " + c.getName() + " is the back up for " + name);
-			
 			toBkController = e;
+		}else if (bkController != null && !c.equals(controller) ) {
+			if () {
+				bkController = c;
+				System.out.println(getTime() + ": " + c.getName() + " is the back up for " + name);
+				toBkController = e;	
+			}
 		}
 	}
 	
