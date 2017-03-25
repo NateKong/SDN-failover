@@ -20,22 +20,25 @@ public class Connection {
 		endpoints[1] = endpt1;
 		endpt0.addConnection(this);
 		endpt1.addConnection(this);
-		//System.out.println(endpt0.getName() + " has a X2 connected to " + endpt1.getName());
+		// System.out.println(endpt0.getName() + " is physically connected to "
+		// + endpt1.getName());
 	}
 
 	/**
 	 * Gets the name of the connection
+	 * 
 	 * @return the name of the connection
 	 */
-	public String getName(){
+	public String getName() {
 		return name;
 	}
-	
+
 	/**
 	 * Used to for an eNodeB to figure out the other eNodeB thats attached to
 	 * it.
 	 * 
-	 * @param me is the endpoint that is asking
+	 * @param me
+	 *            is the endpoint that is asking
 	 * @return the endpoint of the other eNodeB
 	 */
 	public Entity getEndpoint(Entity me) {
@@ -46,13 +49,13 @@ public class Connection {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Get the bandwidth of the connection
 	 * 
 	 * @return the bandwidth of the connection
 	 */
-	public int getBw(){
+	public int getBw() {
 		return bw;
 	}
 }

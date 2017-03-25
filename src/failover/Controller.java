@@ -15,25 +15,26 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Controller extends Entity implements Runnable {
 	private ArrayList<ENodeB> eNodeBs;
 	private ConcurrentLinkedQueue<Message> eNodeBMessages;
-	
+
 	public Controller(int name, long maxTime, int load) {
 		super(("Controller" + Integer.toString(name)), maxTime, load);
 		eNodeBs = new ArrayList<ENodeB>();
 		eNodeBMessages = new ConcurrentLinkedQueue<Message>();
-		//System.out.println(getName() + " is created");
+		// System.out.println(getName() + " is created");
 	}
 
 	/**
 	 * Adds an eNodeB to the controllers database. Sets the controller to the
 	 * eNodeB
 	 * 
-	 * @param e an eNodeB (LTE tower)
+	 * @param e
+	 *            an eNodeB (LTE tower)
 	 */
 	public void addENodeB(ENodeB e1, Entity e2) {
 		e1.setController(this);
 		e1.setEntity(e2);
 		eNodeBs.add(e1);
-		//System.out.println(name + " adopts " + e1.getName());
+		// System.out.println(name + " adopts " + e1.getName());
 	}
 
 	/**
@@ -54,11 +55,10 @@ public class Controller extends Entity implements Runnable {
 			System.out.println(name + " interrupted.");
 		}
 
-		if (name.equals("Controller1")){
-			for (Connection c: connections) {
+		if (name.equals("Controller1")) {
+			for (Connection c : connections) {
 				Entity e = c.getEndpoint(this);
 				e.removeConnection(c);
-				//removeConnection(c);
 			}
 			removeController();
 			System.out.println("\n" + getTime() + ": Closing thread " + name + "\n");
@@ -71,14 +71,13 @@ public class Controller extends Entity implements Runnable {
 	 * Sends adoption message back to eNodeBs
 	 */
 	private void replyMessage() {
-		if (!eNodeBMessages.isEmpty()){
+		if (!eNodeBMessages.isEmpty()) {
 			Message m = eNodeBMessages.poll();
 			ENodeB e = m.removeBreadcrumb();
 			m.setController(this);
-			//if(name.equals("Controller2")&& m.getOrphan().getName().equals("eNodeB5")){System.out.println("Controller2");}
 			e.replyMessage(m);
 		}
-		
+
 	}
 
 	/**
@@ -89,17 +88,14 @@ public class Controller extends Entity implements Runnable {
 			b.setController(null);
 		}
 		eNodeBs.clear();
-
 	}
-	
+
 	/**
 	 * Sends a message to the controller
 	 * 
 	 * @param eNodeB
 	 */
-	 public void messageController(Message orphanMessage) {
-		 eNodeBMessages.add(orphanMessage);
-		 //if(orphanMessage.getOrphan().equals("eNodeB1")){System.out.println("eNodeB1");}
-		 //if(name.equals("Controller2") && orphanMessage.getOrphan().getName().equals("eNodeB5")){System.out.println("Controller2");}
+	public void messageController(Message orphanMessage) {
+		eNodeBMessages.add(orphanMessage);
 	}
 }

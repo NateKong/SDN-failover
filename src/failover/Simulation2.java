@@ -96,7 +96,7 @@ public class Simulation2 {
 		//printNewSection();
 		//System.out.println("INITIALIZE SYSTEM\n");
 		
-		/* Create eNodeBs */
+		// Create eNodeBs
 		//System.out.println("\nCreate eNodeBs");
 
 		ENodeB B0 = new ENodeB(0, maxTime, load, 0, 175, 1);
@@ -122,7 +122,7 @@ public class Simulation2 {
 		ENodeB B10 = new ENodeB(10, maxTime, load, 2, 175, 1);
 		eNodeBs.add(B10);
 
-		/* Create Controllers */
+		// Create Controllers
 		//System.out.println("\nCreate Controllers");
 		
 		Controller c0 = new Controller(0, maxTime, load);
@@ -143,7 +143,7 @@ public class Simulation2 {
 		controllers.add(c2);
 		c2.addENodeB(B10, c2);
 		
-		/* Creates connections between ENodeBs */
+		// Creates connections between ENodeBs 
 		//System.out.println("\nCreate Connections");
 		
 		Connection x0 = new Connection("C0-E0", controllers.get(0), eNodeBs.get(0), 175);
@@ -207,8 +207,6 @@ public class Simulation2 {
 				e.printStackTrace();
 			}
 		}
-
-		// System.out.println("finished main");
 	}
 
 	/**

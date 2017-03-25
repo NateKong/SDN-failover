@@ -1,7 +1,6 @@
 package failover;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * An Entity in LTE.
@@ -69,14 +68,13 @@ public class Entity {
 	}
 
 	/**
-	 * Random number creation for time in milliseconds.
-	 * where
-	 * 25% load is between 0 - 250 milliseconds
-	 * 50% load is between 0 - 500 milliseconds
-	 * 75% load is between 0 - 750 milliseconds
-	 * 95% load is between 0 - 950 milliseconds
+	 * Random number creation for time in milliseconds. where 25% load is
+	 * between 0 - 250 milliseconds 50% load is between 0 - 500 milliseconds 75%
+	 * load is between 0 - 750 milliseconds 95% load is between 0 - 950
+	 * milliseconds
 	 * 
-	 * @param load is the percent load 
+	 * @param load
+	 *            is the percent load
 	 * @return a number in milliseconds
 	 */
 	public int random() {
@@ -111,12 +109,13 @@ public class Entity {
 	/**
 	 * Adds a connection to other eNodeBs or controllers
 	 * 
-	 * @param c the connection between eNodeBs
+	 * @param c
+	 *            the connection between eNodeBs
 	 */
 	public void addConnection(Connection c) {
 		connections.add(c);
 	}
-	
+
 	/**
 	 * Removes a connection
 	 * 
@@ -127,10 +126,11 @@ public class Entity {
 	}
 
 	/**
-	 * THIS REQUIRES AN OVERRIDE 
+	 * THIS REQUIRES AN OVERRIDE
+	 * 
 	 * @param orphanBoardcast
 	 */
 	public void messageController(Message orphanBroadcast) {
-		
+
 	}
 }
