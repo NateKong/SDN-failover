@@ -16,11 +16,13 @@ public class ENodeB extends Entity implements Runnable {
 	private Entity toController;
 	private ConcurrentLinkedQueue<Message> orphanMessages;
 	private ConcurrentLinkedQueue<Message> adoptionMessages;
+	private boolean initialFailureDetection;
 	
 	public ENodeB(int name, long maxTime, int load) {
 		super(("eNodeB" + Integer.toString(name)), maxTime, load);
 		orphanMessages = new ConcurrentLinkedQueue<Message>();
 		adoptionMessages = new ConcurrentLinkedQueue<Message>();
+		initialFailureDetection = true;
 		//System.out.println(getName() + " is created");
 	}
 
@@ -50,7 +52,7 @@ public class ENodeB extends Entity implements Runnable {
 	 */
 	@Override
 	public void run() {
-		System.out.println(getTime() + ": Running thread " + name);
+		//System.out.println(getTime() + ": Running thread " + name);
 		
 		//pauses the system to start at the same time
 		while ( time(System.currentTimeMillis() ) < 1.0 ) {	}
@@ -60,8 +62,11 @@ public class ENodeB extends Entity implements Runnable {
 				Thread.sleep(random());
 				//eNodeB becomes an orphan
 				if ( controller == null ) {
-					Thread.sleep(30000); //added for failure detect through heartbeat messages
-					System.out.println(getTime() + ": " + name + " is an orphan");
+					if (initialFailureDetection){
+						Thread.sleep(30000); //added for failure detect through heartbeat messages
+						initialFailureDetection = false;
+						System.out.println(getTime() + ": " + name + " is an orphan");
+					}
 					orphanNode();
 				}
 				
@@ -69,7 +74,6 @@ public class ENodeB extends Entity implements Runnable {
 				while(!orphanMessages.isEmpty() && controller != null) {
 					Message m = orphanMessages.poll();
 					toController.messageController(m);
-					//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends orphan message to " + toController.getName() + " from orphan " + m.getOrphan().getName() );}
 				}
 								
 				// pass message from controller to orphan
@@ -77,7 +81,7 @@ public class ENodeB extends Entity implements Runnable {
 					Message m = adoptionMessages.poll();
 					if( m.atOrphan() ){
 						ENodeB orphan = m.getOrphan();
-						orphan.acceptAdoption(m.getController(), this);
+						orphan.acceptAdoption(m, this);
 						//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + orphan.getName());}
 					}else{
 						ENodeB e = m.removeBreadcrumb();
@@ -90,7 +94,7 @@ public class ENodeB extends Entity implements Runnable {
 			e.printStackTrace();
 		}
 
-		System.out.println(getTime() + ": Closing thread " + name);
+		//System.out.println(getTime() + ": Closing thread " + name);
 	}
 
 	/**
@@ -125,10 +129,11 @@ public class ENodeB extends Entity implements Runnable {
 		adoptionMessages.add(adoptMessage);
 	}
 	
-	private void acceptAdoption(Controller c, ENodeB e) {
+	private void acceptAdoption(Message m, ENodeB e) {
+		Controller c = m.getController();
 		if (controller == null) {
 			controller = c;
-			System.out.println(getTime() + ": " + c.getName() + " adopts " + name);
+			System.out.println(getTime() + ": " + c.getName() + " adopts " + name + " with " + m.getHops() + " hops");
 			
 			toController = e;
 		}

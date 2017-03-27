@@ -39,10 +39,10 @@ public class Simulation2 {
 	public static long failTime;
 
 	public static void main(String[] args) {
-		maxTime = 50;
+		maxTime = 45;
 		failTime = 5;
 		// create different loads for different simulations
-		int sim = 1;
+		int sim = 2;
 		
 		switch (sim) {
 		case 1: load = 4; // 25% load
@@ -55,18 +55,17 @@ public class Simulation2 {
 				break;
 		}		
 		
-		for (int i = 1; i<=1;i++){
+		System.out.println("Simulation of failover for Distributed SDN Controllers");
+		System.out.println("Greedy Reactive");
+		
+		for (int i = 1; i<=25;i++){
 			printNewSection();
 			System.out.println("RUN "+i);
-			start();
-			System.out.println("\n");
-			
+			start();			
 		}
 	}
 	
 	private static void start(){
-		System.out.println("Simulation of failover for Distributed SDN Controllers");
-
 		// setup
 		setup();
 
@@ -76,8 +75,8 @@ public class Simulation2 {
 		// run simulation
 		run();
 
-		printNewSection();
-		System.out.println("SIMULATION COMPLETE");
+		//printNewSection();
+		System.out.println("\nSIMULATION COMPLETES");
 	}
 
 	/**
@@ -174,7 +173,7 @@ public class Simulation2 {
 		long startTime = System.currentTimeMillis();
 
 		//printNewSection();
-		System.out.println("RUN SIMULATION\n");
+		System.out.println("SIMULATION BEGINS");
 
 		// create threads components
 		for (Controller c : controllers) {

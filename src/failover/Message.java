@@ -12,11 +12,13 @@ public class Message {
 	private Controller controller;
 	private ENodeB orphan;
 	private ArrayList<ENodeB> eNodeB;
+	private int hops;
 	
 	public Message (ENodeB orphan){
 		controller = null;
 		this.orphan = orphan;
 		this.eNodeB = new ArrayList<ENodeB>();
+		this.hops = 1; // includes the last hop to the controller
 	}
 	
 	/**
@@ -27,6 +29,17 @@ public class Message {
 	 */
 	public void setController(Controller c) {
 		controller = c;
+	}
+	
+	/**
+	 * Returns the amount of hops
+	 * to get to the controller.
+	 * Gives an idea about the path
+	 * to the controller
+	 * @return hops
+	 */
+	public int getHops() {
+		return hops;
 	}
 	
 	/**
@@ -51,6 +64,7 @@ public class Message {
 	 */
 	public void addBreadcrumb(ENodeB e){
 		eNodeB.add(e);
+		hops++;
 	}
 	
 	/**
