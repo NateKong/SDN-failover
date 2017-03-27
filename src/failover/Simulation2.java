@@ -42,7 +42,7 @@ public class Simulation2 {
 		maxTime = 45;
 		failTime = 5;
 		// create different loads for different simulations
-		int sim = 2;
+		int sim = 4;
 		
 		switch (sim) {
 		case 1: load = 4; // 25% load
