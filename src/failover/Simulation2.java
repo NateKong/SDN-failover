@@ -39,7 +39,7 @@ public class Simulation2 {
 	public static long failTime;
 
 	public static void main(String[] args) {
-		maxTime = 10;
+		maxTime = 50;
 		failTime = 5;
 		// create different loads for different simulations
 		int sim = 1;
