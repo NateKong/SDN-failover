@@ -19,12 +19,16 @@ public class ENodeB extends Entity implements Runnable {
 	private ConcurrentLinkedQueue<Message> orphanMessages;
 	private ConcurrentLinkedQueue<Message> replyMessages;
 	private int domain;
+	private int hops;
+	private boolean initialFailureDetection;
 	
 	public ENodeB(int name, long maxTime, int load, int domain) {
 		super(("eNodeB" + Integer.toString(name)), maxTime, load);
 		orphanMessages = new ConcurrentLinkedQueue<Message>();
 		replyMessages = new ConcurrentLinkedQueue<Message>();
 		this.domain = domain;
+		hops = 0;
+		initialFailureDetection = true;
 		//System.out.println(getName() + " is created");
 	}
 
@@ -69,7 +73,7 @@ public class ENodeB extends Entity implements Runnable {
 	 */
 	@Override
 	public void run() {
-		System.out.println(getTime() + ": Running thread " + name);
+		//System.out.println(getTime() + ": Running thread " + name);
 		
 		//pauses the system to start at the same time
 		while ( time(System.currentTimeMillis() ) < 1.0 ) {	}
@@ -80,6 +84,11 @@ public class ENodeB extends Entity implements Runnable {
 				
 				//eNodeB becomes an orphan
 				if (controller == null) {
+					if(initialFailureDetection){
+						Thread.sleep(30000);
+						System.out.println(getTime() + ": " + name + " is an orphan");
+						initialFailureDetection = false;
+					}
 					orphanNode();
 				}
 				
@@ -106,7 +115,7 @@ public class ENodeB extends Entity implements Runnable {
 					if( m.atOrphan() ){
 						ENodeB orphan = m.getOrphan();
 						if(!orphan.hasBkController()){
-							orphan.acceptBackup(m.getController(), this);
+							orphan.acceptBackup(m, this);
 							//if (m.getOrphan().getName().equals("eNodeB4")) {System.out.println(getTime() + ": " + name + " sends adoption message from " + m.getController().getName() + " to " + orphan.getName());}
 						}else if (!orphan.hasController()){
 							orphan.acceptAdoption(domain);
@@ -122,7 +131,7 @@ public class ENodeB extends Entity implements Runnable {
 			e.printStackTrace();
 		}
 
-		System.out.println(getTime() + ": Closing thread " + name);
+		//System.out.println(getTime() + ": Closing thread " + name);
 	}
 
 	/**
@@ -176,12 +185,13 @@ public class ENodeB extends Entity implements Runnable {
 	 * @param c is the backup controller
 	 * @param e is the eNodeB to get to the backup controller
 	 */
-	private void acceptBackup(Controller c, ENodeB e) {
+	private void acceptBackup(Message m, ENodeB e) {
+		Controller c = m.getController();
 		if (bkController == null && !c.equals(controller) ) {
 			bkController = c;
 			System.out.println(getTime() + ": " + c.getName() + " is the back up for " + name);
-			
 			toBkController = e;
+			hops = m.getHops();
 		}
 	}
 	
@@ -196,6 +206,6 @@ public class ENodeB extends Entity implements Runnable {
 		toController = toBkController;
 		toBkController = null;
 		domain = domainNum;
-		System.out.println(getTime() + ": " + controller.getName() + " adopts " + name);
+		System.out.println(getTime() + ": " + controller.getName() + " adopts " + name + " with " + hops + " hops");
 	}
 }

@@ -41,7 +41,7 @@ public class Controller extends Entity implements Runnable {
 	 */
 	@Override
 	public void run() {
-		System.out.println(getTime() + ": Running thread " + name);
+		//System.out.println(getTime() + ": Running thread " + name);
 		try {
 			while (checkTime(System.currentTimeMillis())) {
 				Thread.sleep(random());
@@ -61,10 +61,11 @@ public class Controller extends Entity implements Runnable {
 				//removeConnection(c);
 			}
 			removeController();
-			System.out.println("\n" + getTime() + ": Closing thread " + name + "\n");
-		} else {
+			System.out.println("\n" + getTime() + ": " + name + " failure\n");
+		} 
+		/*else {
 			System.out.println(getTime() + ": Closing thread " + name);
-		}
+		}*/
 	}
 
 	/**
