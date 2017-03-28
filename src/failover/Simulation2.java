@@ -56,7 +56,7 @@ public class Simulation2 {
 		}		
 		
 		System.out.println("Simulation of failover for Distributed SDN Controllers");
-		System.out.println("HBF Reactive");
+		System.out.println("HBF Proactive");
 		
 		for (int i = 1; i<=25;i++){
 			printNewSection();
@@ -97,33 +97,33 @@ public class Simulation2 {
 		//printNewSection();
 		//System.out.println("INITIALIZE SYSTEM\n");
 		
-		/* Create eNodeBs */
+		// Create eNodeBs
 		//System.out.println("\nCreate eNodeBs");
 
-		ENodeB B0 = new ENodeB(0, maxTime, load, 175, 1);
+		ENodeB B0 = new ENodeB(0, maxTime, load, 0, 175, 1);
 		eNodeBs.add(B0);
-		ENodeB B1 = new ENodeB(1, maxTime, load, 150, 2);
+		ENodeB B1 = new ENodeB(1, maxTime, load, 1, 150, 2);
 		eNodeBs.add(B1);
-		ENodeB B2 = new ENodeB(2, maxTime, load, 125, 3);
+		ENodeB B2 = new ENodeB(2, maxTime, load, 1, 125, 3);
 		eNodeBs.add(B2);
-		ENodeB B3 = new ENodeB(3, maxTime, load, 100, 4);
+		ENodeB B3 = new ENodeB(3, maxTime, load, 1, 100, 4);
 		eNodeBs.add(B3);
-		ENodeB B4 = new ENodeB(4, maxTime, load, 175, 1);
+		ENodeB B4 = new ENodeB(4, maxTime, load, 1, 175, 1);
 		eNodeBs.add(B4);
-		ENodeB B5 = new ENodeB(5, maxTime, load, 75, 2);
+		ENodeB B5 = new ENodeB(5, maxTime, load, 1, 75, 2);
 		eNodeBs.add(B5);
-		ENodeB B6 = new ENodeB(6, maxTime, load, 75, 3);
+		ENodeB B6 = new ENodeB(6, maxTime, load, 1, 75, 3);
 		eNodeBs.add(B6);
-		ENodeB B7 = new ENodeB(7, maxTime, load, 125, 2);
+		ENodeB B7 = new ENodeB(7, maxTime, load, 1, 125, 2);
 		eNodeBs.add(B7);
-		ENodeB B8 = new ENodeB(8, maxTime, load, 100, 3);
+		ENodeB B8 = new ENodeB(8, maxTime, load, 1, 100, 3);
 		eNodeBs.add(B8);
-		ENodeB B9 = new ENodeB(9, maxTime, load, 100, 4);
+		ENodeB B9 = new ENodeB(9, maxTime, load, 1, 100, 4);
 		eNodeBs.add(B9);
-		ENodeB B10 = new ENodeB(10, maxTime, load, 175, 1);
+		ENodeB B10 = new ENodeB(10, maxTime, load, 2, 175, 1);
 		eNodeBs.add(B10);
 
-		/* Create Controllers */
+		// Create Controllers
 		//System.out.println("\nCreate Controllers");
 		
 		Controller c0 = new Controller(0, maxTime, load);
@@ -144,7 +144,7 @@ public class Simulation2 {
 		controllers.add(c2);
 		c2.addENodeB(B10, c2);
 		
-		/* Creates connections between ENodeBs */
+		// Creates connections between ENodeBs 
 		//System.out.println("\nCreate Connections");
 		
 		Connection x0 = new Connection("C0-E0", controllers.get(0), eNodeBs.get(0), 175);
@@ -175,7 +175,7 @@ public class Simulation2 {
 		long startTime = System.currentTimeMillis();
 
 		//printNewSection();
-		System.out.println("\nSIMULATION BEGINS");
+		System.out.println("SIMULATION BEGINS\n");
 
 		// create threads components
 		for (Controller c : controllers) {
@@ -208,8 +208,6 @@ public class Simulation2 {
 				e.printStackTrace();
 			}
 		}
-
-		// System.out.println("finished main");
 	}
 
 	/**
