@@ -18,6 +18,7 @@ public class ENodeB extends Entity implements Runnable {
 	private ConcurrentLinkedQueue<Message> adoptionMessages;
 	private int bw;
 	private int hops;
+	private boolean initialFailure;
 	
 	public ENodeB(int name, long maxTime, int load, int bw, int hops) {
 		super(("eNodeB" + Integer.toString(name)), maxTime, load);
@@ -25,6 +26,7 @@ public class ENodeB extends Entity implements Runnable {
 		this.hops = hops;
 		orphanMessages = new ConcurrentLinkedQueue<Message>();
 		adoptionMessages = new ConcurrentLinkedQueue<Message>();
+		initialFailure = true;
 		//System.out.println(getName() + " is created");
 	}
 
@@ -54,7 +56,7 @@ public class ENodeB extends Entity implements Runnable {
 	 */
 	@Override
 	public void run() {
-		System.out.println(getTime() + ": Running thread " + name);
+		//System.out.println(getTime() + ": Running thread " + name);
 		
 		//pauses the system to start at the same time
 		while ( time(System.currentTimeMillis() ) < 1.0 ) {	}
@@ -65,6 +67,10 @@ public class ENodeB extends Entity implements Runnable {
 				//eNodeB becomes an orphan
 				if ( controller == null ) {
 					//System.out.println(getTime() + ": " + name + " is an orphan");
+					if (initialFailure){
+						Thread.sleep(30000);
+						initialFailure = false;
+					}
 					bw = 0;
 					hops = 100;
 					orphanNode();
@@ -107,7 +113,7 @@ public class ENodeB extends Entity implements Runnable {
 			e.printStackTrace();
 		}
 
-		System.out.println(getTime() + ": Closing thread " + name);
+		//System.out.println(getTime() + ": Closing thread " + name);
 	}
 
 	/**
