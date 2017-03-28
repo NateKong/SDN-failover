@@ -23,6 +23,7 @@ public class ENodeB extends Entity implements Runnable {
 	private int hops;
 	private int backupBw;
 	private int backupHops;
+	private boolean initialFailure;
 
 	public ENodeB(int name, long maxTime, int load, int domain, int bw, int hops) {
 		super(("eNodeB" + Integer.toString(name)), maxTime, load);
@@ -33,6 +34,7 @@ public class ENodeB extends Entity implements Runnable {
 		this.hops = hops;
 		this.backupBw = 0;
 		this.backupHops = 100;
+		initialFailure = true;
 		// System.out.println(getName() + " is created");
 	}
 
@@ -78,7 +80,7 @@ public class ENodeB extends Entity implements Runnable {
 	 */
 	@Override
 	public void run() {
-		System.out.println(getTime() + ": Running thread " + name);
+		//System.out.println(getTime() + ": Running thread " + name);
 
 		// pauses the system to start at the same time
 		while (time(System.currentTimeMillis()) < 1.0) {
@@ -90,6 +92,11 @@ public class ENodeB extends Entity implements Runnable {
 
 				// eNodeB becomes an orphan
 				if (controller == null) {
+					if(initialFailure){
+						Thread.sleep(30000);
+						initialFailure = false;
+						System.out.println(getTime() + ": " + name  + " in an orphan");
+					}
 					orphanNode();
 				}
 
@@ -133,7 +140,7 @@ public class ENodeB extends Entity implements Runnable {
 			e.printStackTrace();
 		}
 
-		System.out.println(getTime() + ": Closing thread " + name);
+		//System.out.println(getTime() + ": Closing thread " + name);
 	}
 
 	/**
@@ -250,6 +257,6 @@ public class ENodeB extends Entity implements Runnable {
 		hops = backupHops;
 		backupBw = 0;
 		backupHops = 100;
-		System.out.println(getTime() + ": " + controller.getName() + " adopts " + name);
+		System.out.println(getTime() + ": " + controller.getName() + " adopts " + name + " with " + hops + " hops");
 	}
 }
