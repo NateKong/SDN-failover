@@ -71,19 +71,13 @@ public class Entity {
 	/**
 	 * Random number creation for time in milliseconds.
 	 * where
-	 * 25% load is between 0 - 250 milliseconds
-	 * 50% load is between 0 - 500 milliseconds
-	 * 75% load is between 0 - 750 milliseconds
-	 * 95% load is between 0 - 950 milliseconds
 	 * 
-	 * @param load is the percent load 
 	 * @return a number in milliseconds
 	 */
 	public int random() {
-		int time = load * 10;
 		
 		Random r = new Random();
-		return r.nextInt(time);
+		return r.nextInt(load);
 	}
 
 	/**
