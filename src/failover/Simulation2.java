@@ -42,7 +42,7 @@ public class Simulation2 {
 		maxTime = 40;
 		failTime = 5;
 		// create different loads for different simulations
-		int sim = 4;
+		int sim = 1;
 		
 		switch (sim) {
 		case 1: load = 4; // 25% load
@@ -153,7 +153,7 @@ public class Simulation2 {
 		Connection x4 = new Connection("E0-E2", eNodeBs.get(0), eNodeBs.get(2), 175);
 		Connection x6 = new Connection("E1-E4", eNodeBs.get(1), eNodeBs.get(4), 150);
 		Connection x7 = new Connection("E2-E5", eNodeBs.get(2), eNodeBs.get(5), 50);
-		Connection x8 = new Connection("E3-E6", eNodeBs.get(3), eNodeBs.get(6), 75);
+		Connection x8 = new Connection("E3-E6", eNodeBs.get(3), eNodeBs.get(6), 100);
 		Connection x9 = new Connection("E4-E7", eNodeBs.get(4), eNodeBs.get(7), 125);
 		Connection x10 = new Connection("E5-E8", eNodeBs.get(5), eNodeBs.get(8), 75);
 		Connection x11 = new Connection("E6-E9", eNodeBs.get(6), eNodeBs.get(9), 50);
