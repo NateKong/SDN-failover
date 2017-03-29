@@ -6,18 +6,13 @@ package failover;
  * The controller manages eNodeBs (towers).
  * 
  * Architecture:
- *   C1       C2       C3
- *   
- *   E1       E4       E7
- * 	/  \     /  \     /  \
- * E0---E2--E3---E5--E6---E8
  * 
  * C = controller
  * E = eNodeB
  * 
- * C1 controls E0,E1,E2
- * C2 controls E3,E4,E5
- * C3 controls E6,E7,E8
+ * C0 controls E0
+ * C1 controls E1,E2,E3,E4,E5,E6,E7,E8,E9
+ * C2 controls E10
  * 
  * Simulation:
  * Using the above architecture, C2 fails
@@ -34,45 +29,36 @@ public class Simulation1 {
 	private static ArrayList<ENodeB> eNodeBs;
 	public static long maxTime;
 	public static int load;
-
-	public static long failTime = 10;
+	public static long failTime;
 
 	public static void main(String[] args) {
-		
+		maxTime = 45;
+		failTime = 5;
 		// create different loads for different simulations
-		int sim = 1;
+		int sim = 4;
 		
 		switch (sim) {
-		case 1: maxTime = 10;
-				load = 25;
-				failTime = 5;
+		case 1: load = 10000; // 25% load
 				break;
-		case 2: maxTime = 30;
-				load = 50;
-				failTime = 10;
+		case 2: load = 9; // 50% load
 				break;
-		case 3: maxTime = 30;
-				load = 75;
-				failTime = 10;
+		case 3: load = 13; // 75% load
 				break;
-		default: maxTime = 30;
-				load = 95;
-				failTime = 10;
+		default:load = 17; // 95% load
 				break;
 		}		
 		
-		for (int i = 1; i<=100;i++){
+		System.out.println("Simulation of failover for Distributed SDN Controllers");
+		System.out.println("Greedy Reactive");
+		
+		for (int i = 1; i<=25;i++){
 			printNewSection();
 			System.out.println("RUN "+i);
-			start();
-			System.out.println("\n");
-			
+			start();			
 		}
 	}
 	
 	private static void start(){
-		System.out.println("Simulation of failover for Distributed SDN Controllers");
-
 		// setup
 		setup();
 
@@ -82,8 +68,8 @@ public class Simulation1 {
 		// run simulation
 		run();
 
-		printNewSection();
-		System.out.println("SIMULATION COMPLETE");
+		//printNewSection();
+		System.out.println("\nSIMULATION COMPLETES");
 	}
 
 	/**
@@ -123,44 +109,49 @@ public class Simulation1 {
 		eNodeBs.add(B7);
 		ENodeB B8 = new ENodeB(8, maxTime, load);
 		eNodeBs.add(B8);
-
-		/* Creates connections between ENodeBs */
-		//System.out.println("\nCreate Connections");
-		
-		Connection x0 = new Connection("connection0", eNodeBs.get(0), eNodeBs.get(1));
-		Connection x1 = new Connection("connection1", eNodeBs.get(1), eNodeBs.get(2));
-		Connection x2 = new Connection("connection2", eNodeBs.get(0), eNodeBs.get(2));
-		Connection x3 = new Connection("connection3", eNodeBs.get(3), eNodeBs.get(4));
-		Connection x4 = new Connection("connection4", eNodeBs.get(4), eNodeBs.get(5));
-		Connection x5 = new Connection("connection5", eNodeBs.get(3), eNodeBs.get(5));
-		Connection x6 = new Connection("connection6", eNodeBs.get(6), eNodeBs.get(7));
-		Connection x7 = new Connection("connection7", eNodeBs.get(7), eNodeBs.get(8));
-		Connection x8 = new Connection("connection8", eNodeBs.get(6), eNodeBs.get(8));
-		Connection x9 = new Connection("connection9", eNodeBs.get(2), eNodeBs.get(3));
-		Connection x10 = new Connection("connection10", eNodeBs.get(5), eNodeBs.get(6));
+		ENodeB B9 = new ENodeB(9, maxTime, load);
+		eNodeBs.add(B9);
+		ENodeB B10 = new ENodeB(10, maxTime, load);
+		eNodeBs.add(B10);
 
 		/* Create Controllers */
 		//System.out.println("\nCreate Controllers");
 		
 		Controller c0 = new Controller(0, maxTime, load);
 		controllers.add(c0);
-		c0.addENodeB(B1,c0);
-		c0.addENodeB(B0, B1);
-		c0.addENodeB(B2, B1);
+		c0.addENodeB(B0,c0);
 		Controller c1 = new Controller(1, failTime, load);
 		controllers.add(c1);
+		c1.addENodeB(B1, B4);
+		c1.addENodeB(B2, B1);
+		c1.addENodeB(B3, B2);
 		c1.addENodeB(B4, c1);
-		c1.addENodeB(B3, B4);
 		c1.addENodeB(B5, B4);
+		c1.addENodeB(B6, B5);
+		c1.addENodeB(B7, B4);
+		c1.addENodeB(B8, B7);
+		c1.addENodeB(B9, B8);
 		Controller c2 = new Controller(2, maxTime, load);
 		controllers.add(c2);
-		c2.addENodeB(B7, c2);
-		c2.addENodeB(B6, B7);
-		c2.addENodeB(B8, B7);
+		c2.addENodeB(B10, c2);
 		
-		Connection x11 = new Connection("connection11", eNodeBs.get(1), controllers.get(0));
-		Connection x12 = new Connection("connection12", eNodeBs.get(4), controllers.get(1));
-		Connection x13 = new Connection("connection13", eNodeBs.get(7), controllers.get(2));
+		/* Creates connections between ENodeBs */
+		//System.out.println("\nCreate Connections");
+		
+		Connection x0 = new Connection("C0-E0", controllers.get(0), eNodeBs.get(0));
+		Connection x1 = new Connection("C1-E4", controllers.get(1), eNodeBs.get(4));
+		Connection x2 = new Connection("C2-E10", controllers.get(2), eNodeBs.get(10));
+		Connection x4 = new Connection("E0-E1", eNodeBs.get(0), eNodeBs.get(1));
+		Connection x6 = new Connection("E1-E2", eNodeBs.get(1), eNodeBs.get(2));
+		Connection x7 = new Connection("E2-E3", eNodeBs.get(2), eNodeBs.get(3));
+		Connection x8 = new Connection("E3-E4", eNodeBs.get(3), eNodeBs.get(4));
+		Connection x9 = new Connection("E4-E5", eNodeBs.get(4), eNodeBs.get(5));
+		Connection x10 = new Connection("E5-E6", eNodeBs.get(5), eNodeBs.get(6));
+		Connection x11 = new Connection("E6-E7", eNodeBs.get(6), eNodeBs.get(7));
+		Connection x13 = new Connection("E7-E8", eNodeBs.get(7), eNodeBs.get(8));
+		Connection x15 = new Connection("E8-E9", eNodeBs.get(8), eNodeBs.get(9));
+		Connection x16 = new Connection("E9-E10", eNodeBs.get(9), eNodeBs.get(10));
+		
 	}
 
 	/**
@@ -171,7 +162,7 @@ public class Simulation1 {
 		long startTime = System.currentTimeMillis();
 
 		//printNewSection();
-		System.out.println("RUN SIMULATION\n");
+		System.out.println("SIMULATION BEGINS");
 
 		// create threads components
 		for (Controller c : controllers) {
