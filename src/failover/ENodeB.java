@@ -73,6 +73,17 @@ public class ENodeB extends Entity implements Runnable {
 				// pass message from orphan to controller
 				while(!orphanMessages.isEmpty() && controller != null) {
 					Message m = orphanMessages.poll();
+					//find the connection between this eNodeB and the next eNodeB
+					for (Connection c: connections) {
+						if (c.getEndpoint(this).equals(toController)){
+							//update to lowest bandwidth
+							int messageBw = m.getBw();
+							int connectionBw = c.getBw();
+							if (connectionBw < messageBw) {
+								m.setBw(connectionBw);
+							}
+						}
+					}
 					toController.messageController(m);
 				}
 								
@@ -105,6 +116,7 @@ public class ENodeB extends Entity implements Runnable {
 		for (Connection c : connections) {
 			Entity b = c.getEndpoint(this);
 			Message orphanBroadcast = new Message(this);
+			orphanBroadcast.setBw(c.getBw());
 			b.messageController(orphanBroadcast);
 			//if (name.equals("eNodeB7")) {System.out.println(getTime() + ": " + name + " broadcasts message to " + b.getName());}
 		}
@@ -133,7 +145,7 @@ public class ENodeB extends Entity implements Runnable {
 		Controller c = m.getController();
 		if (controller == null) {
 			controller = c;
-			System.out.println(getTime() + ": " + c.getName() + " adopts " + name + " with " + m.getHops() + " hops");
+			System.out.println(getTime() + ": " + c.getName() + " adopts " + name + "\tBW: " + m.getBw() + "\thops: " + m.getHops());
 			
 			toController = e;
 		}

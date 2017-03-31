@@ -13,12 +13,14 @@ public class Message {
 	private ENodeB orphan;
 	private ArrayList<ENodeB> eNodeB;
 	private int hops;
+	private int bw;
 	
 	public Message (ENodeB orphan){
 		controller = null;
 		this.orphan = orphan;
 		this.eNodeB = new ArrayList<ENodeB>();
 		this.hops = 1; // includes the last hop to the controller
+		this.bw = 0;
 	}
 	
 	/**
@@ -40,6 +42,19 @@ public class Message {
 	 */
 	public int getHops() {
 		return hops;
+	}
+	
+	/**
+	 * Gets the max bw from
+	 * the location
+	 * @return
+	 */
+	public int getBw() {
+		return bw;
+	}
+	
+	public void setBw(int num) {
+		bw = num;
 	}
 	
 	/**
