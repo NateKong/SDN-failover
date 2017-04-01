@@ -5,6 +5,17 @@ package failover;
  * The architecture simulates a telecommunications network (LTE).
  * The controller manages eNodeBs (towers).
  * 
+ * Architecture:
+ *   C0    C1    C2
+ *   |     |      |
+ 
+ * 
+ * C = controller
+ * E = eNodeB
+ * 
+ * C0 controls E0
+ * C1 controls E1,E2,E3,E4,E5,E6,E7,E8,E9
+ * C2 controls E10
  * 
  * Simulation:
  * Using the above architecture, C2 fails
@@ -16,7 +27,7 @@ package failover;
 
 import java.util.ArrayList;
 
-public class Simulation1 {
+public class Simulation3 {
 	private static ArrayList<Controller> controllers;
 	private static ArrayList<ENodeB> eNodeBs;
 	public static long maxTime;
@@ -95,6 +106,12 @@ public class Simulation1 {
 		eNodeBs.add(B3);
 		ENodeB B4 = new ENodeB(4, maxTime, load);
 		eNodeBs.add(B4);
+		ENodeB B5 = new ENodeB(5, maxTime, load);
+		eNodeBs.add(B5);
+		ENodeB B6 = new ENodeB(6, maxTime, load);
+		eNodeBs.add(B6);
+		ENodeB B7 = new ENodeB(7, maxTime, load);
+		eNodeBs.add(B7);
 
 		/* Create Controllers */
 		//System.out.println("\nCreate Controllers");
@@ -105,22 +122,35 @@ public class Simulation1 {
 		Controller c1 = new Controller(1, failTime, load);
 		controllers.add(c1);
 		c1.addENodeB(B1, B2);
-		c1.addENodeB(B2, B3);
-		c1.addENodeB(B3, c1);
+		c1.addENodeB(B2, B6);
+		c1.addENodeB(B3, B4);
+		c1.addENodeB(B4, B5);
+		c1.addENodeB(B5, B6);
+		c1.addENodeB(B6, c1);
 		Controller c2 = new Controller(2, maxTime, load);
 		controllers.add(c2);
-		c2.addENodeB(B4, c2);
+		c2.addENodeB(B7, c2);
 		
 		/* Creates connections between ENodeBs */
 		//System.out.println("\nCreate Connections");
 		
 		Connection x0 = new Connection("C0-E0", controllers.get(0), eNodeBs.get(0), 175);
-		Connection x1 = new Connection("C1-E3", controllers.get(1), eNodeBs.get(3), 175);
-		Connection x2 = new Connection("C2-E4", controllers.get(2), eNodeBs.get(4), 175);
+		Connection x1 = new Connection("C1-E6", controllers.get(1), eNodeBs.get(6), 175);
+		Connection x2 = new Connection("C2-E7", controllers.get(2), eNodeBs.get(7), 175);
 		Connection x4 = new Connection("E0-E1", eNodeBs.get(0), eNodeBs.get(1), 100);
-		Connection x6 = new Connection("E1-E2", eNodeBs.get(1), eNodeBs.get(2), 75);
-		Connection x7 = new Connection("E2-E3", eNodeBs.get(2), eNodeBs.get(3), 75);
-		Connection x8 = new Connection("E1-E4", eNodeBs.get(1), eNodeBs.get(4), 75);
+		Connection x6 = new Connection("E0-E2", eNodeBs.get(0), eNodeBs.get(2), 100);
+		Connection x7 = new Connection("E1-E3", eNodeBs.get(1), eNodeBs.get(3), 125);
+		Connection x8 = new Connection("E1-E4", eNodeBs.get(1), eNodeBs.get(4), 125);
+		Connection x9 = new Connection("E2-E5", eNodeBs.get(2), eNodeBs.get(5), 125);
+		Connection x10 = new Connection("E2-E6", eNodeBs.get(2), eNodeBs.get(6), 125);
+		Connection x11 = new Connection("E3-E7", eNodeBs.get(3), eNodeBs.get(7), 150);
+		Connection x12 = new Connection("E4-E7", eNodeBs.get(4), eNodeBs.get(7), 150);
+		Connection x13 = new Connection("E5-E7", eNodeBs.get(5), eNodeBs.get(7), 150);
+		Connection x14 = new Connection("E6-E7", eNodeBs.get(6), eNodeBs.get(7), 150);
+		Connection x15 = new Connection("E1-E2", eNodeBs.get(1), eNodeBs.get(2), 75);
+		Connection x16 = new Connection("E3-E4", eNodeBs.get(3), eNodeBs.get(4), 75);
+		Connection x17 = new Connection("E4-E5", eNodeBs.get(4), eNodeBs.get(5), 75);
+		Connection x18 = new Connection("E5-E6", eNodeBs.get(5), eNodeBs.get(6), 75);
 	}
 
 	/**
