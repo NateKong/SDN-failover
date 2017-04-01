@@ -36,7 +36,7 @@ public class Simulation1 {
 		maxTime = 40;
 		failTime = 5;
 		// create different loads for different simulations
-		int sim = 4;
+		int sim = 1;
 		
 		switch (sim) {
 		case 1: load = 4; // 25% load
@@ -102,20 +102,8 @@ public class Simulation1 {
 		eNodeBs.add(B2);
 		ENodeB B3 = new ENodeB(3, maxTime, load, 1);
 		eNodeBs.add(B3);
-		ENodeB B4 = new ENodeB(4, maxTime, load, 1);
+		ENodeB B4 = new ENodeB(4, maxTime, load, 2);
 		eNodeBs.add(B4);
-		ENodeB B5 = new ENodeB(5, maxTime, load, 1);
-		eNodeBs.add(B5);
-		ENodeB B6 = new ENodeB(6, maxTime, load, 1);
-		eNodeBs.add(B6);
-		ENodeB B7 = new ENodeB(7, maxTime, load, 1);
-		eNodeBs.add(B7);
-		ENodeB B8 = new ENodeB(8, maxTime, load, 1);
-		eNodeBs.add(B8);
-		ENodeB B9 = new ENodeB(9, maxTime, load, 1);
-		eNodeBs.add(B9);
-		ENodeB B10 = new ENodeB(10, maxTime, load, 2);
-		eNodeBs.add(B10);
 
 		/* Create Controllers */
 		//System.out.println("\nCreate Controllers");
@@ -125,41 +113,23 @@ public class Simulation1 {
 		c0.addENodeB(B0,c0);
 		Controller c1 = new Controller(1, failTime, load);
 		controllers.add(c1);
-		c1.addENodeB(B1, B4);
-		c1.addENodeB(B2, B1);
-		c1.addENodeB(B3, B2);
-		c1.addENodeB(B4, c1);
-		c1.addENodeB(B5, B4);
-		c1.addENodeB(B6, B5);
-		c1.addENodeB(B7, B4);
-		c1.addENodeB(B8, B7);
-		c1.addENodeB(B9, B8);
+		c1.addENodeB(B1, B2);
+		c1.addENodeB(B2, B3);
+		c1.addENodeB(B3, c1);
 		Controller c2 = new Controller(2, maxTime, load);
 		controllers.add(c2);
-		c2.addENodeB(B10, c2);
+		c2.addENodeB(B4, c2);
 		
 		/* Creates connections between ENodeBs */
 		//System.out.println("\nCreate Connections");
 		
 		Connection x0 = new Connection("C0-E0", controllers.get(0), eNodeBs.get(0), 175);
-		Connection x1 = new Connection("C1-E4", controllers.get(1), eNodeBs.get(9), 175);
-		Connection x2 = new Connection("C2-E10", controllers.get(2), eNodeBs.get(10), 175);
-		Connection x4 = new Connection("E0-E2", eNodeBs.get(0), eNodeBs.get(2), 175);
-		Connection x6 = new Connection("E0-E1", eNodeBs.get(0), eNodeBs.get(1), 150);
-		Connection x7 = new Connection("E1-E3", eNodeBs.get(1), eNodeBs.get(3), 50);
-		Connection x8 = new Connection("E1-E4", eNodeBs.get(1), eNodeBs.get(4), 100);
-		Connection x9 = new Connection("E2-E4", eNodeBs.get(2), eNodeBs.get(4), 125);
-		Connection x10 = new Connection("E2-E5", eNodeBs.get(2), eNodeBs.get(5), 75);
-		Connection x11 = new Connection("E3-E6", eNodeBs.get(3), eNodeBs.get(6), 50);
-		Connection x13 = new Connection("E3-E7", eNodeBs.get(3), eNodeBs.get(7), 175);
-		Connection x15 = new Connection("E4-E7", eNodeBs.get(4), eNodeBs.get(7), 125);
-		Connection x16 = new Connection("E4-E8", eNodeBs.get(4), eNodeBs.get(8), 100);
-		Connection x17 = new Connection("E5-E8", eNodeBs.get(5), eNodeBs.get(8), 75);
-		Connection x18 = new Connection("E5-E9", eNodeBs.get(5), eNodeBs.get(9), 100);
-		Connection x19 = new Connection("E9-E10", eNodeBs.get(9), eNodeBs.get(10), 100);
-		Connection x20 = new Connection("E8-E10", eNodeBs.get(8), eNodeBs.get(10), 150);
-		Connection x21 = new Connection("E7-E10", eNodeBs.get(7), eNodeBs.get(10), 150);
-		Connection x22 = new Connection("E6-E10", eNodeBs.get(6), eNodeBs.get(10), 150);
+		Connection x1 = new Connection("C1-E3", controllers.get(1), eNodeBs.get(3), 175);
+		Connection x2 = new Connection("C2-E4", controllers.get(2), eNodeBs.get(4), 175);
+		Connection x4 = new Connection("E0-E1", eNodeBs.get(0), eNodeBs.get(1), 100);
+		Connection x6 = new Connection("E1-E2", eNodeBs.get(1), eNodeBs.get(2), 75);
+		Connection x7 = new Connection("E2-E3", eNodeBs.get(2), eNodeBs.get(3), 75);
+		Connection x8 = new Connection("E1-E4", eNodeBs.get(1), eNodeBs.get(4), 75);
 	}
 
 	/**
