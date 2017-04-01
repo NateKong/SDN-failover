@@ -20,6 +20,7 @@ public class ENodeB extends Entity implements Runnable {
 	private ConcurrentLinkedQueue<Message> replyMessages;
 	private int domain;
 	private int hops;
+	private int bw;
 	private boolean initialFailureDetection;
 	
 	public ENodeB(int name, long maxTime, int load, int domain) {
@@ -28,6 +29,7 @@ public class ENodeB extends Entity implements Runnable {
 		replyMessages = new ConcurrentLinkedQueue<Message>();
 		this.domain = domain;
 		hops = 0;
+		bw = 0;
 		initialFailureDetection = true;
 		//System.out.println(getName() + " is created");
 	}
@@ -101,11 +103,12 @@ public class ENodeB extends Entity implements Runnable {
 				// processes messages from orphan to controller
 				while (!orphanMessages.isEmpty() && controller != null){
 					Message m = orphanMessages.poll();
+					//find the connection between this eNodeB and the next eNodeB
 					ENodeB e = m.getOrphan();
 					if (domain == e.getDomain() && toBkController != null){
-						toBkController.messageController(m);
+						checkBW(toBkController, m);
 					}else if (domain != e.getDomain()){
-						toController.messageController(m);	
+						checkBW(toController, m);	
 					}
 				}
 				
@@ -153,12 +156,30 @@ public class ENodeB extends Entity implements Runnable {
 			Entity b = c.getEndpoint(this);
 			if (!b.equals(controller)) {
 			Message orphanBroadcast = new Message(this);
+			orphanBroadcast.setBw(c.getBw());
 			b.messageController(orphanBroadcast);
 			//if (name.equals("eNodeB7")) {System.out.println(getTime() + ": " + name + " broadcasts message to " + b.getName());}
 			}
 		}
 	}
-
+	
+	/**
+	 * Check to upgrade bw
+	 */
+	public void checkBW(Entity e, Message m){
+		for (Connection c: connections) {
+			if (c.getEndpoint(this).equals(e)){
+				//update to lowest bandwidth
+				int messageBw = m.getBw();
+				int connectionBw = c.getBw();
+				if (connectionBw < messageBw) {
+					m.setBw(connectionBw);
+				}
+			}
+		}
+		e.messageController(m);
+	}
+	
 	/**
 	 * Sends a message to the controller
 	 * 
@@ -192,6 +213,7 @@ public class ENodeB extends Entity implements Runnable {
 			System.out.println(getTime() + ": " + c.getName() + " is the back up for " + name);
 			toBkController = e;
 			hops = m.getHops();
+			bw = m.getBw();
 		}
 	}
 	
@@ -206,6 +228,6 @@ public class ENodeB extends Entity implements Runnable {
 		toController = toBkController;
 		toBkController = null;
 		domain = domainNum;
-		System.out.println(getTime() + ": " + controller.getName() + " adopts " + name + " with " + hops + " hops");
+		System.out.println(getTime() + ": " + controller.getName() + " adopts " + name + "\tBW: " + bw + "\thops: " + hops);
 	}
 }

@@ -10,14 +10,16 @@ package failover;
 public class Connection {
 	private Entity[] endpoints;
 	private String name;
+	private int bw;
 
-	public Connection(String name, Entity endpt0, Entity endpt1) {
+	public Connection(String name, Entity endpt0, Entity endpt1, int bw) {
 		this.name = name;
 		endpoints = new Entity[2];
 		endpoints[0] = endpt0;
 		endpoints[1] = endpt1;
 		endpt0.addConnection(this);
 		endpt1.addConnection(this);
+		this.bw = bw;
 		//System.out.println(endpt0.getName() + " has a X2 connected to " + endpt1.getName());
 	}
 
@@ -27,6 +29,13 @@ public class Connection {
 	 */
 	public String getName(){
 		return name;
+	}
+	
+	/**
+	 * gets the bw
+	 */
+	public int getBw() {
+		return bw;
 	}
 	
 	/**

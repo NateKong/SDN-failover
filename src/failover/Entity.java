@@ -131,6 +131,6 @@ public class Entity {
 	 * @param orphanBoardcast
 	 */
 	public void messageController(Message orphanBroadcast) {
-		
+		System.out.println("message from entity");
 	}
 }

@@ -13,11 +13,13 @@ public class Message {
 	private ENodeB orphan;
 	private ArrayList<ENodeB> eNodeB;
 	private int hops;
+	private int bw;
 	
 	public Message (ENodeB orphan){
 		controller = null;
 		this.orphan = orphan;
 		this.eNodeB = new ArrayList<ENodeB>();
+		this.bw = 0;
 		hops = 1; // this is for the last hop to the controller
 	}
 	
@@ -50,6 +52,20 @@ public class Message {
 	 */
 	public int getHops(){
 		return hops;
+	}
+	
+	/**
+	 * gets the bw
+	 */
+	public int getBw() {
+		return bw;
+	}
+	
+	/**
+	 * sets the bw
+	 */
+	public void setBw(int num){
+		bw = num;
 	}
 	
 	/**
