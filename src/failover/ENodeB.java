@@ -136,7 +136,7 @@ public class ENodeB extends Entity implements Runnable {
 	 * @param eNodeB
 	 */
 	public void messageController(Message orphanMessage) {
-		//if(orphanMessage.getOrphan().getName().equals("eNodeB4")){ System.out.println(name + " receives message from eNB4");; }
+		//if(name.equals("eNodeB0") && orphanMessage.getOrphan().getName().equals("eNodeB2")){ System.out.println(name + " receives message from " + orphanMessage.getOrphan().getName()); }
 		orphanMessage.addBreadcrumb(this);
 		orphanMessages.add(orphanMessage);			
 	}
@@ -149,6 +149,11 @@ public class ENodeB extends Entity implements Runnable {
 		adoptionMessages.add(adoptMessage);
 	}
 	
+	/**
+	 * Accepts the adoption
+	 * @param message
+	 * @param e
+	 */
 	private void acceptAdoption(Message message, ENodeB e) {
 		Controller c = message.getController();
 		int messageBw = message.getBw();
@@ -166,6 +171,32 @@ public class ENodeB extends Entity implements Runnable {
 			hops = messageHops;
 			System.out.println(getTime() + ": " + c.getName() + " UPGRADES adoption for " + name + "\tBW: " + bw + "\thops: " +  hops);
 			toController = e;
+			for (Connection conn: connections) {
+				Entity entity = conn.getEndpoint(this);
+				if (entity != toController){
+					((ENodeB) entity).upgrade(conn.getBw(), bw, hops+1, this);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * An upgrade message if another eNodeB got upgraded
+	 * 
+	 * @param connBw the bandwidth of the last connection
+	 * @param upgradeBw the 
+	 * @param upgradeHops
+	 */
+	public void upgrade(int connBw, int upgradeBw, int upgradeHops, ENodeB eNodeB) {
+		int newBw = connBw;
+		if (newBw > upgradeBw){
+			newBw = upgradeBw;
+		}
+		if (upgradeHops <= hops && upgradeBw >= bw) {
+			Message upgradeMessage = new Message(this);
+			upgradeMessage.setBw(connBw);
+			eNodeB.messageController(upgradeMessage);
+			//System.out.println(name + " send upgrade message to " + eNodeB.getName());
 		}
 	}
 }

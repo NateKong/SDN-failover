@@ -96,5 +96,6 @@ public class Controller extends Entity implements Runnable {
 	 */
 	 public void messageController(Message orphanMessage) {
 		orphans.add(orphanMessage);
+		//if(orphanMessage.getOrphan().getName().equals("eNodeB2")){ System.out.println(orphanMessage.getOrphan().getName());}
 	}
 }
