@@ -35,10 +35,10 @@ public class Simulation3 {
 	public static long failTime;
 
 	public static void main(String[] args) {
-		maxTime = 40;
+		maxTime = 15;
 		failTime = 5;
 		// create different loads for different simulations
-		int sim = 3;
+		int sim = 4;
 		
 		switch (sim) {
 		case 1: load = 4; // 25% load
@@ -52,7 +52,7 @@ public class Simulation3 {
 		}		
 		
 		System.out.println("Simulation of failover for Distributed SDN Controllers");
-		System.out.println("HBF Reactive");
+		System.out.println("HBF Proactive");
 		
 		for (int i = 1; i<=25;i++){
 			printNewSection();
@@ -96,21 +96,21 @@ public class Simulation3 {
 		/* Create eNodeBs */
 		//System.out.println("\nCreate eNodeBs");
 
-		ENodeB B0 = new ENodeB(0, maxTime, load, 175, 1);
+		ENodeB B0 = new ENodeB(0, maxTime, load, 0, 175, 1);
 		eNodeBs.add(B0);
-		ENodeB B1 = new ENodeB(1, maxTime, load, 75, 3);
+		ENodeB B1 = new ENodeB(1, maxTime, load, 1, 75, 3);
 		eNodeBs.add(B1);
-		ENodeB B2 = new ENodeB(2, maxTime, load, 125, 2);
+		ENodeB B2 = new ENodeB(2, maxTime, load, 1, 125, 2);
 		eNodeBs.add(B2);
-		ENodeB B3 = new ENodeB(3, maxTime, load, 75, 4);
+		ENodeB B3 = new ENodeB(3, maxTime, load, 1, 75, 4);
 		eNodeBs.add(B3);
-		ENodeB B4 = new ENodeB(4, maxTime, load, 75, 3);
+		ENodeB B4 = new ENodeB(4, maxTime, load, 1, 75, 3);
 		eNodeBs.add(B4);
-		ENodeB B5 = new ENodeB(5, maxTime, load, 75, 2);
+		ENodeB B5 = new ENodeB(5, maxTime, load, 1, 75, 2);
 		eNodeBs.add(B5);
-		ENodeB B6 = new ENodeB(6, maxTime, load, 175, 1);
+		ENodeB B6 = new ENodeB(6, maxTime, load, 1, 175, 1);
 		eNodeBs.add(B6);
-		ENodeB B7 = new ENodeB(7, maxTime, load, 175, 1);
+		ENodeB B7 = new ENodeB(7, maxTime, load, 0, 175, 1);
 		eNodeBs.add(B7);
 
 		/* Create Controllers */

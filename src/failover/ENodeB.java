@@ -93,7 +93,7 @@ public class ENodeB extends Entity implements Runnable {
 				// eNodeB becomes an orphan
 				if (controller == null) {
 					if(initialFailure){
-						Thread.sleep(30000);
+						Thread.sleep(5000);
 						initialFailure = false;
 						System.out.println(getTime() + ": " + name  + " in an orphan");
 					}
@@ -240,6 +240,13 @@ public class ENodeB extends Entity implements Runnable {
 				System.out.println(getTime() + ": " + c.getName() + " UPGRADES for the backup position on " + name
 						+ "\tBW: " + backupBw + "\thops: " + backupHops);
 				toBkController = e;
+				
+				for (Connection conn: connections) {
+					Entity entity = conn.getEndpoint(this);
+					if (entity != toController){
+						((ENodeB) entity).upgrade(conn.getBw(), bw, hops+1, this);
+					}
+				}
 			}
 		}
 	}
@@ -259,4 +266,25 @@ public class ENodeB extends Entity implements Runnable {
 		backupHops = 100;
 		System.out.println(getTime() + ": " + controller.getName() + " adopts " + name + " with " + hops + " hops");
 	}
+	
+	/**
+	 * An upgrade message if another eNodeB got upgraded
+	 * 
+	 * @param connBw the bandwidth of the last connection
+	 * @param upgradeBw the 
+	 * @param upgradeHops
+	 */
+	public void upgrade(int connBw, int upgradeBw, int upgradeHops, ENodeB eNodeB) {
+		int newBw = connBw;
+		if (newBw > upgradeBw){
+			newBw = upgradeBw;
+		}
+		if (upgradeHops <= hops && upgradeBw >= bw) {
+			Message upgradeMessage = new Message(this);
+			upgradeMessage.setBw(connBw);
+			eNodeB.messageController(upgradeMessage);
+			//System.out.println(name + " send upgrade message to " + eNodeB.getName());
+		}
+	}
+	
 }
