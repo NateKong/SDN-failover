@@ -93,9 +93,9 @@ public class ENodeB extends Entity implements Runnable {
 				// eNodeB becomes an orphan
 				if (controller == null) {
 					if(initialFailure){
-						Thread.sleep(5000);
+						Thread.sleep(30000);
 						initialFailure = false;
-						System.out.println(getTime() + ": " + name  + " in an orphan");
+						System.out.println(getTime() + ": " + name  + " is an orphan");
 					}
 					orphanNode();
 				}
@@ -264,7 +264,7 @@ public class ENodeB extends Entity implements Runnable {
 		hops = backupHops;
 		backupBw = 0;
 		backupHops = 100;
-		System.out.println(getTime() + ": " + controller.getName() + " adopts " + name + " with " + hops + " hops");
+		System.out.println(getTime() + ": " + controller.getName() + " adopts " + name + "\tBW:  " + bw + "\thops: " + hops);
 	}
 	
 	/**
