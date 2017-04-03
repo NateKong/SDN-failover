@@ -93,7 +93,7 @@ public class ENodeB extends Entity implements Runnable {
 				// eNodeB becomes an orphan
 				if (controller == null) {
 					if(initialFailure){
-						Thread.sleep(30000);
+						Thread.sleep(5000);
 						initialFailure = false;
 						System.out.println(getTime() + ": " + name  + " is an orphan");
 					}
@@ -107,13 +107,13 @@ public class ENodeB extends Entity implements Runnable {
 				}
 
 				// processes messages from orphan to controller
-				while (!orphanMessages.isEmpty() && controller != null) {
+				while (!orphanMessages.isEmpty() ) {
 					Message m = orphanMessages.poll();
 					ENodeB e = m.getOrphan();
 					if (domain == e.getDomain() && toBkController != null) {
 						m = findConnectionBw(m, true);
 						toBkController.messageController(m);
-					} else if (domain != e.getDomain()) {
+					} else if (domain != e.getDomain() && controller != null) {
 						m = findConnectionBw(m, false);
 						toController.messageController(m);
 					}
