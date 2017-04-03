@@ -87,7 +87,7 @@ public class ENodeB extends Entity implements Runnable {
 				//eNodeB becomes an orphan
 				if (controller == null) {
 					if(initialFailureDetection){
-						Thread.sleep(30000);
+						Thread.sleep(5000);
 						System.out.println(getTime() + ": " + name + " is an orphan");
 						initialFailureDetection = false;
 					}
@@ -101,13 +101,13 @@ public class ENodeB extends Entity implements Runnable {
 				}
 				
 				// processes messages from orphan to controller
-				while (!orphanMessages.isEmpty() && controller != null){
+				while (!orphanMessages.isEmpty() ){
 					Message m = orphanMessages.poll();
 					//find the connection between this eNodeB and the next eNodeB
 					ENodeB e = m.getOrphan();
 					if (domain == e.getDomain() && toBkController != null){
 						checkBW(toBkController, m);
-					}else if (domain != e.getDomain()){
+					}else if (domain != e.getDomain() && controller != null){
 						checkBW(toController, m);	
 					}
 				}
