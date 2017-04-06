@@ -63,7 +63,7 @@ public class ENodeB extends Entity implements Runnable {
 				//eNodeB becomes an orphan
 				if ( controller == null ) {
 					if (initialFailureDetection){
-						Thread.sleep(30000); //added for failure detect through heartbeat messages
+						Thread.sleep(5000); //added for failure detect through heartbeat messages
 						initialFailureDetection = false;
 						System.out.println(getTime() + ": " + name + " is an orphan");
 					}

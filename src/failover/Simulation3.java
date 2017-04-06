@@ -35,10 +35,10 @@ public class Simulation3 {
 	public static long failTime;
 
 	public static void main(String[] args) {
-		maxTime = 40;
+		maxTime = 15;
 		failTime = 5;
 		// create different loads for different simulations
-		int sim = 4;
+		int sim = 1;
 		
 		switch (sim) {
 		case 1: load = 4; // 25% load
