@@ -5,20 +5,11 @@ package failover;
  * The architecture simulates a telecommunications network (LTE).
  * The controller manages eNodeBs (towers).
  * 
- * Architecture:
- *   C0    C1    C2
- *   |     |      |
- 
- * 
- * C = controller
- * E = eNodeB
- * 
- * C0 controls E0
- * C1 controls E1,E2,E3,E4,E5,E6,E7,E8,E9
- * C2 controls E10
+ * Recovery is completed using a greedy reactive
+ * algorithm
  * 
  * Simulation:
- * Using the above architecture, C2 fails
+ * Controller1 fails
  * and the other controllers recover orphan nodes.
  * 
  * @author Nathan Kong
@@ -37,7 +28,7 @@ public class Simulation3 {
 	public static void main(String[] args) {
 		maxTime = 15;
 		failTime = 5;
-		// create different loads for different simulations
+		// create different network loads for different simulations
 		int sim = 1;
 		
 		switch (sim) {

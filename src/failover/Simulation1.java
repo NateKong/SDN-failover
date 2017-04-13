@@ -7,7 +7,7 @@ package failover;
  * 
  * 
  * Simulation:
- * Using the above architecture, C2 fails
+ * Controller1 fails
  * and the other controllers recover orphan nodes.
  * 
  * @author Nathan Kong
