@@ -6,26 +6,34 @@ https://natekong.github.io/
 ___
 Description:
 
-This simulation shows a greedy mechanism for controller failover in a LTE network.
+This simulation shows a reactive greedy mechanism for controller failover in a LTE network. When Controllers fail the mechanism reacts and adopts the closest controller.
 
 ___
-Architecture:
-- 3 controllers (distributed)
-- 9 eNodeBs
+Simulation1: evenly distributed architecture
+- 3 controllers
+- 5 eNodeBs
 
-![alt text](https://github.com/NateKong/SDN-failover/blob/master/images/DN.png "System Architecture")
+![alt text](https://github.com/NateKong/SDN-failover/blob/master/images/sim1.png "System Architecture")
   
-  C = controller
+  Controller0 controls eNodeB0
   
-  E = eNodeB
+  Controller1 controls eNodeB1, eNodeB2, eNodeB3
   
-  C1 controls E1,E2,E3
-  
-  C2 controls E4,E5,E6
-  
-  C3 controls E7,E8,E9
+  Controller3 controls eNodeB4
 
 ___
+Simulation3: uneven architecture
+- 3 controllers 
+- 8 eNodeBs
+
+![alt text](https://github.com/NateKong/SDN-failover/blob/master/images/sim3.png "System Architecture")
+  
+  Controller0 controls eNodeB0
+  
+  Controller1 controls eNodeB1, eNodeB2, eNodeB3, eNodeB4, eNodeB5, eNodeB6
+  
+  Controller3 controls eNodeB7
+  ___
 Simulation:
 
 1) Each controller connects to 3 eNodeBs.
