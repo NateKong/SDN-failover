@@ -133,4 +133,16 @@ public class Entity {
 	public void messageController(Message orphanBroadcast) {
 
 	}
+
+	/**
+	 * THIS IS OVERRIDDEN BY THE ENODEB
+	 * @param bw
+	 * @param backupBw
+	 * @param i
+	 * @param eNodeB
+	 */
+	public void upgrade(int bw, int backupBw, int i, ENodeB eNodeB) {
+		// TODO Auto-generated method stub
+		
+	}
 }
