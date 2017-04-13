@@ -36,12 +36,10 @@ Simulation3: uneven architecture
   ___
 Simulation:
 
-1) Each controller connects to 3 eNodeBs.
+1) Controller1 fails.
 
-2) One controller fails. (Controller1)
-
-3) Orphan eNodeBs from failed controller send a signal to neighboring eNodeBs.
+3) Orphan eNodeBs from failed controller send a discovery message to neighboring eNodeBs.
 
 4) neighbor eNodeBs tell their controller.
 
-5) Controllers use greedy mechanism to adopt Orphan eNodeBs.
+5) Controllers adopt Orphan eNodeBs.
