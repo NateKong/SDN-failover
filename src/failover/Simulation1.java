@@ -5,18 +5,9 @@ package failover;
  * The architecture simulates a telecommunications network (LTE).
  * The controller manages eNodeBs (towers).
  * 
- * Architecture:
- * 
- * 
- * C = controller
- * E = eNodeB
- * 
- * C0 controls E0
- * C1 controls E1,E2,E3,E4,E5,E6,E7,E8,E9
- * C2 controls E10
  * 
  * Simulation:
- * Using the above architecture, C2 fails
+ * Controller1 fails
  * and the other controllers recover orphan nodes.
  * 
  * @author Nathan Kong
@@ -128,7 +119,7 @@ public class Simulation1 {
 		Connection x2 = new Connection("C2-E4", controllers.get(2), eNodeBs.get(4), 175);
 		Connection x4 = new Connection("E0-E1", eNodeBs.get(0), eNodeBs.get(1), 100);
 		Connection x6 = new Connection("E1-E2", eNodeBs.get(1), eNodeBs.get(2), 100);
-		Connection x7 = new Connection("E2-E3", eNodeBs.get(2), eNodeBs.get(3), 75);
+		Connection x7 = new Connection("E2-E3", eNodeBs.get(2), eNodeBs.get(3), 80);
 		Connection x8 = new Connection("E1-E4", eNodeBs.get(1), eNodeBs.get(4), 75);
 	}
 
