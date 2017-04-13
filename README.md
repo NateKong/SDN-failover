@@ -5,7 +5,7 @@ https://natekong.github.io/
 ___
 Description:
 
-This simulations various failover mechanisms in a LTE network. The master branch does not work please see other branches.
+These simulations incorporate various failover mechanisms in a LTE network. The master branch does not work please see other branches.
 
 ___
 Branch:
