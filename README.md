@@ -1,4 +1,4 @@
-# Design Concept for a Failover Mechanism in Distributed SDN Controllers (in progress)
+# Design Concept for a Failover Mechanism in Distributed SDN Controllers
 
 ### Master's Project for Master of Science in Computer Science from San Jose State University.
 https://natekong.github.io/
@@ -6,41 +6,42 @@ https://natekong.github.io/
 ___
 Description:
 
-This simulation shows a greedy mechanism for controller failover in a LTE network.
+This simulation shows a proactive hop and bandwidth based failover (hbf) mechanism for controller failover in a LTE network. Before Controllers fail the mechanism determines best controller to adopt.
 
 ___
-Architecture:
-- 3 controllers (distributed)
-- 9 eNodeBs
+Simulation1: evenly distributed architecture
+- 3 controllers
+- 5 eNodeBs
 
-![alt text](https://github.com/NateKong/SDN-failover/blob/master/images/DN.png "System Architecture")
+![alt text](https://github.com/NateKong/SDN-failover/blob/master/images/sim1.png "System Architecture")
   
-  C = controller
+  Controller0 controls eNodeB0
   
-  E = eNodeB
+  Controller1 controls eNodeB1, eNodeB2, eNodeB3
   
-  C1 controls E1,E2,E3
-  
-  C2 controls E4,E5,E6
-  
-  C3 controls E7,E8,E9
+  Controller3 controls eNodeB4
 
+___
+Simulation3: uneven architecture
+- 3 controllers 
+- 8 eNodeBs
+
+![alt text](https://github.com/NateKong/SDN-failover/blob/master/images/sim3.png "System Architecture")
+  
+  Controller0 controls eNodeB0
+  
+  Controller1 controls eNodeB1, eNodeB2, eNodeB3, eNodeB4, eNodeB5, eNodeB6
+  
+  Controller3 controls eNodeB7
 ___
 Simulation:
 
-1) Each controller connects to 3 eNodeBs.
+1) eNodeBs determine their backup controller through the hbf algorithm. eNodeBs will initially adopt the first controller as their backup controller but can update to a controller with less hops or equal hops with more bandwidth.
 
-2) One controller fails. (Controller1)
+2) Controller1 fails.
 
-3) Orphan eNodeBs from failed controller send a signal to neighboring eNodeBs.
+3) Orphan eNodeBs sends a discovery message to it's backup controller.
 
-4) neighbor eNodeBs tell their controller.
+4) Backup Controller adopts orphan.
 
-5) Controllers use greedy mechanism to adopt Orphan eNodeBs.
-
-___
-Branch:
-- branch: homogeneous-greedy -> uses a greedy algorithm after failure in a homogeneous architecture.
-- branch: homogeneous-partition -> uses a greedy algorithm before failure in a homogeneous architecture. (in progress)
-- branch: heterogeneous-greedy -> uses a greedy algorithm after failure in a heterogeneous architecture. (in progress)
-- branch: master -> uses a greedy algorithm after failure in a heterogeneous architecture. (in progress)
+5) Orphan finds new backup controller.
