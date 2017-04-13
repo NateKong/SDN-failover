@@ -127,7 +127,7 @@ public class ENodeB extends Entity implements Runnable {
 						ENodeB orphan = m.getOrphan();
 						if (!orphan.hasController()) {
 							orphan.acceptAdoption(domain);
-						} else {
+						} else if (orphan.hasController()){
 							orphan.acceptBackup(m, this);
 						}
 					} else {
@@ -243,9 +243,7 @@ public class ENodeB extends Entity implements Runnable {
 				
 				for (Connection conn: connections) {
 					Entity entity = conn.getEndpoint(this);
-					if (entity != toController){
-						((ENodeB) entity).upgrade(conn.getBw(), bw, hops+1, this);
-					}
+					entity.upgrade(conn.getBw(), backupBw, backupHops+1, this);
 				}
 			}
 		}
@@ -279,9 +277,9 @@ public class ENodeB extends Entity implements Runnable {
 		if (newBw > upgradeBw){
 			newBw = upgradeBw;
 		}
-		if (upgradeHops <= hops && upgradeBw >= bw) {
+		if (upgradeHops <= backupHops && newBw >= backupBw) {
 			Message upgradeMessage = new Message(this);
-			upgradeMessage.setBw(connBw);
+			upgradeMessage.setBw(newBw);
 			eNodeB.messageController(upgradeMessage);
 			//System.out.println(name + " send upgrade message to " + eNodeB.getName());
 		}
